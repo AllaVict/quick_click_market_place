@@ -12,7 +12,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import quick.click.commons.config.ApiVersion;
 import quick.click.core.domain.dto.LoginDto;
@@ -43,9 +42,7 @@ public class LoginRestController {
 
     @PostMapping(URL_LOGIN)
     public ResponseEntity<String> authenticateUser
-            (@RequestBody LoginDto loginDto,
-             BindingResult bindingResult,
-             HttpServletRequest request) {
+            (@RequestBody LoginDto loginDto) {
 
         LOG.debug("You try login with username {} and password {}", loginDto.getUsername(), loginDto.getPassword());
 

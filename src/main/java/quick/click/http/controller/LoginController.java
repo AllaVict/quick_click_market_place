@@ -3,7 +3,6 @@ package quick.click.http.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,8 +27,7 @@ public class LoginController {
 
 
     @Autowired
-    public LoginController(final AuthenticationManager authenticationManager,
-                           final MessageSource messageSource) {
+    public LoginController(final AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
 
