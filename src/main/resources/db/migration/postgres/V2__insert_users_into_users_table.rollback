@@ -1,0 +1,1 @@
+DELETE FROM users WHERE first_name IN ('Admin', 'UserActive', 'UserBlocked','UserDeleted');
