@@ -37,7 +37,6 @@ public class UserLoginServiceImpl implements UserLoginService {
 
     }
 
-
     private AuthenticatedUser build(final User user) {
         final List<GrantedAuthority> authorities = Stream.of(user.getRole())
                 .map(role -> new SimpleGrantedAuthority(role.name()))
