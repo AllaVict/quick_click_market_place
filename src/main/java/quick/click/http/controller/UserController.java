@@ -16,11 +16,9 @@ import java.util.List;
 
 import static quick.click.commons.util.WebUtil.getFullRequestUri;
 
-
 @RestController
 @RequestMapping(path = UserController.BASE_URL)
 public class UserController {
-
 
     private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
 
@@ -30,13 +28,11 @@ public class UserController {
 
     private final UserService userService;
 
-
     public UserController(
             final UserService userDataService
     ) {
         this.userService = userDataService;
     }
-
 
     @GetMapping(ALL_URL)
     @ResponseStatus(HttpStatus.OK)
@@ -46,7 +42,6 @@ public class UserController {
         final List<User> users = userService.findAll();
         return users;
     }
-
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
@@ -67,8 +62,6 @@ public class UserController {
         userService.update(user);
         return ResponseEntity.ok().build();
     }
-
-
 
 }
 
