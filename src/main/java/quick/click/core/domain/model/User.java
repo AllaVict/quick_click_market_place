@@ -72,6 +72,21 @@ public class User extends BaseEntity {
         this.email = email;
         this.password = password;
     }
+    public User(
+            final Long id,
+            final String firstName,
+            final String lastName,
+            final Sex sex,
+            final String email,
+            final String password
+    ) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.sex = sex;
+        this.email = email;
+        this.password = password;
+    }
 
     public Long getId() {
         return id;
