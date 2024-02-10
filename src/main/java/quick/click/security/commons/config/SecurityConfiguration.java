@@ -1,25 +1,22 @@
-package quick.click.commons.config;
+package quick.click.security.commons.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 import quick.click.commons.constants.Constants;
-import quick.click.core.service.UserLoginService;
-
-import static org.springframework.security.config.Customizer.withDefaults;
+import quick.click.security.core.service.UserLoginService;
 
 @EnableWebSecurity
 @Configuration
@@ -27,8 +24,9 @@ public class SecurityConfiguration {
 
     private final UserLoginService userLoginService;
 
+
     @Autowired
-    public SecurityConfiguration(UserLoginService userLoginService) {
+    public SecurityConfiguration(final UserLoginService userLoginService) {
         this.userLoginService = userLoginService;
     }
 
@@ -56,34 +54,47 @@ public class SecurityConfiguration {
 
         http
                 .csrf(csrf -> csrf.disable())
+                .httpBasic(httpBasic -> httpBasic.disable())
                 .authenticationProvider(daoAuthenticationProvider())
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations(),
-                                matcher.pattern("/css/**"))
+                                matcher.pattern("/"),
+                                matcher.pattern("/error"),
+                                matcher.pattern("/favicon.ico"),
+                                matcher.pattern("/*/*.png"),
+                                matcher.pattern("/*/*.gif"),
+                                matcher.pattern("/*/*.svg"),
+                                matcher.pattern("/*/*.jpg"),
+                                matcher.pattern("/*/*.html"),
+                                matcher.pattern("/*/*.css"),
+                                matcher.pattern("/*/*.js"))
                         .permitAll()
                         .requestMatchers(
                                 matcher.pattern("/home"),
                                 matcher.pattern("/login"),
                                 matcher.pattern("/v1.0/login"),
-                                matcher.pattern("/swagger-ui/**")
+                                matcher.pattern("/auth/*"),
+                                matcher.pattern("/oauth2/*"),
+                                matcher.pattern("/swagger-ui/*")
                         ).permitAll()
                         // .requestMatchers("/v1.0/**").hasAuthority("ADMIN")
                         .anyRequest().authenticated()
                 )
-                .formLogin(login -> login
-                        .loginPage(Constants.Endpoints.LOGIN_URL)
-                        .usernameParameter("username").passwordParameter("password")
-                        .defaultSuccessUrl("/for-signed-users")
-                        .permitAll()
-                )
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout")
-                )
+//                .formLogin(login -> login
+//                        .loginPage(Constants.Endpoints.LOGIN_URL)
+//                        .usernameParameter("username").passwordParameter("password")
+//                        .defaultSuccessUrl("/for-signed-users")
+//                        .permitAll()
+//                )
+//                .logout(logout -> logout
+//                        .logoutUrl("/logout")
+//                        .logoutSuccessUrl("/login?logout")
+//                )
                 .exceptionHandling(exception -> exception
                         .accessDeniedPage(Constants.Endpoints.LOGIN_URL)
-                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
-                ).httpBasic(withDefaults()); // must be
+                )
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        ;
 
         return http.build();
     }
