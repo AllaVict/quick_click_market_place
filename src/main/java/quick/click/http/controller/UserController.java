@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import quick.click.commons.config.ApiVersion;
+import quick.click.commons.constants.ApiVersion;
 import quick.click.core.domain.model.User;
 import quick.click.core.service.UserService;
 

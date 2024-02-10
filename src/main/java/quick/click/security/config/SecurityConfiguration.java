@@ -1,4 +1,4 @@
-package quick.click.commons.config;
+package quick.click.security.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;

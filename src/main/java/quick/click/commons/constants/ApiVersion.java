@@ -1,4 +1,4 @@
-package quick.click.commons.config;
+package quick.click.commons.constants;
 
 public class ApiVersion {
 
