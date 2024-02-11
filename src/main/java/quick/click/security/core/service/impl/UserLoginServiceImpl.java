@@ -15,7 +15,7 @@ import quick.click.security.core.service.UserLoginService;
 @Service
 public class UserLoginServiceImpl implements UserLoginService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(UserLoginServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserLoginServiceImpl.class);
 
     private final UserRepository userRepository;
 
@@ -27,7 +27,7 @@ public class UserLoginServiceImpl implements UserLoginService {
     @Override
     public UserDetails loadUserByUsername(final String email) throws UsernameNotFoundException {
 
-        LOG.debug("In loadUserByUsername get UserDetails by email {}:", email);
+        LOGGER.debug("In loadUserByUsername get UserDetails by email {}:", email);
 
         final User user = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found with email: " + email));
@@ -37,7 +37,7 @@ public class UserLoginServiceImpl implements UserLoginService {
 
     @Override
     public UserDetails loadUserById(final Long id) {
-        LOG.debug("In loadUserById get UserDetails by email {}:", id);
+        LOGGER.debug("In loadUserById get UserDetails by email {}:", id);
         User user = userRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("User", "id", id)
         );

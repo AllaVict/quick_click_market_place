@@ -1,4 +1,4 @@
-package quick.click.http.controller;
+package quick.click.core.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -20,7 +20,7 @@ import static quick.click.commons.util.WebUtil.getFullRequestUri;
 @RequestMapping(path = UserController.BASE_URL)
 public class UserController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     static final String BASE_URL = ApiVersion.VERSION_1_0 + "/users";
 
@@ -38,7 +38,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get all available users")
     public List<User> getAll() {
-        LOG.debug("Received GET request to get all badges, request URI:[{}]", getFullRequestUri());
+        LOGGER.debug("Received GET request to get all badges, request URI:[{}]", getFullRequestUri());
         final List<User> users = userService.findAll();
         return users;
     }
@@ -47,7 +47,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get user account settings by id")
     public User getUserAccountSettingsData(@PathVariable("id") final Long id) {
-        LOG.debug("Received GET request for retrieve user account settings, request URI:[{}]", getFullRequestUri());
+        LOGGER.debug("Received GET request for retrieve user account settings, request URI:[{}]", getFullRequestUri());
         final var user = userService.findById(id);
         return user;
     }
@@ -58,7 +58,7 @@ public class UserController {
             @RequestBody @Valid final User user,
             final BindingResult bindingResult
     ) {
-        LOG.debug("Received POST request for edit user account settings, request URI:[{}]", getFullRequestUri());
+        LOGGER.debug("Received POST request for edit user account settings, request URI:[{}]", getFullRequestUri());
         userService.update(user);
         return ResponseEntity.ok().build();
     }

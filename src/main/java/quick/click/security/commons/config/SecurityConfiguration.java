@@ -13,9 +13,13 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 import quick.click.commons.constants.Constants;
+import quick.click.security.commons.utils.RestAuthenticationEntryPoint;
+import quick.click.security.commons.utils.TokenAuthenticationFilter;
+import quick.click.security.commons.utils.TokenProvider;
 import quick.click.security.core.service.UserLoginService;
 
 @EnableWebSecurity
@@ -24,10 +28,13 @@ public class SecurityConfiguration {
 
     private final UserLoginService userLoginService;
 
+    private final TokenProvider tokenProvider;
 
     @Autowired
-    public SecurityConfiguration(final UserLoginService userLoginService) {
+    public SecurityConfiguration(final UserLoginService userLoginService,
+                                 final TokenProvider tokenProvider) {
         this.userLoginService = userLoginService;
+        this.tokenProvider = tokenProvider;
     }
 
     @Bean
@@ -46,6 +53,10 @@ public class SecurityConfiguration {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
+    }
+    @Bean
+    public TokenAuthenticationFilter tokenAuthenticationFilter() {
+        return new TokenAuthenticationFilter(tokenProvider, userLoginService);
     }
 
     @Bean
@@ -80,21 +91,13 @@ public class SecurityConfiguration {
                         // .requestMatchers("/v1.0/**").hasAuthority("ADMIN")
                         .anyRequest().authenticated()
                 )
-//                .formLogin(login -> login
-//                        .loginPage(Constants.Endpoints.LOGIN_URL)
-//                        .usernameParameter("username").passwordParameter("password")
-//                        .defaultSuccessUrl("/for-signed-users")
-//                        .permitAll()
-//                )
-//                .logout(logout -> logout
-//                        .logoutUrl("/logout")
-//                        .logoutSuccessUrl("/login?logout")
-//                )
                 .exceptionHandling(exception -> exception
                         .accessDeniedPage(Constants.Endpoints.LOGIN_URL)
+                        .authenticationEntryPoint(new RestAuthenticationEntryPoint())
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        ;
+                .addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                ;
 
         return http.build();
     }

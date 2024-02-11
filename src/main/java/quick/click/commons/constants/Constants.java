@@ -8,21 +8,30 @@ public final class Constants {
 
 		public static final String LOGIN_URL = "/login";
 
+		public static final String HOME_URL = "/home";
+
 		private Endpoints() {
 		}
 	}
-	public static final class Attributes {
 
-		public static final String LOGIN_DATA = "loginData";
+	public static final class Headers {
 
-		public static final String PAGE_TITLE = "pageTitle";
+		public static final String AUTHORIZATION_HEADER = "Authorization";
 
-		public static final String MESSAGE_ERROR = "messageError";
-
-
-		private Attributes() {
+		private Headers() {
 		}
 	}
 
+	public static final class Tokens {
+
+		public static final String TOKEN_TYPE = "Bearer";
+
+		public static final String ACCESS_TOKEN_PREFIX = "Bearer ";
+
+		public static final String UNAUTHENTICATED = "unauthenticated";
+
+		private Tokens() {
+		}
+	}
 
 }
