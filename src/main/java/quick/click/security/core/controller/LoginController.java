@@ -14,27 +14,22 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import quick.click.commons.config.ApiVersion;
 import quick.click.security.commons.model.dto.AuthResponse;
 import quick.click.security.commons.model.dto.LoginRequest;
 import quick.click.security.commons.utils.TokenProvider;
 
+import static quick.click.commons.config.ApiVersion.VERSION_1_0;
+import static quick.click.commons.constants.Constants.Endpoints.*;
 import static quick.click.commons.constants.Constants.Tokens.UNAUTHENTICATED;
-import static quick.click.security.core.controller.LoginController.URL;
+import static quick.click.commons.util.WebUtil.getFullRequestUri;
 
 @RestController
-@RequestMapping(URL)
+@RequestMapping(AUTH_URL)
 public class LoginController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
 
-    public static final String URL = "/auth";
-
-    public static final String BASE_URL = ApiVersion.VERSION_1_0 + URL;
-
-    static final String URL_LOGIN = "/login";
-
-    static final String URL_LOGOUT = "/logout";
+    public static final String BASE_URL = VERSION_1_0 + AUTH_URL;
 
     private final AuthenticationManager authenticationManager;
 
@@ -47,7 +42,7 @@ public class LoginController {
         this.tokenProvider = tokenProvider;
     }
 
-    @PostMapping(URL_LOGIN)
+    @PostMapping(LOGIN_URL)
     public ResponseEntity<?> authenticateUser
             (@Valid @RequestBody final LoginRequest loginRequest) {
 
@@ -61,25 +56,25 @@ public class LoginController {
                     );
             SecurityContextHolder.getContext().setAuthentication(authentication);
             token = tokenProvider.createToken(authentication);
-            LOGGER.debug("In authenticateUser user with username {} login successfully ", loginRequest.getEmail());
-
+            LOGGER.debug("In authenticateUser received POST request user with username {}, request URI:[{}] ",
+                    loginRequest.getEmail(), getFullRequestUri());
         } catch (BadCredentialsException e) {
 
-            LOGGER.debug("In authenticateUser BadCredentialsException occurs" +
-                            "during your attempt login with username {} ", loginRequest.getEmail());
+            LOGGER.debug("In authenticateUser BadCredentialsException occurs during an attempt login " +
+                    "with username {} , request URI:[{}] ",loginRequest.getEmail(), getFullRequestUri());
         }
 
         return new ResponseEntity<>(new AuthResponse(token), HttpStatus.OK);
 
     }
 
-    @PostMapping(URL_LOGOUT)
+    @PostMapping(LOGOUT_URL)
     public ResponseEntity<String> logout(final HttpServletRequest request) throws ServletException {
 
         final String userName =  SecurityContextHolder.getContext().getAuthentication().getName();
 
-        LOGGER.debug("In logout user with username {} logout successfully ", userName);
-
+        LOGGER.debug("In logout received POST user logout request with username {} logout successfully, " +
+                        "request URI:[{}] ", userName, getFullRequestUri());
         request.logout();
 
         return new ResponseEntity<>("User with username {} logout successfully " + userName, HttpStatus.OK);

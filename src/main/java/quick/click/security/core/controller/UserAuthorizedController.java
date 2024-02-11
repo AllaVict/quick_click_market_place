@@ -15,6 +15,8 @@ import quick.click.core.repository.UserRepository;
 import quick.click.security.commons.model.CurrentUser;
 import quick.click.security.commons.model.UserPrincipal;
 
+import static quick.click.commons.util.WebUtil.getFullRequestUri;
+
 @RestController
 public class UserAuthorizedController {
 
@@ -28,6 +30,10 @@ public class UserAuthorizedController {
     @GetMapping("/user/me")
     @PreAuthorize("hasRole('ADMIN')")
     public User getCurrentUser(@CurrentUser final UserPrincipal userPrincipal) {
+
+        LOGGER.debug("In getCurrentUser received POST request to with username {} logout successfully, " +
+                "request URI:[{}] ", userPrincipal.getUsername(), getFullRequestUri());
+
         return userRepository.findById(userPrincipal.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userPrincipal.getId()));
     }
@@ -36,7 +42,8 @@ public class UserAuthorizedController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> forAuthorizedUsers() {
 
-        LOGGER.debug("In forAuthorizedUsers - Received GET request to show authorized page");
+        LOGGER.debug("In forAuthorizedUsers received POST request to show authorized page, " +
+                "request URI:[{}]", getFullRequestUri());
 
         return new ResponseEntity<>("User in authorized page with username "
                 + SecurityContextHolder.getContext().getAuthentication().getName(), HttpStatus.OK);

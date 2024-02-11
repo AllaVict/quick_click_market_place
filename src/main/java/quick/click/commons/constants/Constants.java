@@ -8,7 +8,15 @@ public final class Constants {
 
 		public static final String LOGIN_URL = "/login";
 
+		public static final String LOGOUT_URL = "/logout";
+
+		public static final String AUTH_URL = "/auth";
+
 		public static final String HOME_URL = "/home";
+
+		public static final String ALL_URL = "/all";
+
+		public static final String USERS_URL = "/users";
 
 		private Endpoints() {
 		}

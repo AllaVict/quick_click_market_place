@@ -14,17 +14,18 @@ import quick.click.core.service.UserService;
 
 import java.util.List;
 
+import static quick.click.commons.constants.Constants.Endpoints.ALL_URL;
+import static quick.click.commons.constants.Constants.Endpoints.USERS_URL;
 import static quick.click.commons.util.WebUtil.getFullRequestUri;
+import static quick.click.core.controller.UserController.BASE_URL;
 
 @RestController
-@RequestMapping(path = UserController.BASE_URL)
+@RequestMapping(BASE_URL)
 public class UserController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
-    static final String BASE_URL = ApiVersion.VERSION_1_0 + "/users";
-
-    private static final String ALL_URL = "/all";
+    static final String BASE_URL = ApiVersion.VERSION_1_0 + USERS_URL;
 
     private final UserService userService;
 

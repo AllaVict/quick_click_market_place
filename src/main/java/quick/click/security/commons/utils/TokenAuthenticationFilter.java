@@ -46,7 +46,8 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                 final Long userId = tokenProvider.getUserIdFromToken(jwt);
 
                 final UserDetails userDetails = userLoginService.loadUserById(userId);
-                final UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                final UsernamePasswordAuthenticationToken authentication
+                        = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
