@@ -19,7 +19,7 @@ public class HomeController {
     public static final String BASE_URL = HOME_URL;
 
     @GetMapping(BASE_URL)
-    public ResponseEntity<> showHomePage() {
+    public ResponseEntity<?> showHomePage() {
 
         LOGGER.debug("In showHomePage - Received GET request to show home page");
 
