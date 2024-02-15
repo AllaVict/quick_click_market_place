@@ -3,6 +3,7 @@ package quick.click.security.core.controller;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.apache.coyote.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +14,16 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import quick.click.core.domain.dto.UserReadDto;
+import quick.click.core.service.UserService;
+import quick.click.security.commons.model.dto.ApiResponse;
 import quick.click.security.commons.model.dto.AuthResponse;
 import quick.click.security.commons.model.dto.UserLoginDto;
+import quick.click.security.commons.model.dto.UserSignupDto;
 import quick.click.security.commons.utils.TokenProvider;
 
 import static quick.click.commons.config.ApiVersion.VERSION_1_0;
@@ -35,11 +43,15 @@ public class LoginController {
 
     private final TokenProvider tokenProvider;
 
+    private final UserService userService;
+
     @Autowired
     public LoginController(final AuthenticationManager authenticationManager,
-                           final TokenProvider tokenProvider) {
+                           final TokenProvider tokenProvider,
+                           final UserService userService) {
         this.authenticationManager = authenticationManager;
         this.tokenProvider = tokenProvider;
+        this.userService = userService;
     }
 
     @PostMapping(LOGIN_URL)
@@ -56,8 +68,10 @@ public class LoginController {
                     );
             SecurityContextHolder.getContext().setAuthentication(authentication);
             token = tokenProvider.createToken(authentication);
-            LOGGER.debug("In authenticateUser received POST request user with username {} ",
+
+            LOGGER.debug("In authenticateUser received POST request user with username {}",
                     userLoginDto.getEmail());
+
         } catch (BadCredentialsException e) {
 
             LOGGER.debug("In authenticateUser BadCredentialsException occurs during an attempt login " +
@@ -68,12 +82,31 @@ public class LoginController {
 
     }
 
+    @PostMapping(SIGNUP_URL)
+    public ResponseEntity<?> registerUser(@Valid @RequestBody UserSignupDto userSignUpDto) {
+
+            try {
+                if (userService.existsByEmail(userSignUpDto.getEmail())) {
+                    throw new BadRequestException("In registerUser Email address already in use.");
+                }
+            } catch (BadRequestException e) {
+
+            }
+
+        final UserReadDto result = userService.save(userSignUpDto);
+
+        LOGGER.debug("In registerUser received POST user signup successfully with username {} ", result.getFirstName());
+
+        return ResponseEntity.ok()
+                .body(new ApiResponse(true, "User registered successfully!"));
+    }
+
     @PostMapping(LOGOUT_URL)
     public ResponseEntity<String> logout(final HttpServletRequest request) throws ServletException {
 
-        final String userName =  SecurityContextHolder.getContext().getAuthentication().getName();
+        final String userName = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        LOGGER.debug("In logout received POST request user logout successfully with username {}, ", userName);
+        LOGGER.debug("In logout received POST user logout request with username {} logout successfully, ", userName);
 
         request.logout();
 

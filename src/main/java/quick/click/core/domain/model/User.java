@@ -59,19 +59,22 @@ public class User extends BaseEntity {
 
     }
 
-    public User(
-            final String firstName,
-            final String lastName,
-            final Sex sex,
-            final String email,
-            final String password
-    ) {
+    public User(final String firstName,
+                final String password,
+                final String email,
+                final Role role,
+                final UserStatus status,
+                final LocalDateTime lastActiveDate,
+                final AuthProvider provider) {
         this.firstName = firstName;
-        this.lastName = lastName;
-        this.sex = sex;
-        this.email = email;
         this.password = password;
+        this.email = email;
+        this.role = role;
+        this.status = status;
+        this.lastActiveDate = lastActiveDate;
+        this.provider = provider;
     }
+
     public User(
             final Long id,
             final String firstName,

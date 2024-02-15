@@ -12,6 +12,8 @@ public final class Constants {
 
 		public static final String AUTH_URL = "/auth";
 
+		public static  final String SIGNUP_URL = "/signup";
+
 		public static final String HOME_URL = "/home";
 
 		public static final String ALL_URL = "/all";
