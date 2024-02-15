@@ -83,21 +83,21 @@ public class SecurityConfiguration {
                         .requestMatchers(
                                 matcher.pattern("/home"),
                                 matcher.pattern("/login"),
-                                matcher.pattern("/v1.0/login"),
+                                matcher.pattern("/v1.0/auth/login"),
                                 matcher.pattern("/auth/*"),
                                 matcher.pattern("/oauth2/*"),
                                 matcher.pattern("/swagger-ui/*")
                         ).permitAll()
-                        // .requestMatchers("/v1.0/**").hasAuthority("ADMIN")
                         .anyRequest().authenticated()
                 )
+                .formLogin(formLogin -> formLogin.disable())
                 .exceptionHandling(exception -> exception
                         .accessDeniedPage(Constants.Endpoints.LOGIN_URL)
                         .authenticationEntryPoint(new RestAuthenticationEntryPoint())
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-                ;
+        ;
 
         return http.build();
     }

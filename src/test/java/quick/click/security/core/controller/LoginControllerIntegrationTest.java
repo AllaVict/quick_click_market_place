@@ -1,63 +1,91 @@
 package quick.click.security.core.controller;
 
-import jakarta.servlet.ServletException;
-import org.junit.jupiter.api.DisplayName;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import quick.click.security.commons.model.dto.AuthResponse;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.web.servlet.MockMvc;
+import quick.click.config.factory.WithMockAuthenticatedUser;
 import quick.click.security.commons.model.dto.UserLoginDto;
+import quick.click.security.commons.utils.TokenProvider;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static quick.click.commons.constants.Constants.Endpoints.LOGIN_URL;
+import static quick.click.commons.constants.Constants.Endpoints.LOGOUT_URL;
+import static quick.click.config.factory.UserDtoFactory.createUserLoginDto;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@DisplayName("LoginRestControllerIntegrationTest")
+import static quick.click.security.core.controller.LoginController.BASE_URL;
+@WebMvcTest(LoginController.class)
+@AutoConfigureMockMvc()
+@WithMockAuthenticatedUser
 class LoginControllerIntegrationTest {
 
     @Autowired
-    private TestRestTemplate restTemplate;
+    private MockMvc mockMvc;
 
-    @Test
-    void testAuthenticateUser_ValidCredentials() {
-        // Create login request
-        UserLoginDto userLoginDto = null;
-        userLoginDto.setEmail("test@example.com");
-        userLoginDto.setPassword("password123");
+    @Autowired
+    private ObjectMapper objectMapper;
 
-        // Send POST request to /auth/login
-        ResponseEntity<AuthResponse> responseEntity = restTemplate.postForEntity("/auth/login", userLoginDto, AuthResponse.class);
+    @MockBean
+    private AuthenticationManager authenticationManager;
 
-        // Verify the response
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertNotNull(responseEntity.getBody().getAccessToken());
+    @MockBean
+    private TokenProvider tokenProvider;
+
+    @MockBean
+    private Authentication authentication;
+
+    private String token;
+
+    private UserLoginDto userLoginDto;
+
+    private static final String EMAIL =  "test@example.com";
+
+    @BeforeEach
+    public void setUp() {
+        authentication = Mockito.mock(Authentication.class);
+        token = tokenProvider.createToken(authentication);
+        userLoginDto = createUserLoginDto();
     }
 
     @Test
-    void testAuthenticateUser_InvalidCredentials() {
-        // Create login request
-        UserLoginDto userLoginDto = new UserLoginDto();
-        userLoginDto.setEmail("test@example.com");
-        userLoginDto.setPassword("invalidpassword");
+    void testAuthenticateUser() throws Exception {
+        given(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .willReturn(SecurityContextHolder.getContext().getAuthentication());
+        given(tokenProvider.createToken(any(Authentication.class)))
+                .willReturn(token);
 
-        // Send POST request to /auth/login
-        ResponseEntity<AuthResponse> responseEntity = restTemplate.postForEntity("/auth/login", userLoginDto, AuthResponse.class);
+        mockMvc.perform(post(BASE_URL + LOGIN_URL)
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userLoginDto)))
+                .andExpect(status().isOk());
+   }
 
-        // Verify the response
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals("unauthenticated", responseEntity.getBody().getAccessToken());
-    }
 
     @Test
-    void testLogout() throws ServletException {
-        // Send POST request to /auth/logout
-        ResponseEntity<String> responseEntity = restTemplate.postForEntity("/auth/logout", null, String.class);
+    void testLogout() throws Exception {
+        given(SecurityContextHolder.getContext().getAuthentication().getName())
+                .willReturn(EMAIL);
 
-        // Verify the response
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals("User with username {} logout successfully", responseEntity.getBody());
+        mockMvc.perform(post(BASE_URL + LOGOUT_URL)
+                .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("User logout successfully with username test@example.com")));
     }
+
 }
