@@ -4,6 +4,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,16 +18,24 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import quick.click.core.service.UserService;
 import quick.click.security.commons.model.dto.AuthResponse;
-import quick.click.security.commons.model.dto.LoginRequest;
+import quick.click.security.commons.model.dto.UserLoginDto;
 import quick.click.security.commons.utils.TokenProvider;
+import java.security.Principal;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static quick.click.commons.constants.Constants.Tokens.UNAUTHENTICATED;
+import static quick.click.config.factory.UserDtoFactory.createUserLoginDto;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("LoginRestControllerTest")
+@DisplayName("LoginControllerTest")
 class LoginControllerTest {
+
+    @InjectMocks
+    private LoginController loginController;
 
     @Mock
     private AuthenticationManager authenticationManager;
@@ -34,62 +43,76 @@ class LoginControllerTest {
     @Mock
     private TokenProvider tokenProvider;
 
-    @InjectMocks
-    private LoginController loginController;
+    @Mock
+    private Authentication authentication;
 
-    private LoginRequest loginRequest;
+    @Mock
+    private SecurityContext securityContext;
+
+    @Mock
+    private HttpServletRequest request;
+
+    private static final String INVALID_PASSWORD ="invalidpassword";
+
+    private static final String EMAIL =  "test@example.com";
+
+    private UserLoginDto userLoginDto;
+
+    private String token;
 
     @BeforeEach
     public void setUp() {
-        loginRequest = new LoginRequest("test@example.com", "password123");
-        // MockitoAnnotations.initMocks(this);
+        authentication = Mockito.mock(Authentication.class);
+        request = Mockito.mock(HttpServletRequest.class);
+        securityContext = Mockito.mock(SecurityContext.class);
+        token = tokenProvider.createToken(authentication);
+        userLoginDto = createUserLoginDto();
     }
 
-    @Test
-    void testAuthenticateUser_ValidCredentials() {
-        // Mock authentication and token
-        Authentication authentication = Mockito.mock(Authentication.class);
-        String token = tokenProvider.createToken(authentication);
-        Mockito.when(authenticationManager.authenticate(Mockito.any())).thenReturn(authentication);
-        Mockito.when(tokenProvider.createToken(Mockito.any())).thenReturn(token);
-        // Execute the authenticateUser method
-        ResponseEntity<?> responseEntity = loginController.authenticateUser(loginRequest);
-        // Verify the response
-        var expected = new AuthResponse(token);
-        var actual = responseEntity.getBody();
-        System.out.println("expected: " + expected + ", actual: " + actual);
-        // assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals(new AuthResponse(token), responseEntity.getBody());
+    @Nested
+    @DisplayName("When authenticate a User")
+    class tAuthenticateUserTests {
+
+        @Test
+        void testAuthenticateUser_ValidCredentials() {
+            when(authenticationManager.authenticate(Mockito.any())).thenReturn(authentication);
+            when(tokenProvider.createToken(Mockito.any())).thenReturn(token);
+
+            ResponseEntity<?> responseEntity = loginController.authenticateUser(userLoginDto);
+
+            assertEquals(new AuthResponse(token), responseEntity.getBody());
+        }
+
+        @Test
+        void testAuthenticateUser_InvalidCredentials() {
+            userLoginDto.setPassword(INVALID_PASSWORD);
+            when(authenticationManager.authenticate(Mockito.any()))
+                    .thenThrow(new BadCredentialsException("Invalid credentials"));
+
+            ResponseEntity<?> responseEntity = loginController.authenticateUser(userLoginDto);
+
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+            assertEquals(new AuthResponse(UNAUTHENTICATED), responseEntity.getBody());
+        }
+
     }
 
-    @Test
-    void testAuthenticateUser_InvalidCredentials() {
-        loginRequest.setPassword("invalidpassword");
-        // Mock BadCredentialsException
-        Mockito.when(authenticationManager.authenticate(Mockito.any()))
-                .thenThrow(new BadCredentialsException("Invalid credentials"));
-        // Execute the authenticateUser method
-        ResponseEntity<?> responseEntity = loginController.authenticateUser(loginRequest);
-        // Verify the response
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals(new AuthResponse(UNAUTHENTICATED), responseEntity.getBody());
+    @Nested
+    @DisplayName("When User Logout")
+    class LogoutTests {
+        @Test
+        void testLogout_withResponseOk() throws ServletException {
+            when(securityContext.getAuthentication()).thenReturn(authentication);
+            SecurityContextHolder.setContext(securityContext);
+            when(authentication.getName()).thenReturn(EMAIL);
+
+            ResponseEntity<String> responseEntity = loginController.logout(request);
+
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+            verify(request, Mockito.times(1)).logout();
+            assertEquals("User logout successfully with username test@example.com", responseEntity.getBody());
+        }
     }
 
-    @Test
-    void testLogout() throws ServletException {
-        // Mock HttpServletRequest and SecurityContextHolder
-        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-        Authentication authentication = Mockito.mock(Authentication.class);
-        // Mock authenticated user name
-        Mockito.when(SecurityContextHolder.getContext()).thenReturn(securityContext);
-        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
-        Mockito.when(authentication.getName()).thenReturn("test@example.com");
-        // Execute the logout method
-        ResponseEntity<String> responseEntity = loginController.logout(request);
-        // Verify the response
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals("User with username {} logout successfullytest@example.com", responseEntity.getBody());
-        Mockito.verify(request, Mockito.times(1)).logout();
-    }
 }
+

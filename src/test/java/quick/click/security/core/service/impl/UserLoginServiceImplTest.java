@@ -17,9 +17,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.core.domain.model.User;
-import quick.click.core.enums.Role;
 import quick.click.core.repository.UserRepository;
-import quick.click.utils.UserFactory;
+import quick.click.config.factory.UserFactory;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("UserLoginServiceImplTest")
@@ -37,7 +36,7 @@ public class UserLoginServiceImplTest {
 
     @BeforeEach
     public void setUp() {
-        user = UserFactory.createUserWithRole(Role.ROLE_USER);
+        user = UserFactory.createUser();
     }
 
     @Nested
@@ -46,20 +45,19 @@ public class UserLoginServiceImplTest {
 
         @Test
         void testLoadUserByUsername_ExistingUser_ReturnsUserDetails() {
-            // Arrange
             when(userRepository.findUserByEmail(EMAIL)).thenReturn(Optional.of(user));
-            // Act
+
             UserDetails userDetails = userLoginService.loadUserByUsername(EMAIL);
-            // Assert
+
             assertNotNull(userDetails);
             assertEquals(user.getEmail(), userDetails.getUsername());
         }
 
         @Test
         void testLoadUserByUsername_NonExistingUser_ThrowsException() {
-            // Arrange
+
             when(userRepository.findUserByEmail(EMAIL)).thenReturn(Optional.empty());
-            // Act & The test expects an exception to be thrown, so nothing needs to be asserted explicitly.
+
             assertThrows(UsernameNotFoundException.class,
                     () ->  userLoginService.loadUserByUsername(EMAIL));
         }
@@ -71,20 +69,19 @@ public class UserLoginServiceImplTest {
     class LoadUserByIdTests {
         @Test
         void testLoadUserById_ExistingUser_ReturnsUserDetails() {
-            // Arrange
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
-            // Act
+
             UserDetails userDetails = userLoginService.loadUserById(USER_ID);
-            // Assert
+
             assertNotNull(userDetails);
             assertEquals(user.getEmail(), userDetails.getUsername());
         }
 
         @Test
         void testLoadUserById_NonExistingUser_ThrowsException() {
-            // Arrange
+
             when(userRepository.findById(USER_ID)).thenReturn(Optional.empty());
-            // Act & The test expects an exception to be thrown, so nothing needs to be asserted explicitly.
+
             assertThrows(ResourceNotFoundException.class,
                     () -> userLoginService.loadUserById(USER_ID));
         }

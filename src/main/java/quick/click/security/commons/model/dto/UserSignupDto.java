@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 
 import java.util.Objects;
 
-public class SignUpRequest {
+public class UserSignupDto {
     @NotBlank
     private String name;
 
@@ -44,7 +44,7 @@ public class SignUpRequest {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        SignUpRequest that = (SignUpRequest) o;
+        UserSignupDto that = (UserSignupDto) o;
         return Objects.equals(name, that.name) && Objects.equals(email, that.email) && Objects.equals(password, that.password);
     }
 

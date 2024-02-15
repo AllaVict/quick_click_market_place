@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import quick.click.security.commons.config.AppProperties;
-import quick.click.security.commons.model.UserPrincipal;
+import quick.click.security.commons.model.AuthenticatedUser;
 
 import java.util.Date;
 
@@ -22,13 +22,13 @@ public class TokenProvider {
     }
 
     public String createToken(final Authentication authentication) {
-        final UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        final AuthenticatedUser authenticatedUser = (AuthenticatedUser) authentication.getPrincipal();
 
         final Date now = new Date();
         final Date expiryDate = new Date(now.getTime() + appProperties.getAuth().getTokenExpirationMsec());
 
         return Jwts.builder()
-                .setSubject(Long.toString(userPrincipal.getId()))
+                .setSubject(Long.toString(authenticatedUser.getId()))
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret())

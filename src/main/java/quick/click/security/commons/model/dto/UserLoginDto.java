@@ -5,18 +5,18 @@ import jakarta.validation.constraints.NotBlank;
 
 import java.util.Objects;
 
-public class LoginRequest {
+public class UserLoginDto {
     @NotBlank
     @Email
     private String email;
 
     @NotBlank
     private String password;
-    public LoginRequest(){
+    public UserLoginDto(){
 
     }
 
-    public LoginRequest(String email, String password) {
+    public UserLoginDto(String email, String password) {
         this.email = email;
         this.password = password;
     }
@@ -41,7 +41,7 @@ public class LoginRequest {
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        LoginRequest that = (LoginRequest) o;
+        UserLoginDto that = (UserLoginDto) o;
         return Objects.equals(email, that.email) && Objects.equals(password, that.password);
     }
 

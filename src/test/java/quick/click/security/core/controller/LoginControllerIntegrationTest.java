@@ -9,7 +9,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import quick.click.security.commons.model.dto.AuthResponse;
-import quick.click.security.commons.model.dto.LoginRequest;
+import quick.click.security.commons.model.dto.UserLoginDto;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -24,12 +24,12 @@ class LoginControllerIntegrationTest {
     @Test
     void testAuthenticateUser_ValidCredentials() {
         // Create login request
-        LoginRequest loginRequest = null;
-        loginRequest.setEmail("test@example.com");
-        loginRequest.setPassword("password123");
+        UserLoginDto userLoginDto = null;
+        userLoginDto.setEmail("test@example.com");
+        userLoginDto.setPassword("password123");
 
         // Send POST request to /auth/login
-        ResponseEntity<AuthResponse> responseEntity = restTemplate.postForEntity("/auth/login", loginRequest, AuthResponse.class);
+        ResponseEntity<AuthResponse> responseEntity = restTemplate.postForEntity("/auth/login", userLoginDto, AuthResponse.class);
 
         // Verify the response
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -39,12 +39,12 @@ class LoginControllerIntegrationTest {
     @Test
     void testAuthenticateUser_InvalidCredentials() {
         // Create login request
-        LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setEmail("test@example.com");
-        loginRequest.setPassword("invalidpassword");
+        UserLoginDto userLoginDto = new UserLoginDto();
+        userLoginDto.setEmail("test@example.com");
+        userLoginDto.setPassword("invalidpassword");
 
         // Send POST request to /auth/login
-        ResponseEntity<AuthResponse> responseEntity = restTemplate.postForEntity("/auth/login", loginRequest, AuthResponse.class);
+        ResponseEntity<AuthResponse> responseEntity = restTemplate.postForEntity("/auth/login", userLoginDto, AuthResponse.class);
 
         // Verify the response
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());

@@ -1,4 +1,4 @@
-package quick.click.utils;
+package quick.click.config.factory;
 
 import quick.click.core.domain.model.User;
 import quick.click.core.enums.Role;

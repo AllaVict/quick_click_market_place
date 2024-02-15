@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import quick.click.core.domain.model.User;
 import quick.click.core.repository.UserRepository;
 import quick.click.commons.exeptions.ResourceNotFoundException;
-import quick.click.security.commons.model.UserPrincipal;
+import quick.click.security.commons.model.AuthenticatedUser;
 import quick.click.security.core.service.UserLoginService;
 
 @Service
@@ -32,7 +32,7 @@ public class UserLoginServiceImpl implements UserLoginService {
         final User user = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found with email: " + email));
 
-        return UserPrincipal.create(user);
+        return AuthenticatedUser.create(user);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class UserLoginServiceImpl implements UserLoginService {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("User", "id", id)
         );
-        return UserPrincipal.create(user);
+        return AuthenticatedUser.create(user);
     }
 
 }

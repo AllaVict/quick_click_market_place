@@ -10,26 +10,26 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class UserPrincipal implements UserDetails {
+public class AuthenticatedUser implements UserDetails {
     private final Long id;
     private final String email;
     private final String password;
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public UserPrincipal(final Long id, final String email, final String password,
-                         final Collection<? extends GrantedAuthority> authorities) {
+    public AuthenticatedUser(final Long id, final String email, final String password,
+                             final Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.authorities = authorities;
     }
 
-    public static UserPrincipal create(User user) {
+    public static AuthenticatedUser create(User user) {
         final List<GrantedAuthority> authorities = Stream.of(user.getRole())
                 .map(role -> new SimpleGrantedAuthority(role.name()))
                 .collect(Collectors.toList());
 
-        return new UserPrincipal(
+        return new AuthenticatedUser(
                 user.getId(),
                 user.getEmail(),
                 user.getPassword(),

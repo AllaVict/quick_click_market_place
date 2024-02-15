@@ -13,7 +13,7 @@ import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.core.domain.model.User;
 import quick.click.core.repository.UserRepository;
 import quick.click.security.commons.model.CurrentUser;
-import quick.click.security.commons.model.UserPrincipal;
+import quick.click.security.commons.model.AuthenticatedUser;
 
 import static quick.click.commons.util.WebUtil.getFullRequestUri;
 
@@ -29,13 +29,13 @@ public class UserAuthorizedController {
 
     @GetMapping("/user/me")
     @PreAuthorize("hasRole('ADMIN')")
-    public User getCurrentUser(@CurrentUser final UserPrincipal userPrincipal) {
+    public User getCurrentUser(@CurrentUser final AuthenticatedUser authenticatedUser) {
 
         LOGGER.debug("In getCurrentUser received POST request to with username {} logout successfully, " +
-                "request URI:[{}] ", userPrincipal.getUsername(), getFullRequestUri());
+                "request URI:[{}] ", authenticatedUser.getUsername(), getFullRequestUri());
 
-        return userRepository.findById(userPrincipal.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userPrincipal.getId()));
+        return userRepository.findById(authenticatedUser.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", authenticatedUser.getId()));
     }
 
     @PostMapping("/authorized")
