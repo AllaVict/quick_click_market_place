@@ -54,7 +54,7 @@ public class LoginController {
     }
 
     @PostMapping(LOGIN_URL)
-    public ResponseEntity<?> authenticateUser
+    public ResponseEntity<AuthResponse> authenticateUser
             (@Valid @RequestBody final UserLoginDto userLoginDto) {
 
         String token = UNAUTHORIZED;
@@ -103,7 +103,7 @@ public class LoginController {
 
         final String userName = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        if( userName == "anonymousUser"){
+        if( userName.equals("anonymousUser")){
             LOGGER.debug("In logout user was not login with username {} ", userName);
 
             return ResponseEntity.status(HttpStatus.OK).body("User was not login");

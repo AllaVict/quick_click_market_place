@@ -18,7 +18,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.client.HttpClientErrorException;
 import quick.click.config.factory.UserDtoFactory;
 import quick.click.core.domain.dto.UserReadDto;
 import quick.click.core.service.UserService;
