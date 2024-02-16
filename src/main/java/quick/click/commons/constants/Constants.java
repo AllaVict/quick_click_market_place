@@ -38,7 +38,7 @@ public final class Constants {
 
 		public static final String ACCESS_TOKEN_PREFIX = "Bearer ";
 
-		public static final String UNAUTHENTICATED = "unauthenticated";
+		public static final String UNAUTHORIZED = "unauthorized";
 
 		private Tokens() {
 		}

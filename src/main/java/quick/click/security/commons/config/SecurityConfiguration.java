@@ -82,12 +82,13 @@ public class SecurityConfiguration {
                         .permitAll()
                         .requestMatchers(
                                 matcher.pattern("/home"),
-                                matcher.pattern("/login"),
                                 matcher.pattern("/v1.0/auth/login"),
-                                matcher.pattern("/auth/*"),
+                                matcher.pattern("/v1.0/auth/logout"),
+                                matcher.pattern("/v1.0/auth/signup"),
                                 matcher.pattern("/oauth2/*"),
                                 matcher.pattern("/swagger-ui/*")
                         ).permitAll()
+
                         .anyRequest().authenticated()
                 )
                 .formLogin(formLogin -> formLogin.disable())

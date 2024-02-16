@@ -3,7 +3,6 @@ package quick.click.security.core.controller;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import org.apache.coyote.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +27,7 @@ import quick.click.security.commons.utils.TokenProvider;
 
 import static quick.click.commons.config.ApiVersion.VERSION_1_0;
 import static quick.click.commons.constants.Constants.Endpoints.*;
-import static quick.click.commons.constants.Constants.Tokens.UNAUTHENTICATED;
+import static quick.click.commons.constants.Constants.Tokens.UNAUTHORIZED;
 import static quick.click.security.core.controller.LoginController.BASE_URL;
 
 @RestController
@@ -58,7 +57,7 @@ public class LoginController {
     public ResponseEntity<?> authenticateUser
             (@Valid @RequestBody final UserLoginDto userLoginDto) {
 
-        String token = UNAUTHENTICATED;
+        String token = UNAUTHORIZED;
 
         try {
             final Authentication authentication = authenticationManager
@@ -76,22 +75,20 @@ public class LoginController {
 
             LOGGER.debug("In authenticateUser BadCredentialsException occurs during an attempt login " +
                     "with username {} ", userLoginDto.getEmail());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthResponse(token));
         }
 
-        return new ResponseEntity<>(new AuthResponse(token), HttpStatus.OK);
-
+        return ResponseEntity.ok().body(new AuthResponse(token));
     }
 
     @PostMapping(SIGNUP_URL)
-    public ResponseEntity<?> registerUser(@Valid @RequestBody UserSignupDto userSignUpDto) {
+    public ResponseEntity<ApiResponse> registerUser(@Valid @RequestBody UserSignupDto userSignUpDto) {
 
-            try {
-                if (userService.existsByEmail(userSignUpDto.getEmail())) {
-                    throw new BadRequestException("In registerUser Email address already in use.");
-                }
-            } catch (BadRequestException e) {
+        if(userService.existsByEmail(userSignUpDto.getEmail())){
 
-            }
+            return ResponseEntity.badRequest()
+                    .body(new ApiResponse(false, "Email is already exist!"));
+        }
 
         final UserReadDto result = userService.save(userSignUpDto);
 
@@ -106,11 +103,18 @@ public class LoginController {
 
         final String userName = SecurityContextHolder.getContext().getAuthentication().getName();
 
+        if( userName == "anonymousUser"){
+            LOGGER.debug("In logout user was not login with username {} ", userName);
+
+            return ResponseEntity.status(HttpStatus.OK).body("User was not login");
+        }
+
         LOGGER.debug("In logout received POST user logout request with username {} logout successfully, ", userName);
 
         request.logout();
 
-        return new ResponseEntity<>("User logout successfully with username " + userName, HttpStatus.OK);
+        return ResponseEntity.ok().body("User logout successfully with username " + userName);
+
     }
 
 }

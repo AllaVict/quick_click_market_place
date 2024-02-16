@@ -18,6 +18,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.client.HttpClientErrorException;
 import quick.click.config.factory.UserDtoFactory;
 import quick.click.core.domain.dto.UserReadDto;
 import quick.click.core.service.UserService;
@@ -32,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static quick.click.commons.constants.Constants.Tokens.UNAUTHENTICATED;
+import static quick.click.commons.constants.Constants.Tokens.UNAUTHORIZED;
 import static quick.click.config.factory.UserDtoFactory.createUserLoginDto;
 import static quick.click.config.factory.UserDtoFactory.createUserSignupDto;
 
@@ -110,8 +111,8 @@ class LoginControllerTest {
 
             ResponseEntity<?> responseEntity = loginController.authenticateUser(userLoginDto);
 
-            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-            assertEquals(new AuthResponse(UNAUTHENTICATED), responseEntity.getBody());
+            assertEquals(HttpStatus.UNAUTHORIZED, responseEntity.getStatusCode());
+            assertEquals(new AuthResponse(UNAUTHORIZED), responseEntity.getBody());
         }
 
     }
@@ -120,13 +121,23 @@ class LoginControllerTest {
     @DisplayName("When Register a User")
     class RegisterUserTests {
         @Test
-        void testRegisterUser_ValidCredentials() {
-            when(userService.existsByEmail(anyString())).thenReturn(true);
+        void testRegisterUser_validCredentials() {
+            when(userService.existsByEmail(anyString())).thenReturn(false);
             when(userService.save(userSignupDto)).thenReturn(userReadDto);
 
             ResponseEntity<?> responseEntity = loginController.registerUser(userSignupDto);
 
             assertEquals(new ApiResponse(true, "User registered successfully!"),
+                    responseEntity.getBody());
+        }
+
+        @Test
+        void testRegisterUser_withExitingEmail() {
+            when(userService.existsByEmail(anyString())).thenReturn(true);
+
+            ResponseEntity<?> responseEntity = loginController.registerUser(userSignupDto);
+
+            assertEquals(new ApiResponse(false, "Email is already exist!"),
                     responseEntity.getBody());
         }
 
@@ -146,6 +157,19 @@ class LoginControllerTest {
             verify(request, Mockito.times(1)).logout();
             assertEquals("User logout successfully with username test@example.com", responseEntity.getBody());
         }
+        @Test
+        void testLogout_noLoginWithResponseBadRequest() throws ServletException {
+            when(securityContext.getAuthentication()).thenReturn(authentication);
+            SecurityContextHolder.setContext(securityContext);
+             when(authentication.getName()).thenReturn("anonymousUser");
+
+            ResponseEntity<String> responseEntity = loginController.logout(request);
+
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+            verify(request, Mockito.times(0)).logout();
+            assertEquals("User was not login", responseEntity.getBody());
+        }
+
     }
 
 }
