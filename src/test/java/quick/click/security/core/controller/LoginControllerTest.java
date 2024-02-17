@@ -111,7 +111,7 @@ class LoginControllerTest {
             ResponseEntity<?> responseEntity = loginController.authenticateUser(userLoginDto);
 
             assertEquals(HttpStatus.UNAUTHORIZED, responseEntity.getStatusCode());
-            assertEquals(new AuthResponse(UNAUTHORIZED), responseEntity.getBody());
+            assertEquals("User has bad credentials and not "+UNAUTHORIZED, responseEntity.getBody());
         }
 
     }
@@ -160,7 +160,7 @@ class LoginControllerTest {
         void testLogout_noLoginWithResponseBadRequest() throws ServletException {
             when(securityContext.getAuthentication()).thenReturn(authentication);
             SecurityContextHolder.setContext(securityContext);
-             when(authentication.getName()).thenReturn("anonymousUser");
+            when(authentication.getName()).thenReturn("anonymousUser");
 
             ResponseEntity<String> responseEntity = loginController.logout(request);
 

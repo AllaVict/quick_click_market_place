@@ -54,10 +54,10 @@ public class LoginController {
     }
 
     @PostMapping(LOGIN_URL)
-    public ResponseEntity<AuthResponse> authenticateUser
+    public ResponseEntity<?> authenticateUser
             (@Valid @RequestBody final UserLoginDto userLoginDto) {
 
-        String token = UNAUTHORIZED;
+        final String token;
 
         try {
             final Authentication authentication = authenticationManager
@@ -75,7 +75,7 @@ public class LoginController {
 
             LOGGER.debug("In authenticateUser BadCredentialsException occurs during an attempt login " +
                     "with username {} ", userLoginDto.getEmail());
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthResponse(token));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User has bad credentials and not "+UNAUTHORIZED);
         }
 
         return ResponseEntity.ok().body(new AuthResponse(token));
@@ -103,7 +103,7 @@ public class LoginController {
 
         final String userName = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        if( userName.equals("anonymousUser")){
+        if(userName.equals("anonymousUser")){
             LOGGER.debug("In logout user was not login with username {} ", userName);
 
             return ResponseEntity.status(HttpStatus.OK).body("User was not login");

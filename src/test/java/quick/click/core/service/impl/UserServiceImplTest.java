@@ -42,7 +42,9 @@ class UserServiceImplTest {
     private static final String EMAIL =  "test@example.com";
 
     private static final String PASSWORD = "password";
+
     private UserSignupDto userSignupDto;
+
     private User user;
 
     @BeforeEach
@@ -61,6 +63,7 @@ class UserServiceImplTest {
 
         assertNotNull(result);
     }
+
 
     @Test
     void testFindById() {

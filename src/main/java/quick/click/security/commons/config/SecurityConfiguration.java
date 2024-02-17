@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -22,8 +23,9 @@ import quick.click.security.commons.utils.TokenAuthenticationFilter;
 import quick.click.security.commons.utils.TokenProvider;
 import quick.click.security.core.service.UserLoginService;
 
-@EnableWebSecurity
 @Configuration
+@EnableMethodSecurity
+@EnableWebSecurity
 public class SecurityConfiguration {
 
     private final UserLoginService userLoginService;
@@ -88,7 +90,8 @@ public class SecurityConfiguration {
                                 matcher.pattern("/oauth2/*"),
                                 matcher.pattern("/swagger-ui/*")
                         ).permitAll()
-
+                        .requestMatchers("/auth/admin").hasRole("ADMIN")
+                        .requestMatchers("/auth/user").hasRole("USER")
                         .anyRequest().authenticated()
                 )
                 .formLogin(formLogin -> formLogin.disable())

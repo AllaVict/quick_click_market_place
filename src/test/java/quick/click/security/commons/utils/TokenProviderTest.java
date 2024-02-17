@@ -24,7 +24,7 @@ import quick.click.config.factory.UserFactory;
 import static org.junit.jupiter.api.Assertions.*;
 
 @EnableConfigurationProperties
-@ContextConfiguration(classes = { AppProperties.class })
+@ContextConfiguration(classes = {AppProperties.class })
 @Extensions({
         @ExtendWith(SpringExtension.class),
         @ExtendWith(MockitoExtension.class)

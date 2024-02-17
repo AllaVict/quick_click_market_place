@@ -7,16 +7,28 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.client.MockMvcClientHttpRequestFactory;
 import org.springframework.test.web.servlet.MockMvc;
-import quick.click.config.annotation.IntegrationTest;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.WebApplicationContext;
 import quick.click.config.factory.UserDtoFactory;
 import quick.click.config.factory.WithMockAuthenticatedUser;
 import quick.click.core.domain.dto.UserReadDto;
@@ -26,9 +38,15 @@ import quick.click.security.commons.model.dto.UserSignupDto;
 import quick.click.security.commons.utils.TokenProvider;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.util.AssertionErrors.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static quick.click.commons.constants.Constants.Endpoints.*;
@@ -38,9 +56,8 @@ import static quick.click.config.factory.UserDtoFactory.createUserLoginDto;
 import static quick.click.config.factory.UserDtoFactory.createUserSignupDto;
 import static quick.click.security.core.controller.LoginController.BASE_URL;
 
-@IntegrationTest
 @WebMvcTest(LoginController.class)
-@AutoConfigureMockMvc()
+@DisplayName("LoginControllerIntegrationTest")
 class LoginControllerIntegrationTest {
 
     @Autowired
@@ -71,6 +88,17 @@ class LoginControllerIntegrationTest {
 
     private static final String EMAIL = "test@example.com";
 
+    @Autowired
+    private WebApplicationContext context;
+
+    @BeforeEach
+    public void setupMockMvc() {
+        mockMvc = MockMvcBuilders
+                .webAppContextSetup(context)
+                .apply(springSecurity())
+                .build();
+    }
+
     @BeforeEach
     public void setUp() {
         authentication = Mockito.mock(Authentication.class);
@@ -98,8 +126,9 @@ class LoginControllerIntegrationTest {
         }
 
         @Test
-        void testAuthenticateUser_shouldReturns_Unauthorized() throws Exception {
-            given(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).willReturn(null);
+        void testAuthenticateUser_shouldReturnsUnauthorized() throws Exception {
+            given(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                    .willReturn(null);
             given(tokenProvider.createToken(authentication)).willReturn(UNAUTHORIZED);
 
             mockMvc.perform(post(BASE_URL + LOGIN_URL)
@@ -137,9 +166,11 @@ class LoginControllerIntegrationTest {
                     .andExpect(status().isUnauthorized());
         }
     }
-        @Nested
-        @DisplayName("When user Logout")
-        class LogoutTests {
+
+
+    @Nested
+    @DisplayName("When user Logout")
+    class LogoutTests {
             @Test
             @WithMockAuthenticatedUser
             void testLogout_withResponseOk() throws Exception {
@@ -151,6 +182,15 @@ class LoginControllerIntegrationTest {
                         .andExpect(content().string(containsString("User logout successfully with username test@example.com")));
             }
 
+            @Test
+            @WithAnonymousUser
+            void testLogout_noLoginWithResponseOk() throws Exception {
+               given(SecurityContextHolder.getContext().getAuthentication().getName())
+                       .willReturn("anonymousUser");
+                   mockMvc.perform(post(BASE_URL + LOGOUT_URL)
+                                .with(anonymous())
+                                .with(csrf()))
+                        .andExpect(unauthenticated());
+            }
         }
-
-}
+ }
