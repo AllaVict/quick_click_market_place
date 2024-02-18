@@ -1,17 +1,13 @@
 package quick.click.config.factory;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import quick.click.core.domain.model.User;
 import quick.click.core.enums.Role;
 import quick.click.core.enums.Sex;
 
 import java.time.LocalDateTime;
 
-import static quick.click.core.enums.AuthProvider.LOCAL;
 import static quick.click.core.enums.Role.ROLE_USER;
 import static quick.click.core.enums.Sex.MALE;
-import static quick.click.core.enums.UserStatus.ACTIVE;
 
 public class UserFactory {
 
