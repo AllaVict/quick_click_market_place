@@ -26,7 +26,6 @@ import quick.click.security.commons.model.dto.AuthResponse;
 import quick.click.security.commons.model.dto.UserLoginDto;
 import quick.click.security.commons.model.dto.UserSignupDto;
 import quick.click.security.commons.utils.TokenProvider;
-import java.security.Principal;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -61,10 +60,7 @@ class LoginControllerTest {
     @Mock
     private UserService userService;
 
-    @Mock
-    private Principal principal;
-
-    private static final String INVALID_PASSWORD ="invalidpassword";
+    private static final String INVALID_PASSWORD ="invalid-password";
 
     private static final String EMAIL =  "test@example.com";
 
@@ -81,7 +77,6 @@ class LoginControllerTest {
         authentication = Mockito.mock(Authentication.class);
         request = Mockito.mock(HttpServletRequest.class);
         securityContext = Mockito.mock(SecurityContext.class);
-        principal = Mockito.mock(Principal.class);
         token = tokenProvider.createToken(authentication);
         userLoginDto = createUserLoginDto();
         userSignupDto = createUserSignupDto();
@@ -99,6 +94,7 @@ class LoginControllerTest {
 
             ResponseEntity<?> responseEntity = loginController.authenticateUser(userLoginDto);
 
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
             assertEquals(new AuthResponse(token), responseEntity.getBody());
         }
 
@@ -126,6 +122,7 @@ class LoginControllerTest {
 
             ResponseEntity<?> responseEntity = loginController.registerUser(userSignupDto);
 
+            assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
             assertEquals(new ApiResponse(true, "User registered successfully!"),
                     responseEntity.getBody());
         }
@@ -136,6 +133,7 @@ class LoginControllerTest {
 
             ResponseEntity<?> responseEntity = loginController.registerUser(userSignupDto);
 
+            assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
             assertEquals(new ApiResponse(false, "Email is already exist!"),
                     responseEntity.getBody());
         }

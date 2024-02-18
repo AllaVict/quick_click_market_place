@@ -10,9 +10,9 @@ public class UserDtoFactory {
 
     private static final long USER_ID = 101L;
 
-    private static final String JHON = "Jhon";
+    private static final String JOHN = "John";
 
-    private static final String JHONSON = "Johnson";
+    private static final String JOHNSON = "Johnson";
 
     private static final String EMAIL =  "test@example.com";
 
@@ -30,7 +30,7 @@ public class UserDtoFactory {
     }
     public static UserSignupDto createUserSignupDto() {
         final UserSignupDto userSignupDto = new UserSignupDto();
-        userSignupDto.setName(JHON);
+        userSignupDto.setName(JOHN);
         userSignupDto.setEmail(EMAIL);
         userSignupDto.setPassword(PASSWORD);
         return userSignupDto;
@@ -39,7 +39,7 @@ public class UserDtoFactory {
     public static UserReadDto createUserReadDto() {
         final UserReadDto userReadDto = new UserReadDto();
         userReadDto.setId(USER_ID);
-        userReadDto.setFirstName(JHON);
+        userReadDto.setFirstName(JOHN);
         userReadDto.setEmail(EMAIL);
         return userReadDto;
     }

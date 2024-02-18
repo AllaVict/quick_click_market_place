@@ -1,19 +1,25 @@
 package quick.click.config.factory;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import quick.click.core.domain.model.User;
 import quick.click.core.enums.Role;
 import quick.click.core.enums.Sex;
 
 import java.time.LocalDateTime;
 
+import static quick.click.core.enums.AuthProvider.LOCAL;
+import static quick.click.core.enums.Role.ROLE_USER;
 import static quick.click.core.enums.Sex.MALE;
+import static quick.click.core.enums.UserStatus.ACTIVE;
 
 public class UserFactory {
 
     private static final long USER_ID = 101L;
-    private static final String JHON = "Jhon";
 
-    private static final String JHONSON = "Johnson";
+    private static final String JOHN = "John";
+
+    private static final String JOHNSON = "Johnson";
 
     private static final String EMAIL =  "test@example.com";
 
@@ -38,11 +44,11 @@ public class UserFactory {
     }
 
     public static User createUser() {
-        return createUserWithRole(Role.ROLE_USER);
+        return createUserWithRole(ROLE_USER);
     }
 
     public static User createUserWithRole(final Role role) {
-        final User user = createUser(USER_ID, JHON, JHONSON, MALE, EMAIL, PASSWORD);
+        final User user = createUser(USER_ID, JOHN, JOHNSON, MALE, EMAIL, PASSWORD);
         user.setRole(role);
 
         return user;
