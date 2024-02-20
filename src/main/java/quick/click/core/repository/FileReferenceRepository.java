@@ -18,4 +18,6 @@ public interface FileReferenceRepository extends JpaRepository<FileReference, Lo
 
     boolean existsByUuid(UUID uuid);
 
+    Optional<FileReference> findByFileUrl(String url);
+
 }

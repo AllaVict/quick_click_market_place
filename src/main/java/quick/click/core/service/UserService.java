@@ -1,30 +1,16 @@
 package quick.click.core.service;
 
-import quick.click.core.domain.model.User;
-
-import java.util.List;
+import quick.click.core.domain.dto.UserReadDto;
+import quick.click.security.commons.model.dto.UserSignupDto;
 
 public interface UserService {
 
-    List<User> findAll();
+    UserReadDto save(UserSignupDto userSignupDto);
 
-    User save(User user);
 
-    void update(User user);
+    UserReadDto findById(Long userId);
 
-    User findById(Long userId);
+    boolean existsByEmail(String email);
 
-    /**
-     *Completely deletes user record
-     * @return {@code true} if operation was successful, {@code false} if user can not be completely deleted
-     * 	according to his role.
-     */
-
-    boolean completelyDeleteById(Long userId);
-    /**
-     *  Clear all information about user and set user's status to 'DELETED'.
-     */
-
-    void deleteByIdComplete(Long userId);
 
 }
