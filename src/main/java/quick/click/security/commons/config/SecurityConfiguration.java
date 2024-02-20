@@ -82,8 +82,8 @@ public class SecurityConfiguration {
                         .permitAll()
                         .requestMatchers(
                                 matcher.pattern("/home"),
-                                matcher.pattern("/login"),
                                 matcher.pattern("/v1.0/auth/login"),
+                                matcher.pattern("/v1.0/auth/logout"),
                                 matcher.pattern("/auth/*"),
                                 matcher.pattern("/oauth2/*"),
                                 matcher.pattern("/swagger-ui/*")

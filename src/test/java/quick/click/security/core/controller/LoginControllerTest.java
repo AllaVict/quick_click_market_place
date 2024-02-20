@@ -18,11 +18,9 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import quick.click.core.service.UserService;
 import quick.click.security.commons.model.dto.AuthResponse;
 import quick.click.security.commons.model.dto.UserLoginDto;
 import quick.click.security.commons.utils.TokenProvider;
-import java.security.Principal;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
