@@ -1,6 +1,7 @@
 package quick.click.config.factory;
 
 import quick.click.core.domain.model.User;
+import quick.click.core.enums.AuthProvider;
 import quick.click.core.enums.Role;
 import quick.click.core.enums.Sex;
 
@@ -46,7 +47,12 @@ public class UserFactory {
     public static User createUserWithRole(final Role role) {
         final User user = createUser(USER_ID, JOHN, JOHNSON, MALE, EMAIL, PASSWORD);
         user.setRole(role);
-
         return user;
     }
+    public static User createUserWithGoogle() {
+        final User user = createUser(USER_ID, JOHN, JOHNSON, MALE, EMAIL, PASSWORD);
+        user.setProvider(AuthProvider.GOOGLE);
+        return user;
+    }
+
 }
