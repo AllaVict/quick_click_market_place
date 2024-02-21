@@ -16,7 +16,7 @@ import quick.click.core.repository.FileReferenceRepository;
 import quick.click.core.repository.UserRepository;
 import quick.click.security.commons.model.AuthenticatedUser;
 import quick.click.security.commons.model.dto.OAuth2UserInfo;
-import quick.click.security.commons.model.dto.OAuth2UserInfoFactory;
+import quick.click.security.commons.utils.OAuth2UserInfoFactory;
 
 import java.util.Optional;
 
