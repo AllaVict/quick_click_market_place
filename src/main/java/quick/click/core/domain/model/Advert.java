@@ -32,13 +32,11 @@ public class Advert extends BaseEntity {
     @Column(name = "phone")
     private String phone;
 
-    //@Size(max = 50)
     @Column(name = "price")
-    private Float price;
+    private Double price;
 
-   // @Size(max = 50)
     @Column(name = "first_price")
-    private Float first_Price;
+    private Double firstPrice;
 
     @Column(name = "first_price_displayed")
     private boolean firstPriceDisplayed;
@@ -111,23 +109,23 @@ public class Advert extends BaseEntity {
         this.phone = phone;
     }
 
-    public Float getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(Float price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
-    public Float getFirst_Price() {
-        return first_Price;
+    public Double getFirstPrice() {
+        return firstPrice;
     }
 
-    public void setFirst_Price(Float first_Price) {
-        this.first_Price = first_Price;
+    public void setFirstPrice(Double firstPrice) {
+        this.firstPrice = firstPrice;
     }
 
-    public boolean isFirstPriceDisplayed() {
+    public boolean getFirstPriceDisplayed() {
         return firstPriceDisplayed;
     }
 
@@ -172,12 +170,12 @@ public class Advert extends BaseEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Advert advert = (Advert) o;
-        return firstPriceDisplayed == advert.firstPriceDisplayed && Objects.equals(id, advert.id) && Objects.equals(title, advert.title) && Objects.equals(description, advert.description) && category == advert.category && status == advert.status && Objects.equals(phone, advert.phone) && Objects.equals(price, advert.price) && Objects.equals(first_Price, advert.first_Price) && currency == advert.currency && Objects.equals(address, advert.address) && Objects.equals(image, advert.image) && Objects.equals(user, advert.user);
+        return firstPriceDisplayed == advert.firstPriceDisplayed && Objects.equals(id, advert.id) && Objects.equals(title, advert.title) && Objects.equals(description, advert.description) && category == advert.category && status == advert.status && Objects.equals(phone, advert.phone) && Objects.equals(price, advert.price) && Objects.equals(firstPrice, advert.firstPrice) && currency == advert.currency && Objects.equals(address, advert.address) && Objects.equals(image, advert.image) && Objects.equals(user, advert.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, description, category, status, phone, price, first_Price, firstPriceDisplayed, currency, address, image, user);
+        return Objects.hash(id, title, description, category, status, phone, price, firstPrice, firstPriceDisplayed, currency, address, image, user);
     }
 
     @Override
@@ -190,7 +188,7 @@ public class Advert extends BaseEntity {
                 ", status=" + status +
                 ", phone='" + phone + '\'' +
                 ", price=" + price +
-                ", first_Price=" + first_Price +
+                ", first_Price=" + firstPrice +
                 ", firstPriceDisplayed=" + firstPriceDisplayed +
                 ", currency=" + currency +
                 ", address='" + address + '\'' +
