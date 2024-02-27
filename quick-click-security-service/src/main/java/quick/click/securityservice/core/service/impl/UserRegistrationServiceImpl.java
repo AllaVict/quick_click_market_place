@@ -12,8 +12,8 @@ import quick.click.advertservice.core.enums.AuthProvider;
 import quick.click.advertservice.core.enums.Role;
 import quick.click.advertservice.core.enums.UserStatus;
 import quick.click.advertservice.core.repository.UserRepository;
-import quick.click.advertservice.security.commons.model.dto.UserSignupDto;
-import quick.click.advertservice.security.core.service.UserRegistrationService;
+import quick.click.securityservice.commons.model.dto.UserSignupDto;
+import quick.click.securityservice.core.service.UserRegistrationService;
 
 import java.time.LocalDateTime;
 

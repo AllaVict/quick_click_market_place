@@ -1,4 +1,4 @@
-package quick.click.advertservice.security.core.controller;
+package quick.click.securityservice.core.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,16 +28,17 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import quick.click.advertservice.core.domain.dto.UserReadDto;
-import quick.click.advertservice.factory.UserDtoFactory;
-import quick.click.advertservice.factory.WithMockAuthenticatedUser;
-import quick.click.advertservice.security.commons.model.dto.UserLoginDto;
-import quick.click.advertservice.security.commons.model.dto.UserSignupDto;
-import quick.click.advertservice.security.commons.utils.TokenProvider;
-import quick.click.advertservice.security.core.service.UserRegistrationService;
+import quick.click.securityservice.commons.model.dto.UserLoginDto;
+import quick.click.securityservice.commons.model.dto.UserSignupDto;
+import quick.click.securityservice.commons.utils.TokenProvider;
+import quick.click.securityservice.core.service.UserRegistrationService;
+import quick.click.securityservice.factory.UserDtoFactory;
+import quick.click.securityservice.factory.WithMockAuthenticatedUser;
+
 import static quick.click.advertservice.commons.constants.Constants.Endpoints.*;
 import static quick.click.advertservice.commons.constants.Constants.Tokens.UNAUTHORIZED;
 import static quick.click.advertservice.core.controller.AdvertSearchController.BASE_URL;
-import static quick.click.advertservice.factory.UserDtoFactory.*;
+
 
 @WebMvcTest(LoginController.class)
 @DisplayName("LoginControllerIntegrationTest")
@@ -86,8 +87,8 @@ class LoginControllerIntegrationTest {
     public void setUp() {
         authentication = Mockito.mock(Authentication.class);
         token = tokenProvider.createToken(authentication);
-        userLoginDto = createUserLoginDto();
-        userSignupDto = createUserSignupDto();
+        userLoginDto = UserDtoFactory.createUserLoginDto();
+        userSignupDto = UserDtoFactory.createUserSignupDto();
         userReadDto = UserDtoFactory.createUserReadDto();
     }
 

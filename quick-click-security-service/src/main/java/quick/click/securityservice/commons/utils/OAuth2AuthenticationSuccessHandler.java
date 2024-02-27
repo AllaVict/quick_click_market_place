@@ -9,7 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
-import quick.click.advertservice.security.commons.config.AppProperties;
+import quick.click.securityservice.commons.config.AppProperties;
 
 import java.io.IOException;
 import java.net.URI;

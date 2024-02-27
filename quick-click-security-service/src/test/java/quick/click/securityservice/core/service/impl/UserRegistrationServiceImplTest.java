@@ -1,5 +1,5 @@
 
-package quick.click.advertservice.core.service.impl;
+package quick.click.securityservice.core.service.impl;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -9,14 +9,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import quick.click.advertservice.commons.exeptions.ResourceNotFoundException;
 import quick.click.advertservice.core.converter.TypeConverter;
 import quick.click.advertservice.core.domain.dto.UserReadDto;
 import quick.click.advertservice.core.domain.model.User;
 import quick.click.advertservice.core.repository.UserRepository;
-import quick.click.advertservice.security.commons.model.dto.UserSignupDto;
-import quick.click.advertservice.security.core.service.impl.UserRegistrationServiceImpl;
 
 import java.util.Optional;
 
@@ -57,9 +54,9 @@ class UserRegistrationServiceImplTest {
 
     @BeforeEach
     public void setUp() {
-        user = createUser();
-        userSignupDto = createUserSignupDto();
-        userReadDto = createUserReadDto();
+        user = UserFactory.createUser();
+        userSignupDto = UserDtoFactory.createUserSignupDto();
+        userReadDto = UserDtoFactory.createUserReadDto();
     }
 
     @Nested

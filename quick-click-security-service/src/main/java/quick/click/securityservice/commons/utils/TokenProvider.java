@@ -1,11 +1,12 @@
 package quick.click.securityservice.commons.utils;
 
+import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import quick.click.advertservice.security.commons.config.AppProperties;
-import quick.click.advertservice.security.commons.model.AuthenticatedUser;
+import quick.click.securityservice.commons.config.AppProperties;
+import quick.click.securityservice.commons.model.AuthenticatedUser;
 
 import java.util.Date;
 

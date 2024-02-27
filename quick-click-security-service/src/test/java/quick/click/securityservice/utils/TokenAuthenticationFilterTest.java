@@ -1,4 +1,4 @@
-package quick.click.advertservice.security.commons.utils;
+package quick.click.securityservice.utils;
 
 import io.jsonwebtoken.io.IOException;
 import jakarta.servlet.FilterChain;
@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -59,8 +60,8 @@ class TokenAuthenticationFilterTest {
     @BeforeEach
     void setUp() {
         tokenAuthenticationFilter = new TokenAuthenticationFilter(tokenProvider, userLoginService);
-        userDetails = mock(UserDetails.class);
-        authentication = mock(UsernamePasswordAuthenticationToken.class);
+        userDetails = Mockito.mock(UserDetails.class);
+        authentication = Mockito.mock(UsernamePasswordAuthenticationToken.class);
     }
 
     @Test

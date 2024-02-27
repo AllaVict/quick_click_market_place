@@ -6,9 +6,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import quick.click.advertservice.core.domain.dto.UserReadDto;
-import quick.click.advertservice.security.commons.model.AuthenticatedUser;
-import quick.click.advertservice.security.commons.model.CurrentUser;
-import quick.click.advertservice.security.core.service.UserRegistrationService;
+import quick.click.securityservice.commons.model.AuthenticatedUser;
+import quick.click.securityservice.commons.model.CurrentUser;
+import quick.click.securityservice.core.service.UserRegistrationService;
 
 import static quick.click.advertservice.commons.util.WebUtil.getFullRequestUri;
 

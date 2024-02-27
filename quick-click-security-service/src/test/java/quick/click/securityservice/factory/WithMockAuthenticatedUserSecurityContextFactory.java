@@ -1,4 +1,4 @@
-package quick.click.advertservice.factory;
+package quick.click.securityservice.factory;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -6,7 +6,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithSecurityContextFactory;
-import quick.click.advertservice.security.commons.model.AuthenticatedUser;
+import quick.click.securityservice.commons.model.AuthenticatedUser;
 
 import java.util.stream.Collectors;
 import java.util.stream.Stream;

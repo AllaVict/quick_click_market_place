@@ -1,4 +1,4 @@
-package quick.click.advertservice.security.commons.utils;
+package quick.click.securityservice.utils;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

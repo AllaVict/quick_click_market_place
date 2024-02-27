@@ -1,4 +1,4 @@
-package quick.click.advertservice.factory;
+package quick.click.securityservice.factory;
 
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.test.context.support.WithSecurityContext;

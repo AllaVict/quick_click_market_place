@@ -18,12 +18,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import quick.click.advertservice.core.domain.dto.UserReadDto;
-import quick.click.advertservice.security.commons.model.dto.ApiResponse;
-import quick.click.advertservice.security.commons.model.dto.AuthResponse;
-import quick.click.advertservice.security.commons.model.dto.UserLoginDto;
-import quick.click.advertservice.security.commons.model.dto.UserSignupDto;
-import quick.click.advertservice.security.commons.utils.TokenProvider;
-import quick.click.advertservice.security.core.service.UserRegistrationService;
+import quick.click.securityservice.commons.model.dto.ApiResponse;
+import quick.click.securityservice.commons.model.dto.AuthResponse;
+import quick.click.securityservice.commons.model.dto.UserLoginDto;
+import quick.click.securityservice.commons.model.dto.UserSignupDto;
+import quick.click.securityservice.commons.utils.TokenProvider;
+import quick.click.securityservice.core.service.UserRegistrationService;
 
 import static quick.click.advertservice.commons.constants.Constants.Endpoints.*;
 import static quick.click.advertservice.commons.constants.Constants.Tokens.UNAUTHORIZED;

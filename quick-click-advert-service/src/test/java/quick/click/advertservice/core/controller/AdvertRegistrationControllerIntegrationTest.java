@@ -18,12 +18,9 @@ import quick.click.advertservice.core.domain.dto.AdvertReadDto;
 import quick.click.advertservice.core.domain.model.Advert;
 import quick.click.advertservice.core.domain.model.User;
 import quick.click.advertservice.core.service.AdvertRegistrationService;
-import quick.click.advertservice.factory.WithMockAuthenticatedUser;
 
 
 import static org.mockito.BDDMockito.given;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static quick.click.advertservice.commons.config.ApiVersion.VERSION_1_0;
@@ -57,13 +54,6 @@ class AdvertRegistrationControllerIntegrationTest {
     private AdvertReadDto advertReadDto;
 
     private AdvertCreateDto advertCreateDto;
-    @BeforeEach
-    public void setupMockMvc() {
-        mockMvc = MockMvcBuilders
-                .webAppContextSetup(context)
-                .apply(springSecurity())
-                .build();
-    }
 
     @BeforeEach
     void setUp() {
@@ -78,12 +68,11 @@ class AdvertRegistrationControllerIntegrationTest {
     class RegisterAdvertTests {
 
         @Test
-        @WithMockAuthenticatedUser
         void testRegisterAdvert_ShouldReturnAdvertReadDTO() throws Exception {
             given(advertRegistrationService.registerAdvert(advertCreateDto)).willReturn(advertReadDto);
 
             mockMvc.perform(post(VERSION_1_0 + ADVERTS_URL)
-                            .with(csrf())
+                            //with(csrf())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(advertCreateDto)))
                     .andExpect(status().isCreated());

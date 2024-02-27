@@ -1,4 +1,4 @@
-package quick.click.advertservice.security.core.controller;
+package quick.click.securityservice.core.controller;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,21 +19,21 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import quick.click.advertservice.core.domain.dto.UserReadDto;
-import quick.click.advertservice.factory.UserDtoFactory;
-import quick.click.advertservice.security.commons.model.dto.ApiResponse;
-import quick.click.advertservice.security.commons.model.dto.AuthResponse;
-import quick.click.advertservice.security.commons.model.dto.UserLoginDto;
-import quick.click.advertservice.security.commons.model.dto.UserSignupDto;
-import quick.click.advertservice.security.commons.utils.TokenProvider;
-import quick.click.advertservice.security.core.service.UserRegistrationService;
+import quick.click.securityservice.commons.model.dto.ApiResponse;
+import quick.click.securityservice.commons.model.dto.AuthResponse;
+import quick.click.securityservice.commons.model.dto.UserLoginDto;
+import quick.click.securityservice.commons.model.dto.UserSignupDto;
+import quick.click.securityservice.commons.utils.TokenProvider;
+import quick.click.securityservice.core.service.UserRegistrationService;
+import quick.click.securityservice.factory.UserDtoFactory;
+
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static quick.click.advertservice.commons.constants.Constants.Tokens.UNAUTHORIZED;
-import static quick.click.advertservice.factory.UserDtoFactory.createUserLoginDto;
-import static quick.click.advertservice.factory.UserDtoFactory.createUserSignupDto;
+
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("LoginControllerTest")
@@ -78,8 +78,8 @@ class LoginControllerTest {
         request = Mockito.mock(HttpServletRequest.class);
         securityContext = Mockito.mock(SecurityContext.class);
         token = tokenProvider.createToken(authentication);
-        userLoginDto = createUserLoginDto();
-        userSignupDto = createUserSignupDto();
+        userLoginDto = UserDtoFactory.createUserLoginDto();
+        userSignupDto = UserDtoFactory.createUserSignupDto();
         userReadDto = UserDtoFactory.createUserReadDto();
     }
 

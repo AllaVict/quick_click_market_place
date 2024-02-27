@@ -1,8 +1,9 @@
 package quick.click.securityservice.commons.utils;
 
 import quick.click.advertservice.core.enums.AuthProvider;
-import quick.click.advertservice.security.commons.model.dto.GoogleOAuth2UserInfo;
-import quick.click.advertservice.security.commons.model.dto.OAuth2UserInfo;
+import quick.click.securityservice.commons.exceptions.OAuth2AuthenticationProcessingException;
+import quick.click.securityservice.commons.model.dto.GoogleOAuth2UserInfo;
+import quick.click.securityservice.commons.model.dto.OAuth2UserInfo;
 
 import java.util.Map;
 

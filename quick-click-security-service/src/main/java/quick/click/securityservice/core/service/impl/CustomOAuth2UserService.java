@@ -13,9 +13,10 @@ import quick.click.advertservice.core.domain.model.User;
 import quick.click.advertservice.core.enums.AuthProvider;
 import quick.click.advertservice.core.repository.FileReferenceRepository;
 import quick.click.advertservice.core.repository.UserRepository;
-import quick.click.advertservice.security.commons.model.AuthenticatedUser;
-import quick.click.advertservice.security.commons.model.dto.OAuth2UserInfo;
-import quick.click.advertservice.security.commons.utils.OAuth2UserInfoFactory;
+import quick.click.securityservice.commons.exceptions.OAuth2AuthenticationProcessingException;
+import quick.click.securityservice.commons.model.AuthenticatedUser;
+import quick.click.securityservice.commons.model.dto.OAuth2UserInfo;
+import quick.click.securityservice.commons.utils.OAuth2UserInfoFactory;
 
 import java.util.Optional;
 
