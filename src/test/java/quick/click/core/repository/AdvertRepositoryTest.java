@@ -52,7 +52,7 @@ class AdvertRepositoryTest {
             @Test
             @Transactional
             void testFindAdvertById_shouldReturnExistingAdvertWithGivenId() {
-               Advert saveAdvert =   advertRepository.save(advert);
+                Advert saveAdvert =   advertRepository.save(advert);
                 Optional<Advert> foundAdvert = advertRepository.findAdvertById(saveAdvert.getId());
                 assertTrue(foundAdvert.isPresent());
                 assertEquals(advert.getId(), foundAdvert.get().getId());

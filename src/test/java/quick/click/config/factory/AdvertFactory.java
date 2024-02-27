@@ -15,9 +15,9 @@ public class AdvertFactory {
 
     private static final String DESCRIPTION = "description a toy Black Cat";
 
-    private static final Float PRICE = 100.00F;
+    private static final Double PRICE = 100.00;
 
-    private static final Float FIRST_PRICE = 80.00F;
+    private static final Double FIRST_PRICE = 80.00;
 
     private static final String ADDRESS = "Lviv";
 
@@ -30,14 +30,13 @@ public class AdvertFactory {
 
     public static Advert createAdvert(User user) {
         final Advert advert = new Advert();
-      //  advert.setId(ADVERT_ID);
         advert.setTitle(TITLE);
         advert.setDescription(DESCRIPTION);
         advert.setCategory(Category.TOYS);
         advert.setStatus(AdvertStatus.PUBLISHED);
         advert.setPhone(PHONE);
         advert.setPrice(PRICE);
-        advert.setFirst_Price(FIRST_PRICE);
+        advert.setFirstPrice(FIRST_PRICE);
         advert.setFirstPriceDisplayed(true);
         advert.setCurrency(Currency.EUR);
         advert.setAddress(ADDRESS);
