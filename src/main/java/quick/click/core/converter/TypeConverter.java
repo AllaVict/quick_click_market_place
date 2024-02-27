@@ -17,4 +17,5 @@ public interface TypeConverter<S, T> {
 			.map(this::convert)
 			.toList();
 	}
+
 }

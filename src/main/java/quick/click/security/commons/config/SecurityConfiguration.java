@@ -76,7 +76,6 @@ public class SecurityConfiguration {
         return new TokenAuthenticationFilter(tokenProvider, userLoginService);
     }
 
-
     /*
       By default, Spring OAuth2 uses HttpSessionOAuth2AuthorizationRequestRepository to save
       the authorization request. But, since our service is stateless, we can't save it in
@@ -113,9 +112,8 @@ public class SecurityConfiguration {
                                 matcher.pattern("/v1.0/auth/login"),
                                 matcher.pattern("/v1.0/auth/logout"),
                                 matcher.pattern("/v1.0/auth/signup"),
-                                matcher.pattern("/auth/login"),
-                                matcher.pattern("/auth/logout"),
-                                matcher.pattern("/auth/signup"),
+                                matcher.pattern("/v1.0/adverts"),
+                                matcher.pattern("/v1.0/adverts/*"),
                                 matcher.pattern("/auth/login"),
                                 matcher.pattern("/auth/logout"),
                                 matcher.pattern("/auth/signup"),
