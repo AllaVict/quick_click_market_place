@@ -32,14 +32,16 @@ public class AdvertSearchController {
     }
 
     /**
-     * GET   http://localhost:8080/v1.0/adverts/1
+     * GET   http://localhost:8081/v1.0/adverts/1
      @GetMapping("/adverts/{id}")
      public AdvertReadDto findById(@PathVariable("id") Long id) {
      */
-    @GetMapping(BASE_URL+"/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<AdvertReadDto> findAdvertById(@PathVariable("id") Long advertId) {
 
-      //  final AdvertReadDto advertReadDto = Optional.ofNullable(advertSearchService.findAdvertById(advertId))
+        LOGGER.debug("In findAdvertById received GET find the advert successfully with id {} "+advertId);
+
+        //  final AdvertReadDto advertReadDto = Optional.ofNullable(advertSearchService.findAdvertById(advertId))
       //          .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         final AdvertReadDto advertReadDto = advertSearchService.findAdvertById(advertId);
         LOGGER.debug("In findAdvertById received GET find the advert successfully with id {} ", advertReadDto.getId());
@@ -49,12 +51,14 @@ public class AdvertSearchController {
     }
 
     /**
-     GET    http://localhost:8080/v1.0/adverts
+     GET    http://localhost:8081/v1.0/adverts
      @GetMapping("/adverts")
      public ResponseEntity<List<AdvertReadDto>> findAll(){
      */
-    @GetMapping(BASE_URL)
+    @GetMapping()
     public ResponseEntity<List<AdvertReadDto>> findAllAdverts() {
+
+        LOGGER.debug("In findAllAdvert received GET find all advert successfully ");
 
        // final List<AdvertReadDto> advertReadDtoList = Optional.ofNullable(advertSearchService.findAllAdverts())
        //         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));

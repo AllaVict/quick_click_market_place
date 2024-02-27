@@ -25,6 +25,7 @@ import quick.click.securityservice.commons.model.dto.UserSignupDto;
 import quick.click.securityservice.commons.utils.TokenProvider;
 import quick.click.securityservice.core.service.UserRegistrationService;
 
+import static quick.click.advertservice.commons.config.ApiVersion.VERSION_1_0;
 import static quick.click.advertservice.commons.constants.Constants.Endpoints.*;
 import static quick.click.advertservice.commons.constants.Constants.Tokens.UNAUTHORIZED;
 
@@ -35,9 +36,9 @@ public class LoginController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
 
-   // public static final String BASE_URL = VERSION_1_0 + AUTH_URL;
+   public static final String BASE_URL = VERSION_1_0 + AUTH_URL;
 
-    public static final String BASE_URL = AUTH_URL;
+    //public static final String BASE_URL = AUTH_URL;
 
     private final AuthenticationManager authenticationManager;
 
