@@ -9,19 +9,20 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import quick.click.advertservice.commons.exeptions.ResourceNotFoundException;
 import quick.click.advertservice.core.converter.TypeConverter;
 import quick.click.advertservice.core.domain.dto.UserReadDto;
 import quick.click.advertservice.core.domain.model.User;
 import quick.click.advertservice.core.repository.UserRepository;
+import quick.click.securityservice.commons.model.dto.UserSignupDto;
+import quick.click.securityservice.factory.UserDtoFactory;
+import quick.click.securityservice.factory.UserFactory;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static quick.click.advertservice.factory.UserDtoFactory.createUserReadDto;
-import static quick.click.advertservice.factory.UserDtoFactory.createUserSignupDto;
-import static quick.click.advertservice.factory.UserFactory.createUser;
 
 
 @ExtendWith(MockitoExtension.class)

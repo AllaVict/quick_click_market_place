@@ -13,7 +13,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import quick.click.advertservice.commons.exeptions.ResourceNotFoundException;
 import quick.click.advertservice.core.domain.model.User;
 import quick.click.advertservice.core.repository.UserRepository;
-import quick.click.advertservice.factory.UserFactory;
+import quick.click.securityservice.factory.UserFactory;
+
 
 import java.util.Optional;
 

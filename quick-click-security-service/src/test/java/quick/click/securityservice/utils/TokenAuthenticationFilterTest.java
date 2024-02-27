@@ -14,7 +14,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import quick.click.advertservice.security.core.service.UserLoginService;
+import quick.click.securityservice.commons.utils.TokenAuthenticationFilter;
+import quick.click.securityservice.commons.utils.TokenProvider;
+import quick.click.securityservice.core.service.UserLoginService;
 
 import static org.mockito.Mockito.*;
 import static quick.click.advertservice.commons.constants.Constants.Headers.AUTHORIZATION_HEADER;

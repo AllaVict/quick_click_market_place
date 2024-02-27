@@ -17,9 +17,11 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import quick.click.advertservice.core.enums.Role;
-import quick.click.advertservice.factory.UserFactory;
-import quick.click.advertservice.security.commons.config.AppProperties;
-import quick.click.advertservice.security.commons.model.AuthenticatedUser;
+import quick.click.securityservice.commons.config.AppProperties;
+import quick.click.securityservice.commons.model.AuthenticatedUser;
+import quick.click.securityservice.commons.utils.TokenProvider;
+import quick.click.securityservice.factory.UserFactory;
+
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
