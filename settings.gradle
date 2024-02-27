@@ -1,1 +1,3 @@
-rootProject.name = 'quickclick'
+rootProject.name = 'quick_click_market_place'
+
+include 'quick-click-advert-service', 'quick-click-security-service'
