@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import quick.click.core.domain.model.User;
 import quick.click.core.repository.UserRepository;
-import quick.click.commons.exeptions.ResourceNotFoundException;
+import quick.click.commons.exceptions.ResourceNotFoundException;
 import quick.click.security.commons.model.AuthenticatedUser;
 import quick.click.security.core.service.UserLoginService;
 

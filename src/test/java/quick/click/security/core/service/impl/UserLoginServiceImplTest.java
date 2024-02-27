@@ -15,7 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import quick.click.commons.exeptions.ResourceNotFoundException;
+import quick.click.commons.exceptions.ResourceNotFoundException;
 import quick.click.core.domain.model.User;
 import quick.click.core.repository.UserRepository;
 import quick.click.config.factory.UserFactory;

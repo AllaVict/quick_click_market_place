@@ -33,9 +33,9 @@ public class LoginController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
 
-   // public static final String BASE_URL = VERSION_1_0 + AUTH_URL;
+    public static final String BASE_URL = VERSION_1_0 + AUTH_URL;
 
-    public static final String BASE_URL = AUTH_URL;
+   // public static final String BASE_URL = AUTH_URL;
 
     private final AuthenticationManager authenticationManager;
 

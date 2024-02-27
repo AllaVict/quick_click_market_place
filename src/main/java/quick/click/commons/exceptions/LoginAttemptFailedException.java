@@ -1,4 +1,4 @@
-package quick.click.commons.exeptions;
+package quick.click.commons.exceptions;
 
 import org.springframework.security.core.AuthenticationException;
 

@@ -1,4 +1,4 @@
-package quick.click.commons.exeptions;
+package quick.click.commons.exceptions;
 
 public abstract class QCApplicationException extends RuntimeException {
 

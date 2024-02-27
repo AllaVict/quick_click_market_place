@@ -1,7 +1,7 @@
 package quick.click.security.commons.utils;
 
 
-import quick.click.commons.exeptions.OAuth2AuthenticationProcessingException;
+import quick.click.commons.exceptions.OAuth2AuthenticationProcessingException;
 import quick.click.core.enums.AuthProvider;
 import quick.click.security.commons.model.dto.GoogleOAuth2UserInfo;
 import quick.click.security.commons.model.dto.OAuth2UserInfo;
