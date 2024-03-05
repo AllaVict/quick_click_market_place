@@ -17,6 +17,8 @@ public class AuthenticatedUser implements UserDetails {
     private final String password;
     private final Collection<? extends GrantedAuthority> authorities;
 
+    private Map<String, Object> attributes;
+
     public AuthenticatedUser(final Long id,
                              final String email,
                              final String password,
