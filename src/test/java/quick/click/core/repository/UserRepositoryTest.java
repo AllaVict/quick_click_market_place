@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import quick.click.config.factory.UserFactory;
 import quick.click.core.domain.model.User;
+import quick.click.config.factory.UserFactory;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +19,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class UserRepositoryTest {
+    @Autowired
+    private AdvertRepository advertRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -102,6 +104,7 @@ class UserRepositoryTest {
 
         @Test
         void testFindAllUser_shouldReturnUserList() {
+            advertRepository.deleteAll();
             userRepository.deleteAll();
             userRepository.save(user);
             List<User> userList = userRepository.findAll();
@@ -112,6 +115,7 @@ class UserRepositoryTest {
 
         @Test
         void testFindAllUser_shouldReturnEmptyUserList() {
+            advertRepository.deleteAll();
             userRepository.deleteAll();
             List<User> userList = userRepository.findAll();
 

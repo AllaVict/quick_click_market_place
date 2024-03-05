@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import quick.click.core.domain.dto.UserReadDto;
 import quick.click.security.commons.model.AuthenticatedUser;
-import quick.click.security.commons.model.CurrentUser;
 import quick.click.security.core.service.UserRegistrationService;
 
 import static quick.click.commons.util.WebUtil.getFullRequestUri;
@@ -35,7 +34,7 @@ public class UserAuthorizedController {
 
     @GetMapping("/auth/admin")
     @PreAuthorize("hasRole('ADMIN')")
-    public UserReadDto getAdminUser(@CurrentUser final AuthenticatedUser authenticatedUser) {
+    public UserReadDto getAdminUser(@AuthenticationPrincipal final AuthenticatedUser authenticatedUser) {
 
         LOGGER.debug("In getAdminUser received POST request to with username {}, " +
                 "request URI:[{}] ", authenticatedUser.getUsername(), getFullRequestUri());
