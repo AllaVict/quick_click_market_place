@@ -21,10 +21,10 @@ import org.springframework.web.context.WebApplicationContext;
 import quick.click.config.factory.UserDtoFactory;
 import quick.click.config.factory.WithMockAuthenticatedUser;
 import quick.click.core.domain.dto.UserReadDto;
-import quick.click.core.service.UserService;
 import quick.click.security.commons.model.dto.UserLoginDto;
 import quick.click.security.commons.model.dto.UserSignupDto;
 import quick.click.security.commons.utils.TokenProvider;
+import quick.click.security.core.service.UserRegistrationService;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
@@ -34,12 +34,10 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static quick.click.commons.constants.Constants.Endpoints.*;
 import static quick.click.commons.constants.Constants.Tokens.UNAUTHORIZED;
-import static quick.click.config.factory.UserDtoFactory.createUserLoginDto;
-
-import static quick.click.config.factory.UserDtoFactory.createUserSignupDto;
 import static quick.click.security.core.controller.LoginController.BASE_URL;
 
 @WebMvcTest(LoginController.class)
@@ -62,7 +60,7 @@ class LoginControllerIntegrationTest {
     private Authentication authentication;
 
     @MockBean
-    private UserService userService;
+    private UserRegistrationService userRegistrationService;
 
     private String token;
 
@@ -89,8 +87,8 @@ class LoginControllerIntegrationTest {
     public void setUp() {
         authentication = Mockito.mock(Authentication.class);
         token = tokenProvider.createToken(authentication);
-        userLoginDto = createUserLoginDto();
-        userSignupDto = createUserSignupDto();
+        userLoginDto = UserDtoFactory.createUserLoginDto();
+        userSignupDto = UserDtoFactory.createUserSignupDto();
         userReadDto = UserDtoFactory.createUserReadDto();
     }
 
@@ -131,8 +129,8 @@ class LoginControllerIntegrationTest {
         @Test
         @WithMockAuthenticatedUser
         void testRegisterUser_validCredentials() throws Exception {
-            given(userService.existsByEmail(userSignupDto.getEmail())).willReturn(false);
-            given(userService.save(userSignupDto)).willReturn(userReadDto);
+            given(userRegistrationService.existsByEmail(userSignupDto.getEmail())).willReturn(false);
+            given(userRegistrationService.save(userSignupDto)).willReturn(userReadDto);
 
             mockMvc.perform(post(BASE_URL + SIGNUP_URL)
                             .with(csrf())
@@ -143,7 +141,7 @@ class LoginControllerIntegrationTest {
 
         @Test
         void testRegisterUser_withExitingEmail() throws Exception {
-            given(userService.existsByEmail(userSignupDto.getEmail())).willReturn(true);
+            given(userRegistrationService.existsByEmail(userSignupDto.getEmail())).willReturn(true);
 
             mockMvc.perform(post(BASE_URL + SIGNUP_URL)
                             .with(csrf())
@@ -152,7 +150,6 @@ class LoginControllerIntegrationTest {
                     .andExpect(status().isUnauthorized());
         }
     }
-
 
     @Nested
     @DisplayName("When user Logout")

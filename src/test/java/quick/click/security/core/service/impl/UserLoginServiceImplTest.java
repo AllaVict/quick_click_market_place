@@ -1,10 +1,5 @@
 package quick.click.security.core.service.impl;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
-
-import java.util.Optional;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -16,9 +11,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import quick.click.commons.exeptions.ResourceNotFoundException;
+import quick.click.config.factory.UserFactory;
 import quick.click.core.domain.model.User;
 import quick.click.core.repository.UserRepository;
-import quick.click.config.factory.UserFactory;
+
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("UserLoginServiceImplTest")

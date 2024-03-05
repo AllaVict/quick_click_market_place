@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.core.domain.model.User;
 import quick.click.core.repository.UserRepository;
-import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.security.commons.model.AuthenticatedUser;
 import quick.click.security.core.service.UserLoginService;
 
@@ -20,7 +20,7 @@ public class UserLoginServiceImpl implements UserLoginService {
     private final UserRepository userRepository;
 
     @Autowired
-    public UserLoginServiceImpl(final UserRepository userRepository) {
+    public UserLoginServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

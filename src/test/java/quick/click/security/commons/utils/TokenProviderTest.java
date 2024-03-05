@@ -65,29 +65,6 @@ class TokenProviderTest {
     }
 
     @Nested
-    @DisplayName("When Create Token")
-    class CreateTokenTests {
-        @Test
-        void testCreateToken_ReturnsToken() {
-
-        }
-
-    }
-
-    @Nested
-    @DisplayName("When get User Id From Token")
-    class GetUserIdFromTokenTests {
-        @Test
-        void testGetUserIdFromToken_ReturnsUserId() {
-
-        }
-        @Test
-        void testGetUserIdFromToken_ReturnsNoUserId() {
-
-        }
-    }
-
-    @Nested
     @DisplayName("When Validate Token")
     class ValidateTokenTests {
         @Test

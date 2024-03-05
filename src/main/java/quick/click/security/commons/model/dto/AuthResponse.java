@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import static quick.click.commons.constants.Constants.Tokens.TOKEN_TYPE;
 
+
 public class AuthResponse {
     private String accessToken;
     private String tokenType = TOKEN_TYPE;

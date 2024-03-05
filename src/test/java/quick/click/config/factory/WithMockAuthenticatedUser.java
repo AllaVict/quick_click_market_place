@@ -4,7 +4,6 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.test.context.support.WithSecurityContext;
 import quick.click.core.enums.LocaleType;
 import quick.click.core.enums.Role;
-import quick.click.security.commons.model.AuthenticatedUser;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
