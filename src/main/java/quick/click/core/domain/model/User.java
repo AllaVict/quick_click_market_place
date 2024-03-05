@@ -3,10 +3,7 @@ package quick.click.core.domain.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import quick.click.core.domain.BaseEntity;
-import quick.click.core.enums.LocaleType;
-import quick.click.core.enums.Role;
-import quick.click.core.enums.Sex;
-import quick.click.core.enums.UserStatus;
+import quick.click.core.enums.*;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -54,6 +51,9 @@ public class User extends BaseEntity {
     protected FileReference avatar;
     @Column(name = "last_active_date")
     private LocalDateTime lastActiveDate;
+    @Column
+    @Enumerated(EnumType.STRING)
+    private AuthProvider provider;
 
     public User() {
 
@@ -66,6 +66,21 @@ public class User extends BaseEntity {
             final String email,
             final String password
     ) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.sex = sex;
+        this.email = email;
+        this.password = password;
+    }
+    public User(
+            final Long id,
+            final String firstName,
+            final String lastName,
+            final Sex sex,
+            final String email,
+            final String password
+    ) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.sex = sex;
@@ -185,6 +200,15 @@ public class User extends BaseEntity {
         this.lastActiveDate = lastActiveDate;
     }
 
+
+    public AuthProvider getProvider() {
+        return provider;
+    }
+
+    public void setProvider(AuthProvider provider) {
+        this.provider = provider;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(id, firstName, lastName, password, email);
@@ -220,6 +244,7 @@ public class User extends BaseEntity {
                 ", emailConfirmed=" + emailConfirmed +
                 ", status=" + status +
                 ", locale=" + locale +
+                ", provider=" + provider +
                 '}';
     }
 }

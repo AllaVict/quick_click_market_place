@@ -36,6 +36,9 @@ public class FileReference extends BaseEntity implements Serializable {
     @NotNull
     private FileType fileType;
 
+    @Column(name = "file_url")
+    private String fileUrl;
+
     public FileReference() {
     }
 
@@ -76,6 +79,14 @@ public class FileReference extends BaseEntity implements Serializable {
 
     public void setFileType(FileType fileType) {
         this.fileType = fileType;
+    }
+
+    public String getFileUrl() {
+        return fileUrl;
+    }
+
+    public void setFileUrl(String fileUrl) {
+        this.fileUrl = fileUrl;
     }
 
     @Override

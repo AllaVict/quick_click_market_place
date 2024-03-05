@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.core.domain.model.User;
 import quick.click.core.enums.Role;
 import quick.click.core.enums.Sex;
@@ -12,6 +11,7 @@ import quick.click.core.enums.UserStatus;
 import quick.click.core.repository.FileReferenceRepository;
 import quick.click.core.repository.UserRepository;
 import quick.click.core.service.UserService;
+import quick.click.commons.exeptions.ResourceNotFoundException;
 
 import java.util.List;
 
@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(final Long userId) {
         return userRepository.findById(userId).orElseThrow(() ->
-                new ResourceNotFoundException("Cannot find user with id: " + userId));
+                new ResourceNotFoundException("User", "id", userId));
     }
 
     @Override

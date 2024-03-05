@@ -1,25 +1,26 @@
-package quick.click.commons.config;
+package quick.click.security.commons.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 import quick.click.commons.constants.Constants;
-import quick.click.core.service.UserLoginService;
-
-import static org.springframework.security.config.Customizer.withDefaults;
+import quick.click.security.commons.utils.RestAuthenticationEntryPoint;
+import quick.click.security.commons.utils.TokenAuthenticationFilter;
+import quick.click.security.commons.utils.TokenProvider;
+import quick.click.security.core.service.UserLoginService;
 
 @EnableWebSecurity
 @Configuration
@@ -27,9 +28,13 @@ public class SecurityConfiguration {
 
     private final UserLoginService userLoginService;
 
+    private final TokenProvider tokenProvider;
+
     @Autowired
-    public SecurityConfiguration(UserLoginService userLoginService) {
+    public SecurityConfiguration(final UserLoginService userLoginService,
+                                 final TokenProvider tokenProvider) {
         this.userLoginService = userLoginService;
+        this.tokenProvider = tokenProvider;
     }
 
     @Bean
@@ -39,15 +44,19 @@ public class SecurityConfiguration {
 
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
-        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        final DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         daoAuthenticationProvider.setUserDetailsService(userLoginService);
         return daoAuthenticationProvider;
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager(final AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
+    }
+    @Bean
+    public TokenAuthenticationFilter tokenAuthenticationFilter() {
+        return new TokenAuthenticationFilter(tokenProvider, userLoginService);
     }
 
     @Bean
@@ -56,34 +65,39 @@ public class SecurityConfiguration {
 
         http
                 .csrf(csrf -> csrf.disable())
+                .httpBasic(httpBasic -> httpBasic.disable())
                 .authenticationProvider(daoAuthenticationProvider())
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations(),
-                                matcher.pattern("/css/**"))
+                                matcher.pattern("/"),
+                                matcher.pattern("/error"),
+                                matcher.pattern("/favicon.ico"),
+                                matcher.pattern("/*/*.png"),
+                                matcher.pattern("/*/*.gif"),
+                                matcher.pattern("/*/*.svg"),
+                                matcher.pattern("/*/*.jpg"),
+                                matcher.pattern("/*/*.html"),
+                                matcher.pattern("/*/*.css"),
+                                matcher.pattern("/*/*.js"))
                         .permitAll()
                         .requestMatchers(
                                 matcher.pattern("/home"),
-                                matcher.pattern("/login"),
-                                matcher.pattern("/v1.0/login"),
-                                matcher.pattern("/swagger-ui/**")
+                                matcher.pattern("/v1.0/auth/login"),
+                                matcher.pattern("/v1.0/auth/logout"),
+                                matcher.pattern("/auth/*"),
+                                matcher.pattern("/oauth2/*"),
+                                matcher.pattern("/swagger-ui/*")
                         ).permitAll()
-                        // .requestMatchers("/v1.0/**").hasAuthority("ADMIN")
                         .anyRequest().authenticated()
                 )
-                .formLogin(login -> login
-                        .loginPage(Constants.Endpoints.LOGIN_URL)
-                        .usernameParameter("username").passwordParameter("password")
-                        .defaultSuccessUrl("/for-signed-users")
-                        .permitAll()
-                )
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout")
-                )
+                .formLogin(formLogin -> formLogin.disable())
                 .exceptionHandling(exception -> exception
                         .accessDeniedPage(Constants.Endpoints.LOGIN_URL)
-                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
-                ).httpBasic(withDefaults()); // must be
+                        .authenticationEntryPoint(new RestAuthenticationEntryPoint())
+                )
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+        ;
 
         return http.build();
     }
