@@ -1,5 +1,5 @@
 CREATE TABLE adverts (
-    id BIGINT NOT NULL  AUTO_INCREMENT ,
+    id BIGSERIAL NOT NULL ,
     title VARCHAR(100) NOT NULL,
     description VARCHAR(500) NOT NULL,
     category VARCHAR(50) NOT NULL,

@@ -3,6 +3,7 @@ package quick.click.advertservice.core.controller;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,7 +33,7 @@ public class AdvertRegistrationController  {
 
     /**
      * POST   http://localhost:8080/v1.0/adverts
-     @GetMapping("/adverts/{id}")
+     @PostMapping("/adverts/{id}")
      ResponseEntity<AdvertReadDto> createProduct(@RequestBody AdvertCreateDto request)
      {
      "title": "Big dog",
@@ -44,15 +45,19 @@ public class AdvertRegistrationController  {
      "firstPriceDisplayed": "true"
      "currency": "EUR"
      "address": "Dania"
+     "user_id": "1"
      }
      ????????????????
-     private Long userId;
      images
      */
-    @PostMapping(BASE_URL)
-    public  ResponseEntity<AdvertReadDto> registerAdvert(@Valid @RequestBody AdvertCreateDto advertCreateDto) {
 
-        final AdvertReadDto advertReadDto = advertRegistrationService.registerAdvert(advertCreateDto);
+    @PostMapping()
+    public  ResponseEntity<?> registerAdvert(@Valid @RequestBody final AdvertCreateDto advertCreateDto) {
+
+        if (advertCreateDto == null || advertCreateDto.getTitle() == null || advertCreateDto.getDescription() == null)
+         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please fill all fields");
+
+       final AdvertReadDto advertReadDto = advertRegistrationService.registerAdvert(advertCreateDto);
 
         LOGGER.debug("In registerAdvert received POST advert register successfully with id {} ", advertReadDto.getId());
 

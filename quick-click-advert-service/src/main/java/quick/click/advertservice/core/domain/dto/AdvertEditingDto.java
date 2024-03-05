@@ -22,7 +22,6 @@ public class AdvertEditingDto {
 
     private String phone;
 
-
     private Double price;
 
     private Double firstPrice;
@@ -32,6 +31,8 @@ public class AdvertEditingDto {
     private Currency currency;
 
     private String address;
+
+    private boolean favorite;
 
     private Long userId;
 
@@ -103,7 +104,7 @@ public class AdvertEditingDto {
         this.firstPrice = firstPrice;
     }
 
-    public boolean getFirstPriceDisplayed() {
+    public boolean isFirstPriceDisplayed() {
         return firstPriceDisplayed;
     }
 
@@ -139,6 +140,14 @@ public class AdvertEditingDto {
         return createdDate;
     }
 
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
+    }
+
     public void setCreatedDate(LocalDateTime createdDate) {
         this.createdDate = createdDate;
     }
@@ -156,17 +165,17 @@ public class AdvertEditingDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AdvertEditingDto that = (AdvertEditingDto) o;
-        return firstPriceDisplayed == that.firstPriceDisplayed && Objects.equals(id, that.id) && Objects.equals(title, that.title) && Objects.equals(description, that.description) && category == that.category && status == that.status && Objects.equals(phone, that.phone) && Objects.equals(price, that.price) && Objects.equals(firstPrice, that.firstPrice) && currency == that.currency && Objects.equals(address, that.address) && Objects.equals(userId, that.userId) && Objects.equals(createdDate, that.createdDate) && Objects.equals(updatedDate, that.updatedDate);
+        return firstPriceDisplayed == that.firstPriceDisplayed && favorite == that.favorite && Objects.equals(id, that.id) && Objects.equals(title, that.title) && Objects.equals(description, that.description) && category == that.category && status == that.status && Objects.equals(phone, that.phone) && Objects.equals(price, that.price) && Objects.equals(firstPrice, that.firstPrice) && currency == that.currency && Objects.equals(address, that.address) && Objects.equals(userId, that.userId) && Objects.equals(createdDate, that.createdDate) && Objects.equals(updatedDate, that.updatedDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, description, category, status, phone, price, firstPrice, firstPriceDisplayed, currency, address, userId, createdDate, updatedDate);
+        return Objects.hash(id, title, description, category, status, phone, price, firstPrice, firstPriceDisplayed, currency, address, favorite, userId, createdDate, updatedDate);
     }
 
     @Override
     public String toString() {
-        return "AvdertEditingDto{" +
+        return "AdvertEditingDto{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
@@ -174,13 +183,14 @@ public class AdvertEditingDto {
                 ", status=" + status +
                 ", phone='" + phone + '\'' +
                 ", price=" + price +
-                ", first_Price=" + firstPrice +
+                ", firstPrice=" + firstPrice +
                 ", firstPriceDisplayed=" + firstPriceDisplayed +
                 ", currency=" + currency +
                 ", address='" + address + '\'' +
+                ", favorite=" + favorite +
                 ", userId=" + userId +
                 ", createdDate=" + createdDate +
-                ", updateDate=" + updatedDate +
+                ", updatedDate=" + updatedDate +
                 '}';
     }
 }

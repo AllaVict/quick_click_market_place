@@ -16,13 +16,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import quick.click.securityservice.commons.utils.TokenAuthenticationFilter;
 import quick.click.securityservice.commons.utils.TokenProvider;
+import quick.click.securityservice.config.IntegrationTest;
 import quick.click.securityservice.core.service.UserLoginService;
 
 import static org.mockito.Mockito.*;
 import static quick.click.advertservice.commons.constants.Constants.Headers.AUTHORIZATION_HEADER;
 import static quick.click.advertservice.commons.constants.Constants.Tokens.ACCESS_TOKEN_PREFIX;
 
-//@IntegrationTest
+@IntegrationTest
 @WebMvcTest(controllers = TokenAuthenticationFilterTest.class)
 @DisplayName("TokenAuthenticationFilterTest")
 class TokenAuthenticationFilterTest {

@@ -10,7 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import quick.click.advertservice.commons.exeptions.ResourceNotFoundException;
+import quick.click.advertservice.commons.exceptions.ResourceNotFoundException;
 import quick.click.advertservice.core.converter.TypeConverter;
 import quick.click.advertservice.core.domain.dto.UserReadDto;
 import quick.click.advertservice.core.domain.model.User;
@@ -23,7 +23,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("UserServiceImplTest")

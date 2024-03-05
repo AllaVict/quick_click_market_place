@@ -1,4 +1,4 @@
-package quick.click.securityservice.annotation;
+package quick.click.advertservice.config;
 
 import org.springframework.boot.test.context.SpringBootTest;
 

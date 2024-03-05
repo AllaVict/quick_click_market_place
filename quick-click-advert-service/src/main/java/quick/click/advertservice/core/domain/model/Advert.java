@@ -50,16 +50,20 @@ public class Advert extends BaseEntity {
     @Column(name = "address")
     private String address;
 
-    @OneToOne(cascade = {CascadeType.ALL}, orphanRemoval = true)
-    @JoinColumn(name = "image_id")
-    protected FileReference image;
+    @Column(name = "favorite")
+    private boolean favorite;
 
-    @OneToOne(cascade = {CascadeType.ALL}, orphanRemoval = true)
+   // @OneToOne(cascade = {CascadeType.ALL}, orphanRemoval = true)
+ //   @JoinColumn(name = "image_id")
+    @Column(name = "image_id")
+    protected Long image;
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
-    protected User user;
+    private User user;
 
     public Advert() {
-
+       //Empty
     }
 
 
@@ -127,7 +131,7 @@ public class Advert extends BaseEntity {
         this.firstPrice = firstPrice;
     }
 
-    public boolean getFirstPriceDisplayed() {
+    public boolean isFirstPriceDisplayed() {
         return firstPriceDisplayed;
     }
 
@@ -151,11 +155,19 @@ public class Advert extends BaseEntity {
         this.address = address;
     }
 
-    public FileReference getImage() {
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
+    }
+
+    public Long getImage() {
         return image;
     }
 
-    public void setImage(FileReference image) {
+    public void setImage(Long image) {
         this.image = image;
     }
 
@@ -172,12 +184,12 @@ public class Advert extends BaseEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Advert advert = (Advert) o;
-        return firstPriceDisplayed == advert.firstPriceDisplayed && Objects.equals(id, advert.id) && Objects.equals(title, advert.title) && Objects.equals(description, advert.description) && category == advert.category && status == advert.status && Objects.equals(phone, advert.phone) && Objects.equals(price, advert.price) && Objects.equals(firstPrice, advert.firstPrice) && currency == advert.currency && Objects.equals(address, advert.address) && Objects.equals(image, advert.image) && Objects.equals(user, advert.user);
+        return firstPriceDisplayed == advert.firstPriceDisplayed && favorite == advert.favorite && Objects.equals(id, advert.id) && Objects.equals(title, advert.title) && Objects.equals(description, advert.description) && category == advert.category && status == advert.status && Objects.equals(phone, advert.phone) && Objects.equals(price, advert.price) && Objects.equals(firstPrice, advert.firstPrice) && currency == advert.currency && Objects.equals(address, advert.address) && Objects.equals(image, advert.image) && Objects.equals(user, advert.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, description, category, status, phone, price, firstPrice, firstPriceDisplayed, currency, address, image, user);
+        return Objects.hash(id, title, description, category, status, phone, price, firstPrice, firstPriceDisplayed, currency, address, favorite, image, user);
     }
 
     @Override
@@ -190,10 +202,11 @@ public class Advert extends BaseEntity {
                 ", status=" + status +
                 ", phone='" + phone + '\'' +
                 ", price=" + price +
-                ", first_Price=" + firstPrice +
+                ", firstPrice=" + firstPrice +
                 ", firstPriceDisplayed=" + firstPriceDisplayed +
                 ", currency=" + currency +
                 ", address='" + address + '\'' +
+                ", favorite=" + favorite +
                 ", image=" + image +
                 ", user=" + user +
                 '}';

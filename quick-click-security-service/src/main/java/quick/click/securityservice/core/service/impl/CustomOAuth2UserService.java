@@ -8,7 +8,7 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import quick.click.advertservice.commons.exeptions.ResourceNotFoundException;
+import quick.click.advertservice.commons.exceptions.ResourceNotFoundException;
 import quick.click.advertservice.core.domain.model.User;
 import quick.click.advertservice.core.enums.AuthProvider;
 import quick.click.advertservice.core.repository.FileReferenceRepository;

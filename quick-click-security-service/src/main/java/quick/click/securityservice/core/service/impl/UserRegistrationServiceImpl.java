@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import quick.click.advertservice.commons.exeptions.ResourceNotFoundException;
+import quick.click.advertservice.commons.exceptions.ResourceNotFoundException;
 import quick.click.advertservice.core.converter.TypeConverter;
 import quick.click.advertservice.core.domain.dto.UserReadDto;
 import quick.click.advertservice.core.domain.model.User;

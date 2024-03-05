@@ -31,11 +31,14 @@ dependencies {
     implementation 'org.springframework.security:spring-security-oauth2-client:6.2.1'
     implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
     implementation project(path: ':quick-click-advert-service')
+    testImplementation project(path: ':quick-click-advert-service')
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.5'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.testcontainers:postgresql:1.19.6'
+
 }
 
 tasks.named('test') {

@@ -1,4 +1,4 @@
-package quick.click.advertservice.commons.exeptions;
+package quick.click.advertservice.commons.exceptions;
 
 public abstract class QCApplicationException extends RuntimeException {
 

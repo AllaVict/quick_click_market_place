@@ -28,6 +28,24 @@ public class AdvertFactory {
     private AdvertFactory() {
     }
 
+    public static Advert createAdvert() {
+        final Advert advert = new Advert();
+        advert.setId(ADVERT_ID);
+        advert.setTitle(TITLE);
+        advert.setDescription(DESCRIPTION);
+        advert.setCategory(Category.TOYS);
+        advert.setStatus(AdvertStatus.PUBLISHED);
+        advert.setPhone(PHONE);
+        advert.setPrice(PRICE);
+        advert.setFirstPrice(FIRST_PRICE);
+        advert.setFirstPriceDisplayed(true);
+        advert.setCurrency(Currency.EUR);
+        advert.setAddress(ADDRESS);
+        advert.setUser(UserFactory.createUser());
+        advert.setCreatedDate(CREATED_DATE);
+        return advert;
+    }
+
     public static Advert createAdvert(User user) {
         final Advert advert = new Advert();
         advert.setTitle(TITLE);
@@ -44,5 +62,4 @@ public class AdvertFactory {
         advert.setCreatedDate(CREATED_DATE);
         return advert;
     }
-
 }

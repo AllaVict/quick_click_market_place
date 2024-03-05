@@ -29,7 +29,7 @@ public class AdvertEditingController {
     }
 
     /**
-     PUT   http://localhost:8080/v1.0/adverts/3
+     PUT   http://localhost:8081/v1.0/adverts/3
      @PutMapping("/adverts/{id}")
      public ResponseEntity<AdvertReadDto> updateProduct(@PathVariable("id") Long id, @RequestBody AdvertEditingDto request)
      {
@@ -38,10 +38,11 @@ public class AdvertEditingController {
      "category": "TOYS",
      "status": "PUBLISHED",
      "phone": "+380507778855",
-     "price": "100.00"
-     "firstPriceDisplayed": "true"
-     "currency": "EUR"
-     "address": "Dania"
+     "price": "100.00",
+     "firstPriceDisplayed": "true",
+     "currency": "EUR",
+     "address": "Dania",
+     "userId": "1"
      }
      ????????????????
      private Long userId;
@@ -49,11 +50,15 @@ public class AdvertEditingController {
      */
 
     @PutMapping("{id}")
-    public ResponseEntity<AdvertReadDto> editAdvert(@PathVariable("id") Long advertId, @Valid @RequestBody final AdvertEditingDto advertEditingDto) {
+    public ResponseEntity<?> editAdvert(@PathVariable("id") final Long advertId,
+                                                    @Valid @RequestBody final AdvertEditingDto advertEditingDto) {
+
+        if (advertId == null || advertEditingDto==null || advertEditingDto.getTitle() == null || advertEditingDto.getDescription() == null)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please fill all fields");
 
         final AdvertReadDto advertReadDto = advertEditingService.editAdvert(advertId, advertEditingDto);
 
-        LOGGER.debug("In editAdvert received POST advert edit successfully with id {} ", advertReadDto.getId());
+        LOGGER.debug("In editAdvert received POST advert edit successfully with id {} ",advertId);
 
         return ResponseEntity.status(HttpStatus.OK).body(advertReadDto);
     }
@@ -63,8 +68,8 @@ public class AdvertEditingController {
      @DeleteMapping("/adverts/{id}")
      public ResponseEntity<DeleteProductResponse> deleteProduct(@PathVariable("id") Long id)
      */
-    @DeleteMapping (BASE_URL+"{id}")
-    public ResponseEntity<String> deleteAdvert(@PathVariable("id") Long advertId) {
+    @DeleteMapping ("{id}")
+    public ResponseEntity<String> deleteAdvert(@PathVariable("id") final Long advertId) {
 
        advertEditingService.deleteAdvert(advertId);
 

@@ -7,20 +7,25 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.server.ResponseStatusException;
 import quick.click.advertservice.core.domain.dto.AdvertReadDto;
 import quick.click.advertservice.core.domain.model.Advert;
-import quick.click.advertservice.core.domain.model.User;
+import quick.click.advertservice.core.repository.AdvertRepository;
 import quick.click.advertservice.core.service.AdvertSearchService;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 import static quick.click.advertservice.factory.AdvertDtoFactory.createAdvertReadDto;
 import static quick.click.advertservice.factory.AdvertFactory.createAdvert;
-import static quick.click.advertservice.factory.UserDtoFactory.createUserReadDto;
-import static quick.click.advertservice.factory.UserFactory.createUser;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("AdvertSearchController")
@@ -31,30 +36,26 @@ class AdvertSearchControllerTest {
     @Mock
     private AdvertSearchService advertSearchService;
 
+    @Mock
+    private AdvertRepository advertRepository;
+
     private static final long ADVERT_ID = 101L;
 
     private Advert advert;
 
     private AdvertReadDto advertReadDto;
 
+    @Spy
+    private List<AdvertReadDto> advertReadDtoList;
+
     @BeforeEach
     void setUp() {
-        User user = createUser();
-        advert = createAdvert(user);
-        advertReadDto = createAdvertReadDto(createUserReadDto());
+        advert = createAdvert();
+        advertReadDto = createAdvertReadDto();
     }
-    @Test
-    void findAdvertByIdAndStatus() {    }
-    /**
-     @GetMapping()
-     public ResponseEntity<AdvertReadDto> findAdvertById(@Valid @RequestBody Long storyId) {
-     final AdvertReadDto advertReadDto = advertSearchService.findAdvertById(storyId);
-     LOGGER.debug("In findAdvertById received GET advert find successfully with id {} ", advertReadDto.getId());
-     return ResponseEntity.status(HttpStatus.OK).body(advertReadDto);
-     }
-     */
+
     @Nested
-    @DisplayName("When Register a Advert")
+    @DisplayName("When Find Advert By Id")
     class FindAdvertByIdTests {
         @Test
         void testFindAdvertById_ShouldReturnAdvertReadDTO() {
@@ -67,11 +68,39 @@ class AdvertSearchControllerTest {
         }
 
         @Test
-        void testFindAdvertById_Should() {
+        void testFindAdvertById_shouldThrowException() {
+
+            assertThrows(ResponseStatusException.class,
+                        () ->advertSearchController.findAdvertById(ADVERT_ID));
+            }
+        }
+
+    @Nested
+    @DisplayName("When Find All Adverts")
+    class FindAllAdvertsTests {
+
+        @Test
+        void testFindAllAdverts_shouldReturnAllAdverts() {
+            advertReadDtoList = List.of(advertReadDto, advertReadDto);
+            when(advertSearchService.findAllAdverts()).thenReturn(advertReadDtoList);
+
+            ResponseEntity<?> responseEntity = advertSearchController.findAllAdverts();
+
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+            assertEquals(advertReadDtoList, responseEntity.getBody());
+        }
+
+        @Test
+        void testFindAllAdverts_shouldThrowException() {
+            advertReadDtoList =new ArrayList<>();
+            when(advertSearchService.findAllAdverts()).thenReturn(advertReadDtoList);
+
+            ResponseEntity<?> responseEntity = advertSearchController.findAllAdverts();
+
+            assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
 
         }
 
     }
 
 }
-

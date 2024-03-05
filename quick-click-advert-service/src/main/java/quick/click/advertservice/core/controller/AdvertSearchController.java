@@ -8,10 +8,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import quick.click.advertservice.core.domain.dto.AdvertReadDto;
 import quick.click.advertservice.core.service.AdvertSearchService;
 
 import java.util.List;
+import java.util.Optional;
 
 import static quick.click.advertservice.commons.config.ApiVersion.VERSION_1_0;
 import static quick.click.advertservice.commons.constants.Constants.Endpoints.ADVERTS_URL;
@@ -37,13 +39,11 @@ public class AdvertSearchController {
      public AdvertReadDto findById(@PathVariable("id") Long id) {
      */
     @GetMapping("/{id}")
-    public ResponseEntity<AdvertReadDto> findAdvertById(@PathVariable("id") Long advertId) {
+    public ResponseEntity<AdvertReadDto> findAdvertById(@PathVariable("id") final Long advertId) {
 
-        LOGGER.debug("In findAdvertById received GET find the advert successfully with id {} "+advertId);
+          final AdvertReadDto advertReadDto = Optional.ofNullable(advertSearchService.findAdvertById(advertId))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        //  final AdvertReadDto advertReadDto = Optional.ofNullable(advertSearchService.findAdvertById(advertId))
-      //          .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        final AdvertReadDto advertReadDto = advertSearchService.findAdvertById(advertId);
         LOGGER.debug("In findAdvertById received GET find the advert successfully with id {} ", advertReadDto.getId());
 
         return ResponseEntity.status(HttpStatus.OK).body(advertReadDto);
@@ -56,15 +56,13 @@ public class AdvertSearchController {
      public ResponseEntity<List<AdvertReadDto>> findAll(){
      */
     @GetMapping()
-    public ResponseEntity<List<AdvertReadDto>> findAllAdverts() {
+    public ResponseEntity<?> findAllAdverts() {
 
-        LOGGER.debug("In findAllAdvert received GET find all advert successfully ");
+        final List<AdvertReadDto> advertReadDtoList =advertSearchService.findAllAdverts();
 
-       // final List<AdvertReadDto> advertReadDtoList = Optional.ofNullable(advertSearchService.findAllAdverts())
-       //         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-
-        final List<AdvertReadDto> advertReadDtoList = advertSearchService.findAllAdverts();
-
+        if (advertReadDtoList.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Empty list");
+        }
         LOGGER.debug("In findAllAdvert received GET find all advert successfully ");
 
         return ResponseEntity.status(HttpStatus.OK).body(advertReadDtoList);

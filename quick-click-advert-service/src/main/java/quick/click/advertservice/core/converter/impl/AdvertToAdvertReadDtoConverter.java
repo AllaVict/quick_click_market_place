@@ -1,12 +1,22 @@
 package quick.click.advertservice.core.converter.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import quick.click.advertservice.core.converter.TypeConverter;
 import quick.click.advertservice.core.domain.dto.AdvertReadDto;
+import quick.click.advertservice.core.domain.dto.UserReadDto;
 import quick.click.advertservice.core.domain.model.Advert;
+import quick.click.advertservice.core.domain.model.User;
 
 @Component
 public class AdvertToAdvertReadDtoConverter implements TypeConverter<Advert, AdvertReadDto> {
+
+    private final TypeConverter<User, UserReadDto> typeConverterUserReadDto;
+
+    @Autowired
+    public AdvertToAdvertReadDtoConverter(final TypeConverter<User, UserReadDto> typeConverterUserReadDto) {
+        this.typeConverterUserReadDto = typeConverterUserReadDto;
+    }
 
     @Override
     public Class<Advert> getSourceClass() {
@@ -29,10 +39,12 @@ public class AdvertToAdvertReadDtoConverter implements TypeConverter<Advert, Adv
         advertReadDto.setPhone(advert.getPhone());
         advertReadDto.setPrice(advert.getPrice());
         advertReadDto.setFirstPrice(advert.getFirstPrice());
+        advertReadDto.setFirstPriceDisplayed(advert.isFirstPriceDisplayed());
         advertReadDto.setCurrency(advert.getCurrency());
         advertReadDto.setAddress(advert.getAddress());
+        advertReadDto.setFavorite(advert.isFavorite());
        // advertReadDto.setImagId(advert.getImage().getId());
-      // advertReadDto.setUserId(advert.getUser().getId());
+        advertReadDto.setUser(typeConverterUserReadDto.convert(advert.getUser()));
         return advertReadDto;
     }
 }

@@ -31,6 +31,8 @@ public class AdvertCreateDto {
 
     private String address;
 
+    private boolean favorite;
+
     private Long userId;
 
     private  LocalDateTime createdDate;
@@ -115,6 +117,14 @@ public class AdvertCreateDto {
         this.address = address;
     }
 
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
+    }
+
     public Long getUserId() {
         return userId;
     }
@@ -136,29 +146,11 @@ public class AdvertCreateDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AdvertCreateDto that = (AdvertCreateDto) o;
-        return firstPriceDisplayed == that.firstPriceDisplayed && Objects.equals(title, that.title) && Objects.equals(description, that.description) && category == that.category && status == that.status && Objects.equals(phone, that.phone) && Objects.equals(price, that.price) && Objects.equals(firstPrice, that.firstPrice) && currency == that.currency && Objects.equals(address, that.address) && Objects.equals(userId, that.userId) && Objects.equals(createdDate, that.createdDate);
+        return firstPriceDisplayed == that.firstPriceDisplayed && favorite == that.favorite && Objects.equals(title, that.title) && Objects.equals(description, that.description) && category == that.category && status == that.status && Objects.equals(phone, that.phone) && Objects.equals(price, that.price) && Objects.equals(firstPrice, that.firstPrice) && currency == that.currency && Objects.equals(address, that.address) && Objects.equals(userId, that.userId) && Objects.equals(createdDate, that.createdDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, description, category, status, phone, price, firstPrice, firstPriceDisplayed, currency, address, userId, createdDate);
-    }
-
-    @Override
-    public String toString() {
-        return "AdvertCreateDto{" +
-                "title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", category=" + category +
-                ", status=" + status +
-                ", phone='" + phone + '\'' +
-                ", price=" + price +
-                ", first_Price=" + firstPrice +
-                ", firstPriceDisplayed=" + firstPriceDisplayed +
-                ", currency=" + currency +
-                ", address='" + address + '\'' +
-                ", userId=" + userId +
-                ", createdDate=" + createdDate +
-                '}';
+        return Objects.hash(title, description, category, status, phone, price, firstPrice, firstPriceDisplayed, currency, address, favorite, userId, createdDate);
     }
 }

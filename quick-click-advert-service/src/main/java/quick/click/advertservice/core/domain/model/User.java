@@ -55,6 +55,7 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private AuthProvider provider;
 
+
     public User() {
 
     }

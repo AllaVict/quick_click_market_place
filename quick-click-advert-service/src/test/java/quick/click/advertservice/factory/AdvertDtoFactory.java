@@ -1,6 +1,7 @@
 package quick.click.advertservice.factory;
 
 import quick.click.advertservice.core.domain.dto.AdvertCreateDto;
+import quick.click.advertservice.core.domain.dto.AdvertEditingDto;
 import quick.click.advertservice.core.domain.dto.AdvertReadDto;
 import quick.click.advertservice.core.domain.dto.UserReadDto;
 import quick.click.advertservice.core.enums.AdvertStatus;
@@ -29,8 +30,9 @@ public class AdvertDtoFactory {
     private AdvertDtoFactory() {
     }
 
-    public static AdvertReadDto createAdvertReadDto(UserReadDto userReadDto) {
+    public static AdvertReadDto createAdvertReadDto() {
         final AdvertReadDto advertReadDto = new AdvertReadDto();
+        advertReadDto.setId(ADVERT_ID);
         advertReadDto.setTitle(TITLE);
         advertReadDto.setDescription(DESCRIPTION);
         advertReadDto.setCategory(Category.TOYS);
@@ -41,11 +43,11 @@ public class AdvertDtoFactory {
         advertReadDto.setFirstPriceDisplayed(true);
         advertReadDto.setCurrency(Currency.EUR);
         advertReadDto.setAddress(ADDRESS);
-        advertReadDto.setUser(userReadDto);
+        advertReadDto.setUser(UserDtoFactory.createUserReadDto());
         return advertReadDto;
     }
 
-    public static AdvertCreateDto createAdvertCreateDto(Long userId) {
+    public static AdvertCreateDto createAdvertCreateDto() {
         final AdvertCreateDto advertCreateDto = new AdvertCreateDto();
         advertCreateDto.setTitle(TITLE);
         advertCreateDto.setDescription(DESCRIPTION);
@@ -57,8 +59,25 @@ public class AdvertDtoFactory {
         advertCreateDto.setFirstPriceDisplayed(true);
         advertCreateDto.setCurrency(Currency.EUR);
         advertCreateDto.setAddress(ADDRESS);
-        advertCreateDto.setUserId(userId);
+        advertCreateDto.setUserId(UserDtoFactory.createUserReadDto().getId());
         return advertCreateDto;
+    }
+
+    public static AdvertEditingDto createAdvertEditingDto() {
+        final AdvertEditingDto advertEditingDto = new AdvertEditingDto();
+        advertEditingDto.setId(ADVERT_ID);
+        advertEditingDto.setTitle(TITLE);
+        advertEditingDto.setDescription(DESCRIPTION);
+        advertEditingDto.setCategory(Category.TOYS);
+        advertEditingDto.setStatus(AdvertStatus.PUBLISHED);
+        advertEditingDto.setPhone(PHONE);
+        advertEditingDto.setPrice(PRICE);
+        advertEditingDto.setFirstPrice(FIRST_PRICE);
+        advertEditingDto.setFirstPriceDisplayed(true);
+        advertEditingDto.setCurrency(Currency.EUR);
+        advertEditingDto.setAddress(ADDRESS);
+        advertEditingDto.setUserId(UserDtoFactory.createUserReadDto().getId());
+        return advertEditingDto;
     }
 
 }

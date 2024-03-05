@@ -20,16 +20,16 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
 
     private final TypeConverter<Advert, AdvertReadDto> typeConverterReadDto;
 
-    public AdvertSearchServiceImpl(AdvertRepository advertRepository,
-                                   TypeConverter<Advert, AdvertReadDto> typeConverterReadDto) {
+    public AdvertSearchServiceImpl(final AdvertRepository advertRepository,
+                                   final TypeConverter<Advert, AdvertReadDto> typeConverterReadDto) {
         this.advertRepository = advertRepository;
         this.typeConverterReadDto = typeConverterReadDto;
     }
 
     @Override
-    public AdvertReadDto findAdvertById(Long advertId) {
+    public AdvertReadDto findAdvertById(final Long advertId) {
 
-        AdvertReadDto advertReadDto =  advertRepository.findById(advertId)
+        final AdvertReadDto advertReadDto =  advertRepository.findById(advertId)
                 .map(typeConverterReadDto::convert).orElseThrow();
 
         LOGGER.debug("In findAdvertById find the Advert with id {}", advertReadDto.getId());
@@ -40,7 +40,7 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
     @Override
     public List<AdvertReadDto> findAllAdverts() {
 
-        List<AdvertReadDto> advertReadDtoList =  advertRepository.findAll()
+        final List<AdvertReadDto> advertReadDtoList =  advertRepository.findAll()
                 .stream()
                 .map(typeConverterReadDto::convert)
                 .toList();
