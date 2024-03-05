@@ -22,7 +22,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import quick.click.config.annotation.IntegrationTest;
 import quick.click.security.core.service.UserLoginService;
 
-@IntegrationTest
+//@IntegrationTest
 @WebMvcTest(controllers = TokenAuthenticationFilterTest.class)
 @DisplayName("TokenAuthenticationFilterTest")
 class TokenAuthenticationFilterTest {

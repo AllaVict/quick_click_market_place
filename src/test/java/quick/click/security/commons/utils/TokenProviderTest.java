@@ -24,7 +24,7 @@ import quick.click.config.factory.UserFactory;
 import static org.junit.jupiter.api.Assertions.*;
 
 @EnableConfigurationProperties
-@ContextConfiguration(classes = { AppProperties.class })
+@ContextConfiguration(classes = {AppProperties.class })
 @Extensions({
         @ExtendWith(SpringExtension.class),
         @ExtendWith(MockitoExtension.class)
@@ -62,29 +62,6 @@ class TokenProviderTest {
     }
     private AuthenticatedUser getUserPrincipal() {
         return AuthenticatedUser.create(UserFactory.createUserWithRole(Role.ROLE_USER));
-    }
-
-    @Nested
-    @DisplayName("When Create Token")
-    class CreateTokenTests {
-        @Test
-        void testCreateToken_ReturnsToken() {
-
-        }
-
-    }
-
-    @Nested
-    @DisplayName("When get User Id From Token")
-    class GetUserIdFromTokenTests {
-        @Test
-        void testGetUserIdFromToken_ReturnsUserId() {
-
-        }
-        @Test
-        void testGetUserIdFromToken_ReturnsNoUserId() {
-
-        }
     }
 
     @Nested

@@ -18,15 +18,22 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import quick.click.config.factory.UserDtoFactory;
+import quick.click.core.domain.dto.UserReadDto;
+import quick.click.security.commons.model.dto.ApiResponse;
 import quick.click.security.commons.model.dto.AuthResponse;
 import quick.click.security.commons.model.dto.UserLoginDto;
+import quick.click.security.commons.model.dto.UserSignupDto;
 import quick.click.security.commons.utils.TokenProvider;
+import quick.click.security.core.service.UserRegistrationService;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static quick.click.commons.constants.Constants.Tokens.UNAUTHENTICATED;
+import static quick.click.commons.constants.Constants.Tokens.UNAUTHORIZED;
 import static quick.click.config.factory.UserDtoFactory.createUserLoginDto;
+import static quick.click.config.factory.UserDtoFactory.createUserSignupDto;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("LoginControllerTest")
@@ -50,11 +57,18 @@ class LoginControllerTest {
     @Mock
     private HttpServletRequest request;
 
-    private static final String INVALID_PASSWORD ="invalidpassword";
+    @Mock
+    private UserRegistrationService userRegistrationService;
+
+    private static final String INVALID_PASSWORD ="invalid-password";
 
     private static final String EMAIL =  "test@example.com";
 
     private UserLoginDto userLoginDto;
+
+    private UserSignupDto userSignupDto;
+
+    private UserReadDto userReadDto;
 
     private String token;
 
@@ -65,11 +79,13 @@ class LoginControllerTest {
         securityContext = Mockito.mock(SecurityContext.class);
         token = tokenProvider.createToken(authentication);
         userLoginDto = createUserLoginDto();
+        userSignupDto = createUserSignupDto();
+        userReadDto = UserDtoFactory.createUserReadDto();
     }
 
     @Nested
     @DisplayName("When authenticate a User")
-    class tAuthenticateUserTests {
+    class AuthenticateUserTests {
 
         @Test
         void testAuthenticateUser_ValidCredentials() {
@@ -78,6 +94,7 @@ class LoginControllerTest {
 
             ResponseEntity<?> responseEntity = loginController.authenticateUser(userLoginDto);
 
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
             assertEquals(new AuthResponse(token), responseEntity.getBody());
         }
 
@@ -89,12 +106,39 @@ class LoginControllerTest {
 
             ResponseEntity<?> responseEntity = loginController.authenticateUser(userLoginDto);
 
-            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-            assertEquals(new AuthResponse(UNAUTHENTICATED), responseEntity.getBody());
+            assertEquals(HttpStatus.UNAUTHORIZED, responseEntity.getStatusCode());
+            assertEquals("User has bad credentials and not "+UNAUTHORIZED, responseEntity.getBody());
         }
 
     }
 
+    @Nested
+    @DisplayName("When Register a User")
+    class RegisterUserTests {
+        @Test
+        void testRegisterUser_validCredentials() {
+            when(userRegistrationService.existsByEmail(anyString())).thenReturn(false);
+            when(userRegistrationService.save(userSignupDto)).thenReturn(userReadDto);
+
+            ResponseEntity<?> responseEntity = loginController.registerUser(userSignupDto);
+
+            assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+            assertEquals(new ApiResponse(true, "User registered successfully!"),
+                    responseEntity.getBody());
+        }
+
+        @Test
+        void testRegisterUser_withExitingEmail() {
+            when(userRegistrationService.existsByEmail(anyString())).thenReturn(true);
+
+            ResponseEntity<?> responseEntity = loginController.registerUser(userSignupDto);
+
+            assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+            assertEquals(new ApiResponse(false, "Email is already exist!"),
+                    responseEntity.getBody());
+        }
+
+    }
     @Nested
     @DisplayName("When User Logout")
     class LogoutTests {
@@ -110,6 +154,19 @@ class LoginControllerTest {
             verify(request, Mockito.times(1)).logout();
             assertEquals("User logout successfully with username test@example.com", responseEntity.getBody());
         }
+        @Test
+        void testLogout_noLoginWithResponseBadRequest() throws ServletException {
+            when(securityContext.getAuthentication()).thenReturn(authentication);
+            SecurityContextHolder.setContext(securityContext);
+            when(authentication.getName()).thenReturn("anonymousUser");
+
+            ResponseEntity<String> responseEntity = loginController.logout(request);
+
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+            verify(request, Mockito.times(0)).logout();
+            assertEquals("User was not login", responseEntity.getBody());
+        }
+
     }
 
 }

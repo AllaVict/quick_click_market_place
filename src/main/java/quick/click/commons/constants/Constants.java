@@ -12,6 +12,8 @@ public final class Constants {
 
 		public static final String AUTH_URL = "/auth";
 
+		public static  final String SIGNUP_URL = "/signup";
+
 		public static final String HOME_URL = "/home";
 
 		public static final String ALL_URL = "/all";
@@ -36,7 +38,7 @@ public final class Constants {
 
 		public static final String ACCESS_TOKEN_PREFIX = "Bearer ";
 
-		public static final String UNAUTHENTICATED = "unauthenticated";
+		public static final String UNAUTHORIZED = "unauthorized";
 
 		private Tokens() {
 		}
