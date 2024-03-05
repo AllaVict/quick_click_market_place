@@ -7,10 +7,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.TestPropertySource;
 import quick.click.config.factory.UserFactory;
 import quick.click.core.domain.model.User;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -81,11 +81,11 @@ class UserRepositoryTest {
 
         @Test
         void testFindUserById_shouldReturnExistingUserWithGivenId() {
-            userRepository.save(user);
-            Optional<User> foundUser = userRepository.findUserById(user.getId());
-
+            User existingUser = userRepository.save(user);
+            Optional<User> foundUser = userRepository.findUserById(existingUser.getId());
+            assertEquals(existingUser.getId(), foundUser.get().getId());
             assertTrue(foundUser.isPresent());
-            assertEquals(user.getId(), foundUser.get().getId());
+
         }
 
         @Test
@@ -95,6 +95,44 @@ class UserRepositoryTest {
             assertFalse(foundUser.isPresent());
             assertThat(foundUser).isEmpty();
         }
+    }
+    @Nested
+    @DisplayName("When Find All User")
+    class FindALlUseTests {
+
+        @Test
+        void testFindAllUser_shouldReturnUserList() {
+            userRepository.deleteAll();
+            userRepository.save(user);
+            List<User> userList = userRepository.findAll();
+
+            assertEquals(userList.size(), 1);
+            assertFalse(userList.isEmpty());
+        }
+
+        @Test
+        void testFindAllUser_shouldReturnEmptyUserList() {
+            userRepository.deleteAll();
+            List<User> userList = userRepository.findAll();
+
+            assertEquals(userList.size(), 0);
+            assertTrue(userList.isEmpty());
+        }
+    }
+
+    @Nested
+    @DisplayName("When Delete User By Id")
+    class DeleteUserByIdTests {
+        @Test
+        void testDeleteUserById_shouldDeleteUserById() {
+            User userForDelete = userRepository.save(user);
+
+            userRepository.deleteById(userForDelete.getId());
+            Optional<User> deletedUser = userRepository.findById(userForDelete.getId());
+            assertFalse(deletedUser.isPresent());
+            assertThat(deletedUser).isEmpty();
+        }
+
     }
 
 }
