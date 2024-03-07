@@ -1,9 +1,9 @@
-package quick.click.core.service;
+package quick.click.security.core.service;
 
 import quick.click.core.domain.dto.UserReadDto;
 import quick.click.security.commons.model.dto.UserSignupDto;
 
-public interface UserService {
+public interface UserRegistrationService {
 
     UserReadDto save(UserSignupDto userSignupDto);
 

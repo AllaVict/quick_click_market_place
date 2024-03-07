@@ -1,4 +1,4 @@
-package quick.click.core.service.impl;
+package quick.click.security.core.service.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,24 +12,24 @@ import quick.click.core.enums.AuthProvider;
 import quick.click.core.enums.Role;
 import quick.click.core.enums.UserStatus;
 import quick.click.core.repository.UserRepository;
-import quick.click.core.service.UserService;
 import quick.click.security.commons.model.dto.UserSignupDto;
+import quick.click.security.core.service.UserRegistrationService;
 
 import java.time.LocalDateTime;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserRegistrationServiceImpl implements UserRegistrationService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserRegistrationServiceImpl.class);
     private final UserRepository userRepository;
 
     private final TypeConverter<User, UserReadDto> typeConverter;
 
     private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(final UserRepository userRepository,
-                           final TypeConverter<User, UserReadDto>  typeConverter,
-                           final PasswordEncoder passwordEncoder) {
+    public UserRegistrationServiceImpl(final UserRepository userRepository,
+                                       final TypeConverter<User, UserReadDto> typeConverter,
+                                       final PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.typeConverter = typeConverter;
         this.passwordEncoder = passwordEncoder;
