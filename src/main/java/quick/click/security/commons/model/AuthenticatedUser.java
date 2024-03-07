@@ -7,6 +7,7 @@ import quick.click.core.domain.model.User;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -16,7 +17,11 @@ public class AuthenticatedUser implements UserDetails {
     private final String password;
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public AuthenticatedUser(final Long id, final String email, final String password,
+    private Map<String, Object> attributes;
+
+    public AuthenticatedUser(final Long id,
+                             final String email,
+                             final String password,
                              final Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.email = email;
@@ -37,6 +42,11 @@ public class AuthenticatedUser implements UserDetails {
         );
     }
 
+    public static AuthenticatedUser create(User user, Map<String, Object> attributes) {
+        AuthenticatedUser authenticatedUser = AuthenticatedUser.create(user);
+        authenticatedUser.setAttributes(attributes);
+        return authenticatedUser;
+    }
     public Long getId() {
         return id;
     }
@@ -78,6 +88,9 @@ public class AuthenticatedUser implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
+    }
+    public void setAttributes(Map<String, Object> attributes) {
+        this.attributes = attributes;
     }
 
 }
