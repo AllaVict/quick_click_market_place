@@ -25,7 +25,7 @@ import quick.click.security.commons.model.dto.UserSignupDto;
 import quick.click.security.commons.utils.TokenProvider;
 import quick.click.security.core.service.UserRegistrationService;
 
-import static quick.click.commons.config.ApiVersion.VERSION_1_0;
+import static quick.click.commons.constants.ApiVersion.VERSION_1_0;
 import static quick.click.commons.constants.Constants.Endpoints.*;
 import static quick.click.commons.constants.Constants.Tokens.UNAUTHORIZED;
 
