@@ -15,7 +15,7 @@ import quick.click.core.service.AdvertSearchService;
 import java.util.List;
 import java.util.Optional;
 
-import static quick.click.commons.config.ApiVersion.VERSION_1_0;
+import static quick.click.commons.constants.ApiVersion.VERSION_1_0;
 import static quick.click.commons.constants.Constants.Endpoints.ADVERTS_URL;
 import static quick.click.core.controller.AdvertSearchController.BASE_URL;
 
