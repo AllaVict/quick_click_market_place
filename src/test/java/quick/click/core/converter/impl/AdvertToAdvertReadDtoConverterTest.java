@@ -14,6 +14,7 @@ import quick.click.core.domain.model.Comment;
 import quick.click.core.domain.model.User;
 import quick.click.config.factory.AdvertFactory;
 import quick.click.config.factory.UserFactory;
+import quick.click.core.repository.ImageDataRepository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -26,6 +27,9 @@ class AdvertToAdvertReadDtoConverterTest {
 
     @Mock
     private TypeConverter<Comment, CommentReadDto> typeConverterCommentReadDto;
+
+    @Mock
+    private ImageDataRepository imageDataRepository;
 
     @InjectMocks
     private TypeConverter<Advert, AdvertReadDto>  advertToAdvertReadDtoConverter;
@@ -43,7 +47,7 @@ class AdvertToAdvertReadDtoConverterTest {
         userToUserReadDtoConverter =new UserToUserReadDtoConverter();
         typeConverterCommentReadDto =new CommentToCommentReadDtoConverter();
         advertToAdvertReadDtoConverter = new AdvertToAdvertReadDtoConverter(
-                userToUserReadDtoConverter, typeConverterCommentReadDto);
+                userToUserReadDtoConverter, typeConverterCommentReadDto,imageDataRepository);
     }
 
     @Test
