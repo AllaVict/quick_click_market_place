@@ -1,0 +1,7 @@
+ALTER TABLE comments DROP CONSTRAINT usercomments_fk;
+ALTER TABLE comments DROP CONSTRAINT advertcomments_fk;
+DELETE FROM comments WHERE advert_id IN (1, 2);
+DROP TABLE comments;
+
+
+
