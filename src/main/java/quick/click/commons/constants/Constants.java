@@ -21,6 +21,7 @@ public final class Constants {
 		public static final String USERS_URL = "/users";
 
 		public static final String ADVERTS_URL = "/adverts";
+		public static final String COMMENTS_URL = "/comments";
 
 		public static final String OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME = "oauth2_auth_request";
 
