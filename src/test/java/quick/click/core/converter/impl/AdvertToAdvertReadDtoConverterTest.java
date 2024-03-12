@@ -36,7 +36,7 @@ class AdvertToAdvertReadDtoConverterTest {
         user = UserFactory.createUser();
         advert = AdvertFactory.createAdvert();
         userToUserReadDtoConverter =new UserToUserReadDtoConverter();
-        advertToAdvertReadDtoConverter = new AdvertToAdvertReadDtoConverter(userToUserReadDtoConverter);
+     //   advertToAdvertReadDtoConverter = new AdvertToAdvertReadDtoConverter(userToUserReadDtoConverter);
     }
 
     @Test
