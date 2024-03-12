@@ -36,7 +36,6 @@ public class AdvertReadDto {
 
     protected List<CommentReadDto> comments = new ArrayList<>();
 
-    protected  List<byte[]> images = new ArrayList<>();
 
     protected UserReadDto user;
 
@@ -144,14 +143,6 @@ public class AdvertReadDto {
         this.comments = comments;
     }
 
-    public List<byte[]> getImages() {
-        return images;
-    }
-
-    public void setImages(List<byte[]> images) {
-        this.images = images;
-    }
-
     public UserReadDto getUser() {
         return user;
     }
@@ -165,12 +156,12 @@ public class AdvertReadDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AdvertReadDto that = (AdvertReadDto) o;
-        return firstPriceDisplayed == that.firstPriceDisplayed && favorite == that.favorite && Objects.equals(id, that.id) && Objects.equals(title, that.title) && Objects.equals(description, that.description) && category == that.category && status == that.status && Objects.equals(phone, that.phone) && Objects.equals(price, that.price) && Objects.equals(firstPrice, that.firstPrice) && currency == that.currency && Objects.equals(address, that.address) && Objects.equals(comments, that.comments) && Objects.equals(images, that.images) && Objects.equals(user, that.user);
+        return firstPriceDisplayed == that.firstPriceDisplayed && favorite == that.favorite && Objects.equals(id, that.id) && Objects.equals(title, that.title) && Objects.equals(description, that.description) && category == that.category && status == that.status && Objects.equals(phone, that.phone) && Objects.equals(price, that.price) && Objects.equals(firstPrice, that.firstPrice) && currency == that.currency && Objects.equals(address, that.address) && Objects.equals(comments, that.comments) && Objects.equals(user, that.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, description, category, status, phone, price, firstPrice, firstPriceDisplayed, currency, address, favorite, comments, images, user);
+        return Objects.hash(id, title, description, category, status, phone, price, firstPrice, firstPriceDisplayed, currency, address, favorite, comments, user);
     }
 
     @Override
@@ -189,7 +180,6 @@ public class AdvertReadDto {
                 ", address='" + address + '\'' +
                 ", favorite=" + favorite +
                 ", comments=" + comments +
-                ", images=" + images +
                 ", user=" + user +
                 '}';
     }
