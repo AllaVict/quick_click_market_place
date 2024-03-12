@@ -1,0 +1,2 @@
+ALTER TABLE images DROP CONSTRAINT advertcomments_fk;
+DROP TABLE images;

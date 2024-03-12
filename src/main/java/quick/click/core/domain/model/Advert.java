@@ -64,6 +64,9 @@ public class Advert extends BaseEntity {
     @OneToMany(mappedBy = "advert", cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "advert", cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, orphanRemoval = true)
+    private List<ImageData> images;
+
     public Advert() {
        //Empty
     }
