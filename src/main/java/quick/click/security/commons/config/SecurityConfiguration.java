@@ -20,7 +20,7 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 import quick.click.commons.constants.Constants;
 import quick.click.security.commons.utils.*;
 import quick.click.security.core.service.UserLoginService;
-
+import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
 @Configuration
 @EnableMethodSecurity
 @EnableWebSecurity
@@ -64,7 +64,13 @@ public class SecurityConfiguration {
         final MvcRequestMatcher.Builder matcher = new MvcRequestMatcher.Builder(introspector);
 
         http
-                .csrf(csrf -> csrf.disable())
+                //.csrf(csrf -> csrf.disable())
+                .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
+                .headers(httpSecurityHeadersConfigurer -> {
+                    httpSecurityHeadersConfigurer.frameOptions(frameOptionsConfig -> {
+                        frameOptionsConfig.disable();
+                    });
+                })
                 .httpBasic(httpBasic -> httpBasic.disable())
                 .authenticationProvider(daoAuthenticationProvider())
                 .authorizeHttpRequests(authorize -> authorize
@@ -78,19 +84,25 @@ public class SecurityConfiguration {
                                 matcher.pattern("/*/*.jpg"),
                                 matcher.pattern("/*/*.html"),
                                 matcher.pattern("/*/*.css"),
-                                matcher.pattern("/*/*.js"))
+                                matcher.pattern("/*/*.js"),
+                        matcher.pattern("/h2-console"),
+                        matcher.pattern("/h2-console/*")
+                        )
                         .permitAll()
                         .requestMatchers(
+                                toH2Console(),
                                 matcher.pattern("/home"),
                                 matcher.pattern("/v1.0/auth/login"),
                                 matcher.pattern("/v1.0/auth/logout"),
                                 matcher.pattern("/v1.0/auth/signup"),
                                 matcher.pattern("/v1.0/adverts"),
                                 matcher.pattern("/v1.0/adverts/*"),
+                                matcher.pattern("/v1.0/comments"),
+                                matcher.pattern("/v1.0/comments/*"),
                                 matcher.pattern("/oauth2/*"),
                                 matcher.pattern("/swagger-ui/*")
                         ).permitAll()
-                        // .requestMatchers("/v1.0/**").hasAuthority("ADMIN")
+                            // .requestMatchers("/v1.0/**").hasAuthority("ADMIN")
                         .requestMatchers("/auth/admin").hasRole("ADMIN")
                         .requestMatchers("/auth/user").hasRole("USER")
                         .anyRequest().authenticated()
