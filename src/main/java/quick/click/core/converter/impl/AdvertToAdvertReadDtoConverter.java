@@ -2,21 +2,14 @@ package quick.click.core.converter.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ObjectUtils;
 import quick.click.core.converter.TypeConverter;
 import quick.click.core.domain.dto.AdvertReadDto;
 import quick.click.core.domain.dto.CommentReadDto;
 import quick.click.core.domain.dto.UserReadDto;
 import quick.click.core.domain.model.Advert;
 import quick.click.core.domain.model.Comment;
-import quick.click.core.domain.model.ImageData;
 import quick.click.core.domain.model.User;
 import quick.click.core.repository.ImageDataRepository;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static quick.click.core.utils.ImageUtils.decompressImage;
 
 @Component
 public class AdvertToAdvertReadDtoConverter implements TypeConverter<Advert, AdvertReadDto> {
