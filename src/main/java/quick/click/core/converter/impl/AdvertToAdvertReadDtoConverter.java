@@ -17,14 +17,11 @@ public class AdvertToAdvertReadDtoConverter implements TypeConverter<Advert, Adv
     private final TypeConverter<User, UserReadDto> typeConverterUserReadDto;
     private final TypeConverter<Comment, CommentReadDto> typeConverterCommentReadDto;
 
-    private final ImageDataRepository imageDataRepository;
     @Autowired
     public AdvertToAdvertReadDtoConverter(final TypeConverter<User, UserReadDto> typeConverterUserReadDto,
-                                          final TypeConverter<Comment, CommentReadDto> typeConverterCommentReadDto,
-                                          final ImageDataRepository imageDataRepository) {
+                                          final TypeConverter<Comment, CommentReadDto> typeConverterCommentReadDto) {
         this.typeConverterUserReadDto = typeConverterUserReadDto;
         this.typeConverterCommentReadDto = typeConverterCommentReadDto;
-        this.imageDataRepository = imageDataRepository;
     }
 
     @Override

@@ -7,8 +7,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import quick.click.core.converter.TypeConverter;
 import quick.click.core.domain.dto.AdvertReadDto;
+import quick.click.core.domain.dto.CommentReadDto;
 import quick.click.core.domain.dto.UserReadDto;
 import quick.click.core.domain.model.Advert;
+import quick.click.core.domain.model.Comment;
 import quick.click.core.domain.model.User;
 import quick.click.config.factory.AdvertFactory;
 import quick.click.config.factory.UserFactory;
@@ -21,6 +23,9 @@ class AdvertToAdvertReadDtoConverterTest {
 
     @Mock
     private TypeConverter<User, UserReadDto> userToUserReadDtoConverter;
+
+    @Mock
+    private TypeConverter<Comment, CommentReadDto> typeConverterCommentReadDto;
 
     @InjectMocks
     private TypeConverter<Advert, AdvertReadDto>  advertToAdvertReadDtoConverter;
@@ -36,7 +41,9 @@ class AdvertToAdvertReadDtoConverterTest {
         user = UserFactory.createUser();
         advert = AdvertFactory.createAdvert();
         userToUserReadDtoConverter =new UserToUserReadDtoConverter();
-     //   advertToAdvertReadDtoConverter = new AdvertToAdvertReadDtoConverter(userToUserReadDtoConverter);
+        typeConverterCommentReadDto =new CommentToCommentReadDtoConverter();
+        advertToAdvertReadDtoConverter = new AdvertToAdvertReadDtoConverter(
+                userToUserReadDtoConverter, typeConverterCommentReadDto);
     }
 
     @Test
