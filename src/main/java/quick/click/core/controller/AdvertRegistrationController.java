@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import quick.click.core.domain.dto.AdvertCreateDto;
 import quick.click.core.domain.dto.AdvertReadDto;
@@ -16,7 +15,6 @@ import static quick.click.commons.constants.Constants.Endpoints.ADVERTS_URL;
 import static quick.click.core.controller.AdvertRegistrationController.BASE_URL;
 
 @CrossOrigin
-@PreAuthorize("permitAll()")
 @RestController
 @RequestMapping(BASE_URL)
 public class AdvertRegistrationController  {
@@ -33,8 +31,6 @@ public class AdvertRegistrationController  {
 
     /**
      * POST   http://localhost:8080/v1.0/adverts
-     @PostMapping("/adverts/{id}")
-     ResponseEntity<AdvertReadDto> createProduct(@RequestBody AdvertCreateDto request)
      {
      "title": "Big dog",
      "description": "description a toy Big dog",

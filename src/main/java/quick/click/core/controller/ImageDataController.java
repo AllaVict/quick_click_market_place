@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import quick.click.core.service.ImageDataService;
@@ -18,7 +17,6 @@ import static quick.click.commons.constants.Constants.Endpoints.IMAGES_URL;
 import static quick.click.core.controller.ImageDataController.BASE_URL;
 
 @CrossOrigin
-@PreAuthorize("permitAll()")
 @RestController
 @RequestMapping(BASE_URL)
 public class ImageDataController {

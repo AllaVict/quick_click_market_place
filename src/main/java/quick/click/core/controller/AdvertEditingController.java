@@ -33,9 +33,8 @@ public class AdvertEditingController {
 
     /**
      PUT   http://localhost:8081/v1.0/adverts/3
-     @PutMapping("/adverts/{id}")
-     public ResponseEntity<AdvertReadDto> updateProduct(@PathVariable("id") Long id, @RequestBody AdvertEditingDto request)
-     {
+
+      {
      "title": "Big dog",
      "description": "description a toy Big dog",
      "category": "TOYS",
@@ -47,9 +46,6 @@ public class AdvertEditingController {
      "address": "Dania",
      "userId": "1"
      }
-     ????????????????
-     private Long userId;
-     images
      */
 
     @PutMapping("{id}")
@@ -68,8 +64,6 @@ public class AdvertEditingController {
 
     /**
      Delete    http://localhost:8080/v1.0/adverts/3
-     @DeleteMapping("/adverts/{id}")
-     public ResponseEntity<DeleteProductResponse> deleteProduct(@PathVariable("id") Long id)
      */
     @DeleteMapping ("{id}")
     public ResponseEntity<String> deleteAdvert(@PathVariable("id") final Long advertId) {
