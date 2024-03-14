@@ -50,7 +50,7 @@ public class Advert extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Currency currency;
 
-    @Size(max = 100)
+    @Size(max = 300)
     @Column(name = "address")
     private String address;
 
