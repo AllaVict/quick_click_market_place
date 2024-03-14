@@ -84,9 +84,7 @@ public class SecurityConfiguration {
                                 matcher.pattern("/*/*.jpg"),
                                 matcher.pattern("/*/*.html"),
                                 matcher.pattern("/*/*.css"),
-                                matcher.pattern("/*/*.js"),
-                        matcher.pattern("/h2-console"),
-                        matcher.pattern("/h2-console/*")
+                                matcher.pattern("/*/*.js")
                         )
                         .permitAll()
                         .requestMatchers(
@@ -99,6 +97,8 @@ public class SecurityConfiguration {
                                 matcher.pattern("/v1.0/adverts/*"),
                                 matcher.pattern("/v1.0/comments"),
                                 matcher.pattern("/v1.0/comments/*"),
+                                matcher.pattern("/v1.0/images"),
+                                matcher.pattern("/v1.0/images/*"),
                                 matcher.pattern("/oauth2/*"),
                                 matcher.pattern("/swagger-ui/*")
                         ).permitAll()

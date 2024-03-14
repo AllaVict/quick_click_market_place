@@ -3,22 +3,22 @@ package quick.click.core.controller;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 import quick.click.core.domain.dto.AdvertCreateDto;
 import quick.click.core.domain.dto.AdvertReadDto;
 import quick.click.core.service.AdvertRegistrationService;
 
-import static quick.click.commons.config.ApiVersion.VERSION_1_0;
+import static quick.click.commons.constants.ApiVersion.VERSION_1_0;
 import static quick.click.commons.constants.Constants.Endpoints.ADVERTS_URL;
+import static quick.click.core.controller.AdvertRegistrationController.BASE_URL;
 
+@CrossOrigin
+@PreAuthorize("permitAll()")
 @RestController
-@RequestMapping(AdvertRegistrationController.BASE_URL)
+@RequestMapping(BASE_URL)
 public class AdvertRegistrationController  {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdvertRegistrationController.class);

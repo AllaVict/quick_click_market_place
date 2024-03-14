@@ -38,6 +38,7 @@ public class AdvertRegistrationServiceImpl implements AdvertRegistrationService 
 
         advertCreateDto.setCreatedDate(LocalDateTime.now());
         advertCreateDto.setStatus(PUBLISHED);
+        advertCreateDto.setUserId(1L);
         AdvertReadDto advertReadDto= Optional.of(advertCreateDto)
                 .map(typeConverterCreateDto::convert)
                 .map(advertRepository::saveAndFlush)

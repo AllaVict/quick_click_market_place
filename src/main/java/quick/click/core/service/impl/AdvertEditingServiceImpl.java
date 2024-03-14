@@ -62,14 +62,6 @@ public class AdvertEditingServiceImpl implements AdvertEditingService {
        if(advertForDelete.isEmpty())
             advertForDelete.orElseThrow(() -> new ResourceNotFoundException("Advert", "id", advertId));
 
-       final Long fileReferenceForDelete = advertForDelete.orElseThrow().getImage();
-       LOGGER.debug("Deleting fileReference for advert with id {}", fileReferenceForDelete);
-       if(fileReferenceForDelete!=null){
-             fileReferenceRepository.deleteById(fileReferenceForDelete);
-       } else {
-           LOGGER.debug("Deleting fileReference for advert with id {}", fileReferenceForDelete);
-       }
-
         advertRepository.delete(advertForDelete.orElseThrow());
 
         LOGGER.debug("Deleting success advert with id {}", advertId);
