@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import quick.click.core.domain.dto.UserReadDto;
@@ -12,6 +13,7 @@ import quick.click.security.core.service.UserRegistrationService;
 
 import static quick.click.commons.util.WebUtil.getFullRequestUri;
 
+@CrossOrigin
 @RestController
 public class UserAuthorizedController {
 
