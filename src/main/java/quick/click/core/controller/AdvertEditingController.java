@@ -50,7 +50,7 @@ public class AdvertEditingController {
 
     @PutMapping("{id}")
     public ResponseEntity<?> editAdvert(@PathVariable("id") final Long advertId,
-                                                    @Valid @RequestBody final AdvertEditingDto advertEditingDto) {
+                                        @Valid @RequestBody final AdvertEditingDto advertEditingDto) {
 
         if (advertId == null || advertEditingDto==null || advertEditingDto.getTitle() == null || advertEditingDto.getDescription() == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please fill all fields");

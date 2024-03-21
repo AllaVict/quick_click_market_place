@@ -99,6 +99,8 @@ public class SecurityConfiguration {
                                 matcher.pattern("/v1.0/comments/*"),
                                 matcher.pattern("/v1.0/images"),
                                 matcher.pattern("/v1.0/images/*"),
+                                matcher.pattern("/v1.0/images/image"),
+                                matcher.pattern("/v1.0/images/image/*"),
                                 matcher.pattern("/oauth2/*"),
                                 matcher.pattern("/swagger-ui/*")
                         ).permitAll()
