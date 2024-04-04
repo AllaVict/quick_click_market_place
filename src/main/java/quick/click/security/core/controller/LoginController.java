@@ -52,6 +52,13 @@ public class LoginController {
         this.userRegistrationService = userRegistrationService;
     }
 
+    /**
+     POST   http://localhost:8080/v1.0/auth/login
+     {
+     "email": "admin@gmail.com",
+     "password": "123"
+     }
+     */
     @PostMapping(LOGIN_URL)
     public ResponseEntity<?> authenticateUser
             (@Valid @RequestBody final UserLoginDto userLoginDto) {
@@ -80,6 +87,15 @@ public class LoginController {
 
         return ResponseEntity.ok().body(new AuthResponse(token));
     }
+
+    /**
+     POST   http://localhost:8080/v1.0/auth/signup
+     {
+     "name": "admin@gmail.com",
+     "email": "admin@gmail.com",
+     "password": "password"
+     }
+     */
 
     @PostMapping(SIGNUP_URL)
     public ResponseEntity<ApiResponse> registerUser(@Valid @RequestBody UserSignupDto userSignUpDto) {

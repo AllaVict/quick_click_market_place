@@ -71,21 +71,20 @@ public class ImageDataController {
 
     /**
      DELETE    http://localhost:8080/v1.0/images/1
-     delete all images for the given advert id
+     delete image for the given image id
      */
-    @DeleteMapping("/{advertId}")
-    public ResponseEntity<?> deleteImagesListToAdvert(@PathVariable("advertId") Long advertId){
+    @DeleteMapping("/{imageId}")
+    public ResponseEntity<?> deleteImageById(@PathVariable("imageId") Long imageId){
 
-        imageDataService.deleteImageDataListToAdvert(advertId);
+        imageDataService.deleteImageById(imageId);
 
-        LOGGER.debug("In deleteImagesListToAdvert received DELETE all files for advert with id {} ", advertId);
+        LOGGER.debug("In deleteImageById received DELETE image with id : {} ", imageId);
 
-        return ResponseEntity.status(HttpStatus.OK).body("Files were deleted successfully");
+        return ResponseEntity.status(HttpStatus.OK).body("Image has been deleted successfully.");
     }
 
     /**
      POST    http://localhost:8080/v1.0/images/image/1
-     save a image in database as byte and in a folder for the given advert id
      */
     @PostMapping("/image/{advertId}")
     public ResponseEntity<?>  uploadImageToAdvert(@PathVariable("advertId") Long advertId,

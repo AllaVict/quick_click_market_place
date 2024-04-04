@@ -16,6 +16,8 @@ public interface ImageDataService  {
 
     void deleteImageDataListToAdvert(Long advertId);
 
+    void deleteImageById(Long imageId);
+
     byte[] downloadImageFromFileSystem(Long advertId) throws IOException;
 
 

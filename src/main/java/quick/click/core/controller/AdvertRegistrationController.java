@@ -51,7 +51,7 @@ public class AdvertRegistrationController  {
         if (advertCreateDto == null || advertCreateDto.getTitle() == null || advertCreateDto.getDescription() == null)
          return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please fill all fields");
 
-       final AdvertReadDto advertReadDto = advertRegistrationService.registerAdvert(advertCreateDto);
+        final AdvertReadDto advertReadDto = advertRegistrationService.registerAdvert(advertCreateDto);
 
         LOGGER.debug("In registerAdvert received POST advert register successfully with id {} ", advertReadDto.getId());
 

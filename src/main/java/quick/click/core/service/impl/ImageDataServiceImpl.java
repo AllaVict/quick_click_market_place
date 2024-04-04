@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
+import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.core.domain.model.ImageData;
 import quick.click.core.domain.model.User;
 import quick.click.core.repository.AdvertRepository;
@@ -20,6 +21,7 @@ import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static quick.click.core.utils.ImageUtils.compressImage;
@@ -78,6 +80,14 @@ public class ImageDataServiceImpl implements ImageDataService {
         }
         return byteList;
     }
+
+    @Override
+    public void deleteImageById(Long imageId) {
+        ImageData imageToDelete = imageRepository.findById(imageId)
+                .orElseThrow(() -> new ResourceNotFoundException("Image", "id", imageId));
+        imageRepository.delete(imageToDelete);
+    }
+
 
  @Override
  public void deleteImageDataListToAdvert(Long advertId) {
