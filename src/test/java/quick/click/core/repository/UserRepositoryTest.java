@@ -109,7 +109,7 @@ class UserRepositoryTest {
             userRepository.save(user);
             List<User> userList = userRepository.findAll();
 
-            assertEquals(userList.size(), 1);
+            assertEquals(1, userList.size());
             assertFalse(userList.isEmpty());
         }
 
@@ -119,7 +119,7 @@ class UserRepositoryTest {
             userRepository.deleteAll();
             List<User> userList = userRepository.findAll();
 
-            assertEquals(userList.size(), 0);
+            assertEquals(0, userList.size() );
             assertTrue(userList.isEmpty());
         }
     }
