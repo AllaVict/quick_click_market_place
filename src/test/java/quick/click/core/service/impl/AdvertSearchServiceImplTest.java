@@ -8,11 +8,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import quick.click.config.factory.UserDtoFactory;
+import quick.click.config.factory.UserFactory;
 import quick.click.core.converter.TypeConverter;
+import quick.click.core.converter.impl.AdvertToAdvertReadDtoConverter;
+import quick.click.core.converter.impl.UserToUserReadDtoConverter;
 import quick.click.core.domain.dto.AdvertReadDto;
+import quick.click.core.domain.dto.UserReadDto;
 import quick.click.core.domain.model.Advert;
+import quick.click.core.domain.model.User;
 import quick.click.core.repository.AdvertRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -33,8 +40,7 @@ class AdvertSearchServiceImplTest {
     private AdvertRepository advertRepository;
 
     @Mock
-    private TypeConverter<Advert, AdvertReadDto> typeConverterReadDto;
-
+    private AdvertToAdvertReadDtoConverter advertToAdvertReadDtoConverter;
 
     @InjectMocks
     AdvertSearchServiceImpl advertSearchService;
@@ -45,19 +51,31 @@ class AdvertSearchServiceImplTest {
 
     private List<AdvertReadDto> advertReadDtoList;
 
+    private List<Advert> advertList;
+
+    private static final long USER_ID = 101L;
+
+    private UserReadDto userReadDto;
+
+    private User user;
+
+
     @BeforeEach
     void setUp() {
         advert = createAdvert();
         advertReadDto = createAdvertReadDto();
+        user = UserFactory.createUser();
+        userReadDto = UserDtoFactory.createUserReadDto();
+        advertSearchService = new AdvertSearchServiceImpl(advertRepository, advertToAdvertReadDtoConverter);
     }
 
     @Nested
-    @DisplayName("When Find Advert By Id")
+    @DisplayName("When find an advert by id")
     class FindAdvertByIdTests {
         @Test
         void testFindAdvertById_shouldReturnAdvertReadDtoByGivenId() {
             when(advertRepository.findById(advert.getId())).thenReturn(Optional.ofNullable(advert));
-            when(typeConverterReadDto.convert(advert)).thenReturn(advertReadDto);
+            when(advertToAdvertReadDtoConverter.convert(advert)).thenReturn(advertReadDto);
 
             AdvertReadDto result = advertSearchService.findAdvertById(advert.getId());
 
@@ -76,28 +94,72 @@ class AdvertSearchServiceImplTest {
     }
 
     @Nested
-    @DisplayName("When Find All Adverts")
+    @DisplayName("When find all adverts")
     class FindAllAdvertsTests {
 
         @Test
         void testFindAllAdverts_shouldReturnAllAdverts() {
+            advertList = List.of(advert, advert);
             advertReadDtoList = List.of(advertReadDto, advertReadDto);
-            when(advertRepository.findById(advert.getId())).thenReturn(Optional.ofNullable(advert));
-            when(typeConverterReadDto.convert(advert)).thenReturn(advertReadDto);
+            when(advertRepository.findAll()).thenReturn(advertList);
+            when(advertToAdvertReadDtoConverter.convert(any(Advert.class))).thenReturn(advertReadDto);
 
-            AdvertReadDto result = advertSearchService.findAdvertById(advert.getId());
+            List<AdvertReadDto> result = advertSearchService.findAllAdverts();
 
-            verify(advertRepository).findById(any(Long.class));
+            verify(advertRepository).findAll();
             assertNotNull(result);
-            assertEquals(result, advertReadDto);
-            assertThat(result.getTitle()).isEqualTo(advertReadDto.getTitle());
+            assertEquals(result, advertReadDtoList);
+            assertThat(result.size()).isEqualTo(advertReadDtoList.size());
+
         }
 
         @Test
         void testFindAllAdverts_shouldThrowException() {
+            advertRepository.deleteAll();
+            advertList = new ArrayList<>();
+            advertReadDtoList = new ArrayList<>();
+            when(advertRepository.findAll()).thenReturn(advertList);
 
-            assertThrows(NoSuchElementException.class,
-                    () -> advertSearchService.findAdvertById(advert.getId()));
+            List<AdvertReadDto> result = advertSearchService.findAllAdverts();
+
+            verify(advertRepository).findAll();
+            assertTrue(result.isEmpty());
+            assertEquals(result, advertReadDtoList);
+            assertThat(result.size()).isEqualTo(advertReadDtoList.size());
+        }
+    }
+
+    @Nested
+    @DisplayName("When find all adverts by user id ")
+    class FindAllAdvertsByUserIdTests {
+
+        @Test
+        void testFindAllAdvertsByUserId_shouldReturnAllAdverts() {
+            advertList = List.of(advert, advert);
+            advertReadDtoList = List.of(advertReadDto, advertReadDto);
+            when(advertRepository.findAllAdvertsByUserId(USER_ID)).thenReturn(advertList);
+            when(advertToAdvertReadDtoConverter.convert(any(Advert.class))).thenReturn(advertReadDto);
+
+           List<AdvertReadDto> result = advertSearchService.findAllAdvertsByUserId(USER_ID);
+
+            verify(advertRepository).findAllAdvertsByUserId(USER_ID);
+            assertNotNull(result);
+            assertEquals(result, advertReadDtoList);
+            assertThat(result.size()).isEqualTo(advertReadDtoList.size());
+        }
+
+        @Test
+        void testFindAllAdvertsByUserId_shouldThrowException() {
+            advertList = new ArrayList<>();
+            advertReadDtoList = new ArrayList<>();
+            when(advertRepository.findAllAdvertsByUserId(USER_ID)).thenReturn(advertList);
+
+            List<AdvertReadDto> result = advertSearchService.findAllAdvertsByUserId(USER_ID);
+
+            verify(advertRepository).findAllAdvertsByUserId(USER_ID);
+            assertTrue(result.isEmpty());
+            assertEquals(result, advertReadDtoList);
+            assertThat(result.size()).isEqualTo(advertReadDtoList.size());
         }
     }
 

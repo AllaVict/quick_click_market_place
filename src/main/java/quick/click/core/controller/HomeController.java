@@ -1,5 +1,6 @@
 package quick.click.core.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import static quick.click.commons.constants.Constants.Endpoints.HOME_URL;
 
 @RestController
 @RequestMapping()
+@Tag(name = "Home Controller", description = "Home API")
 public class HomeController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HomeController.class);

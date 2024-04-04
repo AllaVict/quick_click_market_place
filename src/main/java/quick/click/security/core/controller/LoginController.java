@@ -1,5 +1,6 @@
 package quick.click.security.core.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -31,6 +32,7 @@ import static quick.click.commons.constants.Constants.Tokens.UNAUTHORIZED;
 
 @RestController
 @RequestMapping(LoginController.BASE_URL)
+@Tag(name = "Login Controller", description = "Login API")
 public class LoginController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);

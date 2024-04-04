@@ -48,7 +48,7 @@ class AdvertRepositoryTest {
     }
 
     @Nested
-    @DisplayName("When Find Advert by Id")
+    @DisplayName("When find advert by id")
     class FindAdvertByIdTests {
 
         @Test
@@ -72,30 +72,7 @@ class AdvertRepositoryTest {
     }
 
     @Nested
-    @DisplayName("When Save a Advert")
-    class SaveAdvertTests {
-
-        @Test
-        void testSaveAdvert_shouldReturnSavedAdvert() {
-            Advert savedAdvert = advertRepository.save(expectedAdvertOne);
-
-            assertNotNull(savedAdvert);
-            assertThat(savedAdvert.getId()).isNotNull();
-            assertThat(savedAdvert.getTitle()).isEqualTo(expectedAdvertOne.getTitle());
-            assertEquals(expectedAdvertOne.getId(), savedAdvert.getId());
-            assertEquals(expectedAdvertOne.getUser(), savedAdvert.getUser());
-        }
-
-        @Test
-        void testSaveAdvert_shouldThrowException() {
-            assertThrows(DataIntegrityViolationException.class,
-                    () -> advertRepository.save(new Advert()));
-
-        }
-    }
-
-    @Nested
-    @DisplayName("When findAll Adverts")
+    @DisplayName("When find all adverts")
     class FindAllAdvertsTests {
         @Test
         @Transactional
@@ -126,7 +103,61 @@ class AdvertRepositoryTest {
     }
 
     @Nested
-    @DisplayName("When Delete Advert")
+    @DisplayName("When find all adverts by user id")
+    class FindAllAdvertsByUserIdTests {
+        @Test
+        @Transactional
+        void testFindAllAdvertsByUserId_shouldReturnAllAdverts() {
+            advertRepository.deleteAll();
+            advertRepository.save(expectedAdvertOne);
+            advertRepository.save(expectedAdvertTwo);
+
+            List<Advert> result = advertRepository.findAllAdvertsByUserId(user.getId());
+
+            assertThat(result).containsExactlyInAnyOrder(expectedAdvertOne, expectedAdvertTwo);
+            assertNotNull(result);
+            assertThat(result).isNotNull();
+            assertEquals(2, result.size());
+            assertThat(result).hasSize(2);
+        }
+
+        @Test
+        void testFindAllAdvertsByUserId_shouldReturnEmptyAdvertList() {
+            advertRepository.deleteAll();
+            List<Advert> result = advertRepository.findAllAdvertsByUserId(user.getId());
+
+            assertThrows(DataIntegrityViolationException.class, () -> advertRepository.save(new Advert()));
+            assertEquals(0, result.size());
+            assertThat(result).hasSize(0);
+        }
+
+    }
+
+    @Nested
+    @DisplayName("When save a advert")
+    class SaveAdvertTests {
+
+        @Test
+        void testSaveAdvert_shouldReturnSavedAdvert() {
+            Advert savedAdvert = advertRepository.save(expectedAdvertOne);
+
+            assertNotNull(savedAdvert);
+            assertThat(savedAdvert.getId()).isNotNull();
+            assertThat(savedAdvert.getTitle()).isEqualTo(expectedAdvertOne.getTitle());
+            assertEquals(expectedAdvertOne.getId(), savedAdvert.getId());
+            assertEquals(expectedAdvertOne.getUser(), savedAdvert.getUser());
+        }
+
+        @Test
+        void testSaveAdvert_shouldThrowException() {
+            assertThrows(DataIntegrityViolationException.class,
+                    () -> advertRepository.save(new Advert()));
+
+        }
+    }
+
+    @Nested
+    @DisplayName("When delete advert")
     class DeleteAdvertTests {
         @Test
         @Transactional

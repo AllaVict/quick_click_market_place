@@ -55,8 +55,9 @@ class AdvertEditingServiceImplTest {
         advertReadDto = createAdvertReadDto();
         advertEditingDto = createAdvertEditingDto();
     }
+
     @Nested
-    @DisplayName("When Edit a Advert")
+    @DisplayName("When edit an advert")
     class  EditAdvertTests {
         @Test
         void testEditAdvert_shouldReturnAdvertReadDto() {
@@ -89,7 +90,7 @@ class AdvertEditingServiceImplTest {
     }
 
     @Nested
-    @DisplayName("When Delete a Advert")
+    @DisplayName("When delete an advert")
     class DeleteAdvertTests {
         @Test
         void testDeleteAdvert_shouldReturnAdvertReadDto() {

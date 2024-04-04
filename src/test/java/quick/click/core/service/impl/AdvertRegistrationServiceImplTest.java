@@ -51,7 +51,7 @@ class AdvertRegistrationServiceImplTest {
     }
 
     @Nested
-    @DisplayName("When register a Advert")
+    @DisplayName("When register an advert")
     class RegisterAdvertTests {
         @Test
         void registerAdvert_shouldReturnAdvertReadDto() {

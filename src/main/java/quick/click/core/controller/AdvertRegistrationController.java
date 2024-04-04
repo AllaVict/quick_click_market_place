@@ -1,5 +1,7 @@
 package quick.click.core.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +20,7 @@ import static quick.click.commons.constants.Constants.Endpoints.ADVERTS_URL;
 
 @RestController
 @RequestMapping(AdvertRegistrationController.BASE_URL)
+@Tag(name = "Advert Registration Controller", description = "AdvertRegistration API")
 public class AdvertRegistrationController  {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdvertRegistrationController.class);
@@ -49,6 +52,7 @@ public class AdvertRegistrationController  {
      */
 
     @PostMapping()
+    @Operation(summary = "Create an advert with a given request body")
     public  ResponseEntity<?> registerAdvert(@Valid @RequestBody final AdvertCreateDto advertCreateDto) {
 
         if (advertCreateDto == null || advertCreateDto.getTitle() == null || advertCreateDto.getDescription() == null)

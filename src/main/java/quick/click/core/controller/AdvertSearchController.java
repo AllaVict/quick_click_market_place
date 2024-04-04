@@ -1,5 +1,7 @@
 package quick.click.core.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,7 @@ import static quick.click.core.controller.AdvertSearchController.BASE_URL;
 
 @RestController
 @RequestMapping(BASE_URL)
+@Tag(name = "Advert Search Controller", description = "AdvertSearch API")
 public class AdvertSearchController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdvertSearchController.class);
@@ -35,10 +38,9 @@ public class AdvertSearchController {
 
     /**
      * GET   http://localhost:8081/v1.0/adverts/1
-     @GetMapping("/adverts/{id}")
-     public AdvertReadDto findById(@PathVariable("id") Long id) {
      */
     @GetMapping("/{id}")
+    @Operation(summary = "Find advert by id")
     public ResponseEntity<AdvertReadDto> findAdvertById(@PathVariable("id") final Long advertId) {
 
           final AdvertReadDto advertReadDto = Optional.ofNullable(advertSearchService.findAdvertById(advertId))
@@ -52,10 +54,9 @@ public class AdvertSearchController {
 
     /**
      GET    http://localhost:8081/v1.0/adverts
-     @GetMapping("/adverts")
-     public ResponseEntity<List<AdvertReadDto>> findAll(){
      */
     @GetMapping()
+    @Operation(summary = "Find all adverts")
     public ResponseEntity<?> findAllAdverts() {
 
         final List<AdvertReadDto> advertReadDtoList =advertSearchService.findAllAdverts();
@@ -69,6 +70,20 @@ public class AdvertSearchController {
 
     }
 
+    @GetMapping("/user/{id}")
+    @Operation(summary = "Find all adverts by user id")
+    public ResponseEntity<?> findAllAdvertsByUserId(@PathVariable("id") final Long userId) {
+
+        final List<AdvertReadDto> advertReadDtoList =advertSearchService.findAllAdvertsByUserId(userId);
+
+        if (advertReadDtoList.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Empty list");
+        }
+        LOGGER.debug("In findAllAdvertsByUserId find all adverts for the user with id: {}", userId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(advertReadDtoList);
+
+    }
 }
 
 

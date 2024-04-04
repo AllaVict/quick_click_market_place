@@ -38,7 +38,7 @@ class UserRepositoryTest {
     }
 
     @Nested
-    @DisplayName("When find User By Email")
+    @DisplayName("When find user by email")
     class FindUserByEmailTests {
         @Test
         void testFindUserByEmail_shouldReturnExistingUserWithGivenEmail() {
@@ -59,7 +59,7 @@ class UserRepositoryTest {
 
     }
     @Nested
-    @DisplayName("When User Exists with Email")
+    @DisplayName("When user exists with email")
     class ExistsByEmailTests {
         @Test
         void testExistsByEmail_shouldReturnTrue() {
@@ -78,7 +78,7 @@ class UserRepositoryTest {
     }
 
     @Nested
-    @DisplayName("When Find User by Id")
+    @DisplayName("When find user by id")
     class FindUserByIdTests {
 
         @Test
@@ -99,7 +99,7 @@ class UserRepositoryTest {
         }
     }
     @Nested
-    @DisplayName("When Find All User")
+    @DisplayName("When find all user")
     class FindALlUseTests {
 
         @Test
@@ -125,7 +125,7 @@ class UserRepositoryTest {
     }
 
     @Nested
-    @DisplayName("When Delete User By Id")
+    @DisplayName("When delete user by id")
     class DeleteUserByIdTests {
         @Test
         void testDeleteUserById_shouldDeleteUserById() {

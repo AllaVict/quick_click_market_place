@@ -1,5 +1,7 @@
 package quick.click.core.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +18,7 @@ import static quick.click.core.controller.AdvertEditingController.BASE_URL;
 
 @RestController
 @RequestMapping(BASE_URL)
+@Tag(name = "Advert Editing Controller", description = "AdvertEditing API")
 public class AdvertEditingController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdvertEditingController.class);
@@ -30,8 +33,6 @@ public class AdvertEditingController {
 
     /**
      PUT   http://localhost:8081/v1.0/adverts/3
-     @PutMapping("/adverts/{id}")
-     public ResponseEntity<AdvertReadDto> updateProduct(@PathVariable("id") Long id, @RequestBody AdvertEditingDto request)
      {
      "title": "Big dog",
      "description": "description a toy Big dog",
@@ -44,14 +45,12 @@ public class AdvertEditingController {
      "address": "Dania",
      "userId": "1"
      }
-     ????????????????
-     private Long userId;
-     images
      */
 
     @PutMapping("{id}")
+    @Operation(summary = "Update an advert by id and a given request body")
     public ResponseEntity<?> editAdvert(@PathVariable("id") final Long advertId,
-                                                    @Valid @RequestBody final AdvertEditingDto advertEditingDto) {
+                                        @Valid @RequestBody final AdvertEditingDto advertEditingDto) {
 
         if (advertId == null || advertEditingDto==null || advertEditingDto.getTitle() == null || advertEditingDto.getDescription() == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please fill all fields");
@@ -65,10 +64,9 @@ public class AdvertEditingController {
 
     /**
      Delete    http://localhost:8080/v1.0/adverts/3
-     @DeleteMapping("/adverts/{id}")
-     public ResponseEntity<DeleteProductResponse> deleteProduct(@PathVariable("id") Long id)
      */
     @DeleteMapping ("{id}")
+    @Operation(summary = "Delete an advert by id")
     public ResponseEntity<String> deleteAdvert(@PathVariable("id") final Long advertId) {
 
        advertEditingService.deleteAdvert(advertId);

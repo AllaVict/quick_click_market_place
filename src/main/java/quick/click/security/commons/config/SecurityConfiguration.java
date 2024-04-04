@@ -88,7 +88,8 @@ public class SecurityConfiguration {
                                 matcher.pattern("/v1.0/adverts"),
                                 matcher.pattern("/v1.0/adverts/*"),
                                 matcher.pattern("/oauth2/*"),
-                                matcher.pattern("/swagger-ui/*")
+                                matcher.pattern("/swagger-ui/*"),
+                                matcher.pattern("/v3/api-docs/**")
                         ).permitAll()
                         // .requestMatchers("/v1.0/**").hasAuthority("ADMIN")
                         .requestMatchers("/auth/admin").hasRole("ADMIN")

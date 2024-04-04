@@ -42,7 +42,7 @@ class AdvertRegistrationControllerTest {
     }
 
     @Nested
-    @DisplayName("When Register a Advert")
+    @DisplayName("When register an advert")
     class RegisterAdvertTests {
         @Test
         void testRegisterAdvert_ShouldReturnAdvertReadDTO() {

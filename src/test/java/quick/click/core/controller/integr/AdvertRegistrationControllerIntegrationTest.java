@@ -34,7 +34,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 
 @WithMockUser
 @WebMvcTest(AdvertRegistrationController.class)
-@DisplayName("INT_AdvertRegistrationController")
+@DisplayName("AdvertRegistrationController")
 class AdvertRegistrationControllerIntegrationTest {
 
     @Autowired

@@ -1,5 +1,6 @@
 package quick.click.security.core.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,6 +14,7 @@ import quick.click.security.core.service.UserRegistrationService;
 import static quick.click.commons.util.WebUtil.getFullRequestUri;
 
 @RestController
+@Tag(name = "UserAuthorized Controller", description = "UserAuthorized API")
 public class UserAuthorizedController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserAuthorizedController.class);

@@ -39,7 +39,7 @@ import static quick.click.config.factory.AdvertFactory.createAdvert;
 
 @WithMockUser
 @WebMvcTest(AdvertEditingController.class)
-@DisplayName("INT_AdvertEditingControllerTest")
+@DisplayName("AdvertEditingController")
 public class AdvertEditingControllerIntegrationTest {
 
     @Autowired

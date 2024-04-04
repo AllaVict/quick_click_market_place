@@ -1,5 +1,6 @@
 package quick.click.core.controller.integr;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -9,7 +10,9 @@ import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -23,6 +26,7 @@ import quick.click.core.service.AdvertSearchService;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -37,7 +41,7 @@ import static quick.click.config.factory.AdvertFactory.createAdvert;
 
 @WithMockUser
 @WebMvcTest(AdvertSearchController.class)
-@DisplayName("INT_AdvertSearchControllerIntegration")
+@DisplayName("AdvertSearchController")
 class AdvertSearchControllerIntegrationTest {
 
     @Autowired
@@ -49,12 +53,15 @@ class AdvertSearchControllerIntegrationTest {
     @MockBean
     private AdvertSearchService advertSearchService;
 
-    private static final long ADVERT_ID = 101L;
-
     @InjectMocks
     private AdvertRegistrationController advertRegistrationController;
 
+    private static final long ADVERT_ID = 101L;
+
+    private static final long USER_ID = 101L;
+
     private Advert advert;
+
     private AdvertReadDto advertReadDto;
 
     private List<AdvertReadDto> advertReadDtoList;
@@ -75,7 +82,7 @@ class AdvertSearchControllerIntegrationTest {
     }
 
     @Nested
-    @DisplayName("When Find Advert By Id")
+    @DisplayName("When find an advert by id")
     class FindAdvertByIdTests {
         @Test
         void testFindAdvertById_ShouldReturnAdvertReadDTO() throws Exception {
@@ -118,7 +125,7 @@ class AdvertSearchControllerIntegrationTest {
     }
 
     @Nested
-    @DisplayName("When Find All Adverts")
+    @DisplayName("When find all adverts")
     class FindAllAdvertsTests {
 
         @Test
@@ -156,6 +163,39 @@ class AdvertSearchControllerIntegrationTest {
                             .content(objectMapper.writeValueAsString(advertReadDtoList)))
                     .andDo(print())
                     .andExpect(status().isBadRequest());
+        }
+
+    }
+
+    @Nested
+    @DisplayName("When find all adverts by user id ")
+    class FindAllAdvertsByUserIdTests {
+
+        @Test
+        void testFindAllAdvertsByUserId_shouldReturnAllAdverts() throws Exception {
+            advertReadDtoList = List.of(advertReadDto, advertReadDto);
+            when(advertSearchService.findAllAdvertsByUserId(USER_ID)).thenReturn(advertReadDtoList);
+
+            mockMvc.perform(get(VERSION_1_0+"/user/"+USER_ID)
+                            //with(csrf())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(advertReadDtoList)))
+                    .andDo(print())
+                    .andExpect(status().isNotFound());
+        }
+
+        @Test
+        void testFindAllAdvertsByUserId_shouldThrowException() throws Exception {
+            advertReadDtoList =new ArrayList<>();
+            when(advertSearchService.findAllAdvertsByUserId(USER_ID)).thenReturn(advertReadDtoList);
+
+            mockMvc.perform(get(VERSION_1_0+"/user/"+USER_ID)
+                            //with(csrf())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(advertReadDtoList)))
+                    .andDo(print())
+                    .andExpect(status().isNotFound());
+
         }
 
     }

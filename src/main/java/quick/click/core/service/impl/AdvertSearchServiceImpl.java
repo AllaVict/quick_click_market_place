@@ -45,10 +45,22 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
                 .map(typeConverterReadDto::convert)
                 .toList();
 
-        LOGGER.debug("In findAdvertById find all Advert");
+        LOGGER.debug("In findAdvertById find all adverts");
 
         return advertReadDtoList;
     }
 
+    @Override
+    public List<AdvertReadDto> findAllAdvertsByUserId(Long userId) {
+
+      final List<AdvertReadDto> advertReadDtoList =  advertRepository.findAllAdvertsByUserId(userId)
+                .stream()
+                .map(typeConverterReadDto::convert)
+                .toList();
+
+        LOGGER.debug("In findAllAdvertsByUserId find all adverts for the user with id: {}", userId);
+
+        return advertReadDtoList;
+    }
 
 }

@@ -22,6 +22,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static quick.click.config.factory.AdvertDtoFactory.createAdvertReadDto;
 import static quick.click.config.factory.AdvertFactory.createAdvert;
@@ -40,6 +41,8 @@ class AdvertSearchControllerTest {
 
     private static final long ADVERT_ID = 101L;
 
+    private static final long USER_ID = 101L;
+
     private Advert advert;
 
     private AdvertReadDto advertReadDto;
@@ -54,7 +57,7 @@ class AdvertSearchControllerTest {
     }
 
     @Nested
-    @DisplayName("When Find Advert By Id")
+    @DisplayName("When find an advert by id")
     class FindAdvertByIdTests {
         @Test
         void testFindAdvertById_ShouldReturnAdvertReadDTO() {
@@ -75,7 +78,7 @@ class AdvertSearchControllerTest {
         }
 
     @Nested
-    @DisplayName("When Find All Adverts")
+    @DisplayName("When find all adverts")
     class FindAllAdvertsTests {
 
         @Test
@@ -95,6 +98,34 @@ class AdvertSearchControllerTest {
             when(advertSearchService.findAllAdverts()).thenReturn(advertReadDtoList);
 
             ResponseEntity<?> responseEntity = advertSearchController.findAllAdverts();
+
+            assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+
+        }
+
+    }
+
+    @Nested
+    @DisplayName("When find all adverts by user id ")
+    class FindAllAdvertsByUserIdTests {
+
+        @Test
+        void testFindAllAdvertsByUserId_shouldReturnAllAdverts() {
+            advertReadDtoList = List.of(advertReadDto, advertReadDto);
+            when(advertSearchService.findAllAdvertsByUserId(USER_ID)).thenReturn(advertReadDtoList);
+
+            ResponseEntity<?> responseEntity = advertSearchController.findAllAdvertsByUserId(USER_ID);
+
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+            assertEquals(advertReadDtoList, responseEntity.getBody());
+        }
+
+        @Test
+        void testFindAllAdvertsByUserId_shouldThrowException() {
+            advertReadDtoList =new ArrayList<>();
+            when(advertSearchService.findAllAdvertsByUserId(USER_ID)).thenReturn(advertReadDtoList);
+
+            ResponseEntity<?> responseEntity = advertSearchController.findAllAdvertsByUserId(USER_ID);
 
             assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
 

@@ -9,4 +9,6 @@ public interface AdvertSearchService {
 
     List<AdvertReadDto> findAllAdverts();
 
+    List<AdvertReadDto> findAllAdvertsByUserId(Long userId);
+
 }
