@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.core.domain.dto.AdvertEditingDto;
 import quick.click.core.domain.dto.AdvertReadDto;
 import quick.click.core.service.AdvertEditingService;
@@ -46,7 +47,6 @@ public class AdvertEditingController {
      "userId": "1"
      }
      */
-
     @PutMapping("{id}")
     @Operation(summary = "Update an advert by id and a given request body")
     public ResponseEntity<?> editAdvert(@PathVariable("id") final Long advertId,
@@ -55,11 +55,33 @@ public class AdvertEditingController {
         if (advertId == null || advertEditingDto==null || advertEditingDto.getTitle() == null || advertEditingDto.getDescription() == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please fill all fields");
 
-        final AdvertReadDto advertReadDto = advertEditingService.editAdvert(advertId, advertEditingDto);
+        try {
+            final AdvertReadDto advertReadDto = advertEditingService.editAdvert(advertId, advertEditingDto);
+            LOGGER.debug("In editAdvert received PUT advert edit successfully with id {}", advertId);
+            return ResponseEntity.status(HttpStatus.OK).body(advertReadDto);
 
-        LOGGER.debug("In editAdvert received POST advert edit successfully with id {} ",advertId);
+        } catch (ResourceNotFoundException exception) {
+            LOGGER.error("Advert not found with id : '{}'", advertId, exception);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+        }
+    }
 
-        return ResponseEntity.status(HttpStatus.OK).body(advertReadDto);
+    @PutMapping("/archive/{id}")
+    @Operation(summary = "Archive an advert by id")
+    public ResponseEntity<?> archiveAdvert(@PathVariable("id") final Long advertId) {
+
+     if (advertId == null)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please fill all fields");
+
+       try {
+            final AdvertReadDto advertReadDto = advertEditingService.archiveAdvert(advertId);
+            LOGGER.debug("In archiveAdvert received PUT advert has archived successfully with id {} ",advertId);
+            return ResponseEntity.status(HttpStatus.OK).body(advertReadDto);
+
+        } catch (ResourceNotFoundException exception) {
+            LOGGER.error("Advert not found with id : '{}'", advertId, exception);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+        }
     }
 
     /**
@@ -69,11 +91,18 @@ public class AdvertEditingController {
     @Operation(summary = "Delete an advert by id")
     public ResponseEntity<String> deleteAdvert(@PathVariable("id") final Long advertId) {
 
-       advertEditingService.deleteAdvert(advertId);
+        if (advertId == null)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please fill all fields");
 
-       LOGGER.debug("In editAdvert received DELETE advert delete successfully with id {} ", advertId);
+        try {
+            advertEditingService.deleteAdvert(advertId);
+            LOGGER.debug("In editAdvert received DELETE advert delete successfully with id {} ", advertId);
+            return ResponseEntity.status(HttpStatus.OK).body("The Advert has deleted successfully");
 
-       return ResponseEntity.status(HttpStatus.OK).body("The Advert has deleted successfully");
+        } catch (ResourceNotFoundException exception) {
+            LOGGER.error("Advert not found with id : '{}'", advertId, exception);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+        }
     }
 
 }

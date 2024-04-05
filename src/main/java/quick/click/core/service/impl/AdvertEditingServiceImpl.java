@@ -8,6 +8,7 @@ import quick.click.core.converter.TypeConverter;
 import quick.click.core.domain.dto.AdvertEditingDto;
 import quick.click.core.domain.dto.AdvertReadDto;
 import quick.click.core.domain.model.Advert;
+import quick.click.core.enums.AdvertStatus;
 import quick.click.core.repository.AdvertRepository;
 import quick.click.core.repository.FileReferenceRepository;
 import quick.click.core.service.AdvertEditingService;
@@ -15,6 +16,7 @@ import quick.click.core.service.AdvertEditingService;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static quick.click.core.enums.AdvertStatus.ARCHIVED;
 import static quick.click.core.enums.AdvertStatus.PUBLISHED;
 
 @Service
@@ -37,6 +39,8 @@ public class AdvertEditingServiceImpl implements AdvertEditingService {
 
     }
 
+
+
     @Override
     public AdvertReadDto editAdvert(final Long advertId, final AdvertEditingDto advertEditingDto) {
 
@@ -44,11 +48,28 @@ public class AdvertEditingServiceImpl implements AdvertEditingService {
         if(advertForUpdate.isEmpty())
             advertForUpdate.orElseThrow(() -> new ResourceNotFoundException("Advert", "id", advertId));
 
-        LOGGER.debug("Updating success advert with id {}", advertId);
-
         advertEditingDto.setStatus(PUBLISHED);
+
+        LOGGER.debug("In editAdvert advert has updated successfully with id {} ",advertId);
+
         return  advertForUpdate
                 .map(advert -> this.updateAdvertData(advert, advertEditingDto))
+                .map(advertRepository::saveAndFlush)
+                .map(typeConverterReadDto::convert)
+                .orElseThrow();
+    }
+
+    @Override
+    public AdvertReadDto archiveAdvert(Long advertId) {
+
+        final Optional<Advert> advertToArchive = advertRepository.findById(advertId);
+        if(advertToArchive.isEmpty())
+            advertToArchive.orElseThrow(() -> new ResourceNotFoundException("Advert", "id", advertId));
+
+        LOGGER.debug("In archiveAdvert advert has archived successfully with id {} ",advertId);
+
+        return  advertToArchive
+                .map(this::archive)
                 .map(advertRepository::saveAndFlush)
                 .map(typeConverterReadDto::convert)
                 .orElseThrow();
@@ -88,6 +109,11 @@ public class AdvertEditingServiceImpl implements AdvertEditingService {
         advert.setAddress(advertEditingDto.getAddress());
         advert.setCreatedDate(advertEditingDto.getCreatedDate());
         advert.setUpdatedDate(LocalDateTime.now());
+        return advert;
+    }
+
+    private Advert archive(Advert advert) {
+        advert.setStatus(ARCHIVED);
         return advert;
     }
 

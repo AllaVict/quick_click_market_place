@@ -13,6 +13,7 @@ import quick.click.core.converter.impl.AdvertToAdvertReadDtoConverter;
 import quick.click.core.domain.dto.AdvertEditingDto;
 import quick.click.core.domain.dto.AdvertReadDto;
 import quick.click.core.domain.model.Advert;
+import quick.click.core.enums.AdvertStatus;
 import quick.click.core.repository.AdvertRepository;
 import quick.click.core.repository.FileReferenceRepository;
 
@@ -25,6 +26,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import static quick.click.config.factory.AdvertDtoFactory.*;
 import static quick.click.config.factory.AdvertFactory.createAdvert;
+import static quick.click.core.enums.AdvertStatus.ARCHIVED;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("AdvertEditingServiceImpl")
@@ -89,6 +91,31 @@ class AdvertEditingServiceImplTest {
 
     }
 
+    @Nested
+    @DisplayName("When archive an advert")
+    class  ArchiveAdvertTests {
+        @Test
+        void testArchiveAdvert_shouldReturnAdvertReadDto() {
+            advertReadDto.setStatus(ARCHIVED);
+            when(advertRepository.findById(ADVERT_ID)).thenReturn(Optional.of(advert));
+            when(advertRepository.saveAndFlush(advert)).thenReturn(advert);
+            when(typeConverterReadDto.convert(advert)).thenReturn(advertReadDto);
+
+            AdvertReadDto result = advertEditingService.archiveAdvert(ADVERT_ID);
+
+            assertEquals(advertReadDto, result);
+            assertNotNull(result);
+            verify(advertRepository).saveAndFlush(any(Advert.class));
+            assertThat(result.getStatus()).isEqualTo(advertReadDto.getStatus());
+        }
+
+        @Test
+        void testArchiveAdvert_shouldThrowException() {
+            assertThrows(ResourceNotFoundException.class,
+                    () -> advertEditingService.archiveAdvert(ADVERT_ID));
+        }
+
+    }
     @Nested
     @DisplayName("When delete an advert")
     class DeleteAdvertTests {

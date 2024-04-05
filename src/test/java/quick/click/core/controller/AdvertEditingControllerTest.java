@@ -10,18 +10,22 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import quick.click.commons.exeptions.ResourceNotFoundException;
+import quick.click.core.domain.dto.AdvertCreateDto;
 import quick.click.core.domain.dto.AdvertEditingDto;
 import quick.click.core.domain.dto.AdvertReadDto;
 import quick.click.core.domain.model.Advert;
 import quick.click.core.service.AdvertEditingService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
 import static quick.click.config.factory.AdvertDtoFactory.createAdvertEditingDto;
 import static quick.click.config.factory.AdvertDtoFactory.createAdvertReadDto;
 import static quick.click.config.factory.AdvertFactory.createAdvert;
+import static quick.click.core.enums.AdvertStatus.ARCHIVED;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("AdvertEditingController")
@@ -60,6 +64,59 @@ class AdvertEditingControllerTest {
             assertEquals(advertReadDto, responseEntity.getBody());
         }
 
+        @Test
+        void testEditAdvert_InvalidData() {
+            advertEditingDto = new AdvertEditingDto();
+
+            ResponseEntity<?> responseEntity = advertEditingController.editAdvert(ADVERT_ID, advertEditingDto);
+
+            assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        }
+
+        @Test
+        void testEditAdvert_AdvertIdDoesNotExist() {
+            when(advertEditingService.editAdvert(eq(ADVERT_ID), any(AdvertEditingDto.class)))
+                    .thenThrow(new ResourceNotFoundException("Advert", "id", ADVERT_ID));
+
+            ResponseEntity<?> responseEntity = advertEditingController.editAdvert(ADVERT_ID, advertEditingDto);
+
+            assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        }
+
+    }
+
+    @Nested
+    @DisplayName("When archive an advert")
+    class  ArchiveAdvertTests {
+        @Test
+        void testArchiveAdvert_shouldReturnAdvertReadDto() {
+            advertReadDto.setStatus(ARCHIVED);
+            when(advertEditingService.archiveAdvert(ADVERT_ID)).thenReturn(advertReadDto);
+
+            ResponseEntity<?> responseEntity = advertEditingController.archiveAdvert(ADVERT_ID);
+
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+            assertEquals(advertReadDto, responseEntity.getBody());
+        }
+
+        @Test
+        void testArchiveAdvert_InvalidData() {
+
+            ResponseEntity<?> responseEntity = advertEditingController.archiveAdvert(null);
+
+            assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        }
+
+        @Test
+        void testArchiveAdvert_AdvertIdDoesNotExist() {
+            when(advertEditingService.archiveAdvert(ADVERT_ID))
+                    .thenThrow(new ResourceNotFoundException("Advert", "id", ADVERT_ID));
+
+            ResponseEntity<?> responseEntity = advertEditingController.archiveAdvert(ADVERT_ID);
+
+            assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        }
+
     }
 
     @Nested
@@ -74,6 +131,23 @@ class AdvertEditingControllerTest {
             assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
             assertEquals("The Advert has deleted successfully", responseEntity.getBody());
         }
+        @Test
+        void testDeleteAdvert_AdvertIdDoesNotExist() {
+            doThrow(new ResourceNotFoundException("Advert", "id", ADVERT_ID))
+                    .when(advertEditingService).deleteAdvert(ADVERT_ID);
 
+            ResponseEntity<String> responseEntity = advertEditingController.deleteAdvert(ADVERT_ID);
+
+            assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        }
+
+        @Test
+        void testDeleteAdvert_UnauthorizedUser() {
+            // Mocking unauthorized access
+//            doThrow(new AuthorizationException("Unauthorized access"))
+//                    .when(advertEditingService).deleteAdvert(ADVERT_ID);
+//            ResponseEntity<String> responseEntity = advertEditingController.deleteAdvert(ADVERT_ID);
+//            assertEquals(HttpStatus.FORBIDDEN, responseEntity.getStatusCode());
+        }
     }
 }
