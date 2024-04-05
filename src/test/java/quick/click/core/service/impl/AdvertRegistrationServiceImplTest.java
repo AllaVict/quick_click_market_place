@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataAccessException;
 import quick.click.core.converter.impl.AdvertCreateDtoToAdvertConverter;
 import quick.click.core.converter.impl.AdvertToAdvertReadDtoConverter;
 import quick.click.core.domain.dto.AdvertCreateDto;
@@ -67,6 +68,28 @@ class AdvertRegistrationServiceImplTest {
             assertNotNull(result);
         }
         @Test
+        void testRegisterAdvert_ConversionFailure() {
+            when(typeConverterCreateDto.convert(advertCreateDto)).thenThrow(new IllegalArgumentException("Invalid advert data"));
+
+            Exception exception = assertThrows(IllegalArgumentException.class, () -> advertRegistrationService.registerAdvert(advertCreateDto));
+            assertEquals("Invalid advert data", exception.getMessage());
+
+            verify(advertRepository, never()).saveAndFlush(any(Advert.class));
+            verify(typeConverterReadDto, never()).convert(any(Advert.class));
+        }
+
+        @Test
+        void testRegisterAdvert_RepositorySaveFailure() {
+            when(typeConverterCreateDto.convert(advertCreateDto)).thenReturn(advert);
+            when(advertRepository.saveAndFlush(advert)).thenThrow(new DataAccessException("Database error") {});
+
+            assertThrows(DataAccessException.class, () -> advertRegistrationService.registerAdvert(advertCreateDto), "Expected DataAccessException to be thrown");
+
+            verify(advertRepository).saveAndFlush(advert);
+            verify(typeConverterReadDto, never()).convert(any(Advert.class));
+        }
+
+        @Test
         void testRegisterAdvert_shouldThrowException() {
 
             assertThrows(NoSuchElementException.class,
@@ -77,3 +100,5 @@ class AdvertRegistrationServiceImplTest {
     }
 
 }
+
+

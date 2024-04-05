@@ -78,6 +78,17 @@ class AdvertEditingServiceImplTest {
             assertEquals(advert, result);
             assertThat(result.getTitle()).isEqualTo(advert.getTitle());
         }
+
+        @Test
+        void testEditAdvert_AdvertDoesNotExist() {
+            when(advertRepository.findById(ADVERT_ID)).thenReturn(Optional.empty());
+
+            assertThrows(ResourceNotFoundException.class,
+                    () -> advertEditingService.editAdvert(ADVERT_ID, advertEditingDto));
+
+            verify(advertRepository, never()).save(any(Advert.class));
+        }
+
         @Test
         void testEditAdvert_shouldThrowException() {
             assertThrows(ResourceNotFoundException.class,
@@ -105,6 +116,16 @@ class AdvertEditingServiceImplTest {
         }
 
         @Test
+        void testArchiveAdvert_AdvertDoesNotExist() {
+            when(advertRepository.findById(ADVERT_ID)).thenReturn(Optional.empty());
+
+            assertThrows(ResourceNotFoundException.class,
+                    () -> advertEditingService.archiveAdvert(ADVERT_ID));
+
+            verify(advertRepository, never()).save(any(Advert.class));
+        }
+
+        @Test
         void testArchiveAdvert_shouldThrowException() {
             assertThrows(ResourceNotFoundException.class,
                     () -> advertEditingService.archiveAdvert(ADVERT_ID));
@@ -123,6 +144,17 @@ class AdvertEditingServiceImplTest {
 
             verify(advertRepository, times(1)).delete(advert);
        }
+
+        @Test
+        void testDeleteAdvert_AdvertDoesNotExist() {
+            when(advertRepository.findById(ADVERT_ID)).thenReturn(Optional.empty());
+
+            assertThrows(ResourceNotFoundException.class,
+                    () -> advertEditingService.deleteAdvert(ADVERT_ID));
+
+            verify(advertRepository, never()).delete(any(Advert.class));
+        }
+
         @Test
         void testDeleteAdvert_shouldThrowException() {
 

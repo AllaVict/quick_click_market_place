@@ -17,19 +17,18 @@ import org.springframework.web.context.WebApplicationContext;
 import quick.click.core.controller.AdvertRegistrationController;
 import quick.click.core.domain.dto.AdvertCreateDto;
 import quick.click.core.domain.dto.AdvertReadDto;
-import quick.click.core.domain.model.Advert;
 import quick.click.core.service.AdvertRegistrationService;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static quick.click.commons.constants.ApiVersion.VERSION_1_0;
 import static quick.click.commons.constants.Constants.Endpoints.ADVERTS_URL;
 import static quick.click.config.factory.AdvertDtoFactory.createAdvertCreateDto;
 import static quick.click.config.factory.AdvertDtoFactory.createAdvertReadDto;
-import static quick.click.config.factory.AdvertFactory.createAdvert;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 @WithMockUser
@@ -48,8 +47,6 @@ class AdvertRegistrationControllerIntegrationTest {
 
     @InjectMocks
     private AdvertRegistrationController advertRegistrationController;
-
-    private Advert advert;
     private AdvertReadDto advertReadDto;
 
     private AdvertCreateDto advertCreateDto;
@@ -65,7 +62,6 @@ class AdvertRegistrationControllerIntegrationTest {
     }
     @BeforeEach
     void setUp() {
-        advert = createAdvert();
         advertReadDto = createAdvertReadDto();
         advertCreateDto = createAdvertCreateDto();
     }
@@ -78,7 +74,7 @@ class AdvertRegistrationControllerIntegrationTest {
         void testRegisterAdvert_ShouldReturnAdvertReadDTO() throws Exception {
             given(advertRegistrationService.registerAdvert(advertCreateDto)).willReturn(advertReadDto);
 
-            mockMvc.perform(post(VERSION_1_0 + ADVERTS_URL) //"/v1.0/adverts"
+            mockMvc.perform(post(VERSION_1_0 + ADVERTS_URL)
                             .with(csrf())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(advertCreateDto)))
@@ -87,14 +83,27 @@ class AdvertRegistrationControllerIntegrationTest {
         }
 
         @Test
-        void testRegisterAdvert_InvalidData() throws Exception {
+        void testRegisterAdvert_InvalidData_AdvertDtoIsNull() throws Exception {
             advertCreateDto= null;
-            mockMvc.perform(post(VERSION_1_0 + ADVERTS_URL) //"/v1.0/adverts"
+            mockMvc.perform(post(VERSION_1_0 + ADVERTS_URL)
                             .with(csrf())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(advertCreateDto)))
                     .andDo(print())
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isBadRequest())
+                    .andExpect(result -> result.getResponse().getContentAsString().equals("Please fill all fields"));
+        }
+
+        @Test
+        void testRegisterAdvert_InvalidData_FieldsAreNull() throws Exception {
+            AdvertCreateDto invalidDto = new AdvertCreateDto();
+
+            mockMvc.perform(post(VERSION_1_0 + ADVERTS_URL)
+                            .with(csrf())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(new ObjectMapper().writeValueAsString(invalidDto)))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$").value(containsString("Please fill all fields")));
         }
 
     }

@@ -2,7 +2,6 @@ package quick.click.core.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import quick.click.commons.exeptions.AdvertRegistrationException;
 import quick.click.core.domain.dto.AdvertCreateDto;
 import quick.click.core.domain.dto.AdvertReadDto;
 import quick.click.core.service.AdvertRegistrationService;
@@ -35,8 +35,7 @@ public class AdvertRegistrationController  {
 
     /**
      * POST   http://localhost:8080/v1.0/adverts
-     @PostMapping("/adverts/{id}")
-     ResponseEntity<AdvertReadDto> createProduct(@RequestBody AdvertCreateDto request)
+
      {
      "title": "Big dog",
      "description": "description a toy Big dog",
@@ -48,23 +47,32 @@ public class AdvertRegistrationController  {
      "currency": "EUR"
      "address": "Dania"
      "user_id": "1"
-     }
      */
 
     @PostMapping()
     @Operation(summary = "Create an advert with a given request body")
-    public  ResponseEntity<?> registerAdvert(@Valid @RequestBody final AdvertCreateDto advertCreateDto) {
+    public ResponseEntity<?> registerAdvert(@RequestBody AdvertCreateDto advertCreateDto) {
 
         if (advertCreateDto == null || advertCreateDto.getTitle() == null || advertCreateDto.getDescription() == null)
-         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please fill all fields");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please fill all fields");
 
-       final AdvertReadDto advertReadDto = advertRegistrationService.registerAdvert(advertCreateDto);
+        try {
 
-        LOGGER.debug("In registerAdvert received POST advert register successfully with id {} ", advertReadDto.getId());
+            AdvertReadDto advertReadDto = advertRegistrationService.registerAdvert(advertCreateDto);
+            LOGGER.debug("In registerAdvert received POST advert register successfully with id {}", advertReadDto.getId());
+            return ResponseEntity.status(HttpStatus.CREATED).body(advertReadDto);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(advertReadDto);
+        } catch (AdvertRegistrationException exception) {
 
+            LOGGER.error("Error during advert registration: {}", exception.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+
+        } catch (Exception exception) {
+
+            LOGGER.error("Unexpected error during advert registration: {}", exception.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
+
+        }
     }
-
 }
 

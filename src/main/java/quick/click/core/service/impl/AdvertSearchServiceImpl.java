@@ -3,6 +3,7 @@ package quick.click.core.service.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.core.converter.TypeConverter;
 import quick.click.core.domain.dto.AdvertReadDto;
 import quick.click.core.domain.model.Advert;
@@ -30,7 +31,8 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
     public AdvertReadDto findAdvertById(final Long advertId) {
 
         final AdvertReadDto advertReadDto =  advertRepository.findById(advertId)
-                .map(typeConverterReadDto::convert).orElseThrow();
+                .map(typeConverterReadDto::convert)
+                .orElseThrow(() -> new ResourceNotFoundException("Advert", "id", advertId));
 
         LOGGER.debug("In findAdvertById find the Advert with id {}", advertReadDto.getId());
 

@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.core.domain.dto.AdvertReadDto;
 import quick.click.core.service.AdvertSearchService;
 
 import java.util.List;
-import java.util.Optional;
 
 import static quick.click.commons.constants.ApiVersion.VERSION_1_0;
 import static quick.click.commons.constants.Constants.Endpoints.ADVERTS_URL;
@@ -43,46 +43,63 @@ public class AdvertSearchController {
     @Operation(summary = "Find advert by id")
     public ResponseEntity<AdvertReadDto> findAdvertById(@PathVariable("id") final Long advertId) {
 
-          final AdvertReadDto advertReadDto = Optional.ofNullable(advertSearchService.findAdvertById(advertId))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        try {
+            final AdvertReadDto advertReadDto = advertSearchService.findAdvertById(advertId);
+            LOGGER.debug("In findAdvertById received GET find the advert successfully with id {} ", advertReadDto.getId());
+            return ResponseEntity.status(HttpStatus.OK).body(advertReadDto);
 
-        LOGGER.debug("In findAdvertById received GET find the advert successfully with id {} ", advertReadDto.getId());
-
-        return ResponseEntity.status(HttpStatus.OK).body(advertReadDto);
-
+        } catch (ResourceNotFoundException exception) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Advert not found with id: " + advertId, exception);
+        } catch (Exception exception) {
+            LOGGER.error("Error finding advert by id {}", advertId, exception);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error", exception);
+        }
     }
 
     /**
      GET    http://localhost:8081/v1.0/adverts
      */
+
     @GetMapping()
     @Operation(summary = "Find all adverts")
     public ResponseEntity<?> findAllAdverts() {
 
-        final List<AdvertReadDto> advertReadDtoList =advertSearchService.findAllAdverts();
+        try {
+            final List<AdvertReadDto> advertReadDtoList = advertSearchService.findAllAdverts();
+            if (advertReadDtoList.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Empty list");
+            }
 
-        if (advertReadDtoList.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Empty list");
+            LOGGER.debug("In findAllAdvert received GET find all advert successfully ");
+
+            return ResponseEntity.status(HttpStatus.OK).body(advertReadDtoList);
+
+        } catch (Exception ex) {
+
+            LOGGER.error("Error finding all adverts", ex);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error", ex);
         }
-        LOGGER.debug("In findAllAdvert received GET find all advert successfully ");
-
-        return ResponseEntity.status(HttpStatus.OK).body(advertReadDtoList);
-
     }
 
     @GetMapping("/user/{id}")
     @Operation(summary = "Find all adverts by user id")
     public ResponseEntity<?> findAllAdvertsByUserId(@PathVariable("id") final Long userId) {
 
-        final List<AdvertReadDto> advertReadDtoList =advertSearchService.findAllAdvertsByUserId(userId);
+        try {
 
-        if (advertReadDtoList.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Empty list");
+            final List<AdvertReadDto> advertReadDtoList =advertSearchService.findAllAdvertsByUserId(userId);
+            if (advertReadDtoList.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No adverts found for user id: " + userId);
+            }
+            LOGGER.debug("In findAllAdvertsByUserId find all adverts for the user with id: {}", userId);
+
+            return ResponseEntity.status(HttpStatus.OK).body(advertReadDtoList);
+
+        } catch (Exception exception) {
+
+            LOGGER.error("Error finding adverts by user id {}", userId, exception);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error", exception);
         }
-        LOGGER.debug("In findAllAdvertsByUserId find all adverts for the user with id: {}", userId);
-
-        return ResponseEntity.status(HttpStatus.OK).body(advertReadDtoList);
-
     }
 }
 

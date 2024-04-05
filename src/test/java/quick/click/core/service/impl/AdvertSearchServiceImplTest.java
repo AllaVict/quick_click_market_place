@@ -8,27 +8,21 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import quick.click.config.factory.UserDtoFactory;
-import quick.click.config.factory.UserFactory;
-import quick.click.core.converter.TypeConverter;
+import org.springframework.dao.DataAccessException;
+import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.core.converter.impl.AdvertToAdvertReadDtoConverter;
-import quick.click.core.converter.impl.UserToUserReadDtoConverter;
 import quick.click.core.domain.dto.AdvertReadDto;
-import quick.click.core.domain.dto.UserReadDto;
 import quick.click.core.domain.model.Advert;
-import quick.click.core.domain.model.User;
 import quick.click.core.repository.AdvertRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static quick.click.config.factory.AdvertDtoFactory.createAdvertReadDto;
 import static quick.click.config.factory.AdvertFactory.createAdvert;
 
@@ -53,19 +47,14 @@ class AdvertSearchServiceImplTest {
 
     private List<Advert> advertList;
 
+    private static final long ADVERT_ID = 101L;
+
     private static final long USER_ID = 101L;
-
-    private UserReadDto userReadDto;
-
-    private User user;
-
 
     @BeforeEach
     void setUp() {
         advert = createAdvert();
         advertReadDto = createAdvertReadDto();
-        user = UserFactory.createUser();
-        userReadDto = UserDtoFactory.createUserReadDto();
         advertSearchService = new AdvertSearchServiceImpl(advertRepository, advertToAdvertReadDtoConverter);
     }
 
@@ -86,9 +75,20 @@ class AdvertSearchServiceImplTest {
         }
 
         @Test
+        void testFindAdvertById_AdvertDoesNotExist() {
+            when(advertRepository.findById(ADVERT_ID)).thenReturn(Optional.empty());
+
+            assertThrows(ResourceNotFoundException.class,
+                    () -> advertSearchService.findAdvertById(ADVERT_ID));
+
+            verify(advertRepository).findById(ADVERT_ID);
+            verify(advertToAdvertReadDtoConverter, never()).convert(any(Advert.class));
+        }
+
+        @Test
         void testFindAdvertById_shouldThrowException() {
 
-            assertThrows(NoSuchElementException.class,
+            assertThrows(ResourceNotFoundException.class,
                     () -> advertSearchService.findAdvertById(advert.getId()));
         }
     }
@@ -111,6 +111,17 @@ class AdvertSearchServiceImplTest {
             assertEquals(result, advertReadDtoList);
             assertThat(result.size()).isEqualTo(advertReadDtoList.size());
 
+        }
+        @Test
+        void testFindAllAdverts_DatabaseError() {
+            when(advertRepository.findAll()).thenThrow(new DataAccessException("Data access exception") {});
+
+            Exception exception = assertThrows(DataAccessException.class,
+                    advertSearchService::findAllAdverts);
+
+            assertEquals("Data access exception", exception.getMessage());
+            verify(advertRepository).findAll();
+            verify(advertToAdvertReadDtoConverter, never()).convert(any(Advert.class));
         }
 
         @Test
@@ -146,6 +157,18 @@ class AdvertSearchServiceImplTest {
             assertNotNull(result);
             assertEquals(result, advertReadDtoList);
             assertThat(result.size()).isEqualTo(advertReadDtoList.size());
+        }
+
+        @Test
+        void testFindAllAdvertsByUserId_DatabaseError() {
+            when(advertRepository.findAllAdvertsByUserId(USER_ID)).thenThrow(new DataAccessException("Data access exception") {});
+
+            Exception exception = assertThrows(DataAccessException.class,
+                    () -> advertSearchService.findAllAdvertsByUserId(USER_ID));
+
+            assertEquals("Data access exception", exception.getMessage());
+            verify(advertRepository).findAllAdvertsByUserId(USER_ID);
+            verify(advertToAdvertReadDtoConverter, never()).convert(any(Advert.class));
         }
 
         @Test

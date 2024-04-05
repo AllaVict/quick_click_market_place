@@ -20,7 +20,6 @@ public class AdvertCreateDto {
 
     private String phone;
 
-
     private Double price;
 
     private Double firstPrice;

@@ -1,6 +1,5 @@
 package quick.click.core.controller.integr;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -10,23 +9,20 @@ import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.core.controller.AdvertRegistrationController;
 import quick.click.core.controller.AdvertSearchController;
 import quick.click.core.domain.dto.AdvertReadDto;
-import quick.click.core.domain.model.Advert;
 import quick.click.core.service.AdvertSearchService;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -37,7 +33,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static quick.click.commons.constants.ApiVersion.VERSION_1_0;
 import static quick.click.commons.constants.Constants.Endpoints.ADVERTS_URL;
 import static quick.click.config.factory.AdvertDtoFactory.createAdvertReadDto;
-import static quick.click.config.factory.AdvertFactory.createAdvert;
 
 @WithMockUser
 @WebMvcTest(AdvertSearchController.class)
@@ -60,8 +55,6 @@ class AdvertSearchControllerIntegrationTest {
 
     private static final long USER_ID = 101L;
 
-    private Advert advert;
-
     private AdvertReadDto advertReadDto;
 
     private List<AdvertReadDto> advertReadDtoList;
@@ -77,7 +70,6 @@ class AdvertSearchControllerIntegrationTest {
     }
     @BeforeEach
     void setUp() {
-        advert = createAdvert();
         advertReadDto = createAdvertReadDto();
     }
 
@@ -98,8 +90,8 @@ class AdvertSearchControllerIntegrationTest {
 
         @Test
         void testFindAdvertById_ShouldNoAdvertFound() throws Exception {
-            advertReadDto =null;
-            given(advertSearchService.findAdvertById(ADVERT_ID)).willReturn(advertReadDto);
+            given(advertSearchService.findAdvertById(ADVERT_ID))
+                    .willThrow(new ResourceNotFoundException("Advert", "id", ADVERT_ID));
 
             mockMvc.perform(get(VERSION_1_0+ADVERTS_URL+"/"+ADVERT_ID)
                             .with(csrf())
