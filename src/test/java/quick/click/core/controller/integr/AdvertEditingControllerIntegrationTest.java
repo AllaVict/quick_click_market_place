@@ -80,7 +80,7 @@ public class AdvertEditingControllerIntegrationTest {
     @DisplayName("When Edit a Advert")
     class  EditAdvertTests {
         @Test
-        void testEditAdvert_shouldReturnAdvertReadDto() throws Exception {
+        void testEditAdvert_ShouldReturnAdvertReadDto() throws Exception {
            given(advertEditingService.editAdvert(ADVERT_ID, advertEditingDto)).willReturn(advertReadDto);
 
            mockMvc.perform(put(VERSION_1_0+ADVERTS_URL+"/"+ADVERT_ID)//"/v1.0/adverts/101"
@@ -93,7 +93,7 @@ public class AdvertEditingControllerIntegrationTest {
         }
 
         @Test
-        void testEditAdvert_InvalidAdvertData() throws Exception {
+        void testEditAdvert_ShouldnReturn400Status_WhenInvalidAdvertData() throws Exception {
             AdvertEditingDto invalidDto = new AdvertEditingDto();
 
             mockMvc.perform(put(VERSION_1_0 + ADVERTS_URL + "/" + ADVERT_ID)
@@ -105,7 +105,7 @@ public class AdvertEditingControllerIntegrationTest {
         }
 
         @Test
-        void testEditAdvert_AdvertDoesNotExist() throws Exception {
+        void testEditAdvert_ShouldnReturn404Status_WhenAdvertIdDoesNotExist() throws Exception {
             given(advertEditingService.editAdvert(anyLong(), any(AdvertEditingDto.class)))
                     .willThrow(new ResourceNotFoundException("Advert", "id", ADVERT_ID));
 
@@ -118,7 +118,7 @@ public class AdvertEditingControllerIntegrationTest {
         }
 
         @Test
-        void testEditAdvert_statusCode400WhenInvalidRequested() throws Exception{
+        void testEditAdvert_ShouldnReturn400Status_WhenInvalidRequested() throws Exception{
             mockMvc.perform(put(VERSION_1_0+ADVERTS_URL+"/invalid")
                              .with(csrf())
                             .contentType(MediaType.APPLICATION_JSON)
@@ -141,7 +141,7 @@ public class AdvertEditingControllerIntegrationTest {
     @DisplayName("When archive an advert")
     class  ArchiveAdvertTests {
         @Test
-        void testArchiveAdvert_shouldReturnAdvertReadDto() throws Exception {
+        void testArchiveAdvert_ShouldReturnAdvertReadDto() throws Exception {
             given(advertEditingService.archiveAdvert(ADVERT_ID)).willReturn(advertReadDto);
 
             mockMvc.perform(put(VERSION_1_0 + ADVERTS_URL + "/archive/" + ADVERT_ID)
@@ -154,7 +154,7 @@ public class AdvertEditingControllerIntegrationTest {
         }
 
         @Test
-        void testArchiveAdvert_AdvertDoesNotExist() throws Exception {
+        void testArchiveAdvert_ShouldnReturn404Status_WhenAdvertIdDoesNotExist() throws Exception {
             doThrow(new ResourceNotFoundException("Advert", "id", ADVERT_ID))
                     .when(advertEditingService).archiveAdvert(ADVERT_ID);
 
@@ -178,7 +178,7 @@ public class AdvertEditingControllerIntegrationTest {
     @DisplayName("When Delete a Advert")
     class DeleteAdvertTests {
         @Test
-        void testDeleteAdvert_shouldReturnAdvertReadDto() throws Exception {
+        void testDeleteAdvert_ShouldReturnAdvertReadDto() throws Exception {
           doNothing().when(advertEditingService).deleteAdvert(any(Long.class));
 
           mockMvc.perform(delete(VERSION_1_0 + ADVERTS_URL+"/"+ADVERT_ID)
@@ -191,7 +191,7 @@ public class AdvertEditingControllerIntegrationTest {
         }
 
         @Test
-        void testDeleteAdvert_AdvertDoesNotExist() throws Exception {
+        void testDeleteAdvert_ShouldnReturn404Status_WhenAdvertIdDoesNotExist() throws Exception {
             doThrow(new ResourceNotFoundException("Advert", "id", ADVERT_ID))
                     .when(advertEditingService).deleteAdvert(ADVERT_ID);
 
@@ -203,7 +203,7 @@ public class AdvertEditingControllerIntegrationTest {
         }
 
         @Test
-        void testDeleteAdvert_statusCode400WhenInvalidRequested() throws Exception{
+        void testDeleteAdvert_ShouldnReturn400Status_WhenInvalidRequested() throws Exception{
             mockMvc.perform(delete(VERSION_1_0+ADVERTS_URL+"/invalid")
                             .with(csrf())
                             .contentType(MediaType.APPLICATION_JSON)

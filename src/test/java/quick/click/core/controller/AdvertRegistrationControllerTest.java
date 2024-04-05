@@ -54,7 +54,7 @@ class AdvertRegistrationControllerTest {
         }
 
         @Test
-        void testRegisterAdvert_InvalidData() {
+        void testRegisterAdvert_ShouldReturn400Status_WhenInvalidRequest() {
             advertCreateDto = new AdvertCreateDto();
 
             ResponseEntity<?> responseEntity = advertRegistrationController.registerAdvert(advertCreateDto);
@@ -63,7 +63,7 @@ class AdvertRegistrationControllerTest {
         }
 
         @Test
-        void testRegisterAdvert_ServiceThrowsException() {
+        void testRegisterAdvert_ShouldReturn400Status_WhenThrowsException() {
             when(advertRegistrationService.registerAdvert(any(AdvertCreateDto.class)))
                     .thenThrow(new AdvertRegistrationException("Registration failed due to XYZ"));
 

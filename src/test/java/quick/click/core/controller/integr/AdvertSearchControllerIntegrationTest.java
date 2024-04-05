@@ -89,7 +89,7 @@ class AdvertSearchControllerIntegrationTest {
         }
 
         @Test
-        void testFindAdvertById_ShouldNoAdvertFound() throws Exception {
+        void testFindAdvertById_ShouldReturn200Status_WhenNoAdvertFound() throws Exception {
             given(advertSearchService.findAdvertById(ADVERT_ID))
                     .willThrow(new ResourceNotFoundException("Advert", "id", ADVERT_ID));
 
@@ -102,7 +102,7 @@ class AdvertSearchControllerIntegrationTest {
         }
 
         @Test
-        void testFindAdvertById_statusCode400WhenInvalidRequested() throws Exception {
+        void testFindAdvertById_ShouldReturn400Status_WhenInvalidRequested() throws Exception {
             advertReadDto =null;
             given(advertSearchService.findAdvertById(ADVERT_ID)).willReturn(advertReadDto);
 
@@ -126,7 +126,7 @@ class AdvertSearchControllerIntegrationTest {
             given(advertSearchService.findAllAdverts()).willReturn(advertReadDtoList);
 
             mockMvc.perform(get(VERSION_1_0+ADVERTS_URL)
-                            //with(csrf())
+                            .with(csrf())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(advertReadDtoList)))
                     .andDo(print())
@@ -134,23 +134,23 @@ class AdvertSearchControllerIntegrationTest {
         }
 
         @Test
-        void testFindAllAdverts_shouldThrowException() throws Exception{
+        void testFindAllAdverts_ShouldReturn200Status_WhenReturnEmptyList() throws Exception{
             advertReadDtoList =new ArrayList<>();
             when(advertSearchService.findAllAdverts()).thenReturn(advertReadDtoList);
 
             mockMvc.perform(get(VERSION_1_0+ADVERTS_URL)
-                            //with(csrf())
+                            .with(csrf())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(advertReadDtoList)))
                     .andDo(print())
-                    .andExpect(status().isNotFound());
+                    .andExpect(status().isOk());
         }
 
         @Test
-        void testFindAllAdverts_statusCode400WhenInvalidIdRequested() throws Exception{
+        void testFindAllAdverts_ShouldReturn400Status_WhenInvalidRequested() throws Exception{
 
             mockMvc.perform(get(VERSION_1_0+ADVERTS_URL+"/invalid")
-                            //with(csrf())
+                            .with(csrf())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(advertReadDtoList)))
                     .andDo(print())
@@ -164,12 +164,12 @@ class AdvertSearchControllerIntegrationTest {
     class FindAllAdvertsByUserIdTests {
 
         @Test
-        void testFindAllAdvertsByUserId_shouldReturnAllAdverts() throws Exception {
+        void testFindAllAdvertsByUserId_ShouldReturnAllAdverts() throws Exception {
             advertReadDtoList = List.of(advertReadDto, advertReadDto);
             when(advertSearchService.findAllAdvertsByUserId(USER_ID)).thenReturn(advertReadDtoList);
 
             mockMvc.perform(get(VERSION_1_0+"/user/"+USER_ID)
-                            //with(csrf())
+                            .with(csrf())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(advertReadDtoList)))
                     .andDo(print())
@@ -177,17 +177,14 @@ class AdvertSearchControllerIntegrationTest {
         }
 
         @Test
-        void testFindAllAdvertsByUserId_shouldThrowException() throws Exception {
+        void testFindAllAdvertsByUserId_ShouldReturn404Status_WhenReturnEmptyList() throws Exception {
             advertReadDtoList =new ArrayList<>();
             when(advertSearchService.findAllAdvertsByUserId(USER_ID)).thenReturn(advertReadDtoList);
 
-            mockMvc.perform(get(VERSION_1_0+"/user/"+USER_ID)
-                            //with(csrf())
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(advertReadDtoList)))
+            mockMvc.perform(get(VERSION_1_0 + "/user/" + USER_ID)
+                            .with(csrf()))
                     .andDo(print())
                     .andExpect(status().isNotFound());
-
         }
 
     }

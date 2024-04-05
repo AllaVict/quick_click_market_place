@@ -6,11 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.bind.annotation.*;
 import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.core.domain.dto.AdvertReadDto;
 import quick.click.core.service.AdvertSearchService;
@@ -21,6 +17,7 @@ import static quick.click.commons.constants.ApiVersion.VERSION_1_0;
 import static quick.click.commons.constants.Constants.Endpoints.ADVERTS_URL;
 import static quick.click.core.controller.AdvertSearchController.BASE_URL;
 
+@CrossOrigin
 @RestController
 @RequestMapping(BASE_URL)
 @Tag(name = "Advert Search Controller", description = "AdvertSearch API")
@@ -41,19 +38,28 @@ public class AdvertSearchController {
      */
     @GetMapping("/{id}")
     @Operation(summary = "Find advert by id")
-    public ResponseEntity<AdvertReadDto> findAdvertById(@PathVariable("id") final Long advertId) {
+    public ResponseEntity<?> findAdvertById(@PathVariable("id") final Long advertId) {
 
         try {
+
             final AdvertReadDto advertReadDto = advertSearchService.findAdvertById(advertId);
-            LOGGER.debug("In findAdvertById received GET find the advert successfully with id {} ", advertReadDto.getId());
+
+            LOGGER.debug("In findAdvertById received GET find the advert successfully with id {} ", advertId);
+
             return ResponseEntity.status(HttpStatus.OK).body(advertReadDto);
 
         } catch (ResourceNotFoundException exception) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Advert not found with id: " + advertId, exception);
+
+            LOGGER.error("Advert not found with id : '{}'", advertId, exception);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+
         } catch (Exception exception) {
-            LOGGER.error("Error finding advert by id {}", advertId, exception);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error", exception);
+
+            LOGGER.error("Unexpected error during finding the advert with id {}", advertId, exception);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
+
         }
+
     }
 
     /**
@@ -66,9 +72,6 @@ public class AdvertSearchController {
 
         try {
             final List<AdvertReadDto> advertReadDtoList = advertSearchService.findAllAdverts();
-            if (advertReadDtoList.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Empty list");
-            }
 
             LOGGER.debug("In findAllAdvert received GET find all advert successfully ");
 
@@ -77,7 +80,8 @@ public class AdvertSearchController {
         } catch (Exception ex) {
 
             LOGGER.error("Error finding all adverts", ex);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error", ex);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
+
         }
     }
 
@@ -88,9 +92,7 @@ public class AdvertSearchController {
         try {
 
             final List<AdvertReadDto> advertReadDtoList =advertSearchService.findAllAdvertsByUserId(userId);
-            if (advertReadDtoList.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No adverts found for user id: " + userId);
-            }
+
             LOGGER.debug("In findAllAdvertsByUserId find all adverts for the user with id: {}", userId);
 
             return ResponseEntity.status(HttpStatus.OK).body(advertReadDtoList);
@@ -98,7 +100,8 @@ public class AdvertSearchController {
         } catch (Exception exception) {
 
             LOGGER.error("Error finding adverts by user id {}", userId, exception);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error", exception);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
+
         }
     }
 }

@@ -86,7 +86,7 @@ class AdvertSearchServiceImplTest {
         }
 
         @Test
-        void testFindAdvertById_shouldThrowException() {
+        void testFindAdvertById_ShouldThrowException() {
 
             assertThrows(ResourceNotFoundException.class,
                     () -> advertSearchService.findAdvertById(advert.getId()));
@@ -98,7 +98,7 @@ class AdvertSearchServiceImplTest {
     class FindAllAdvertsTests {
 
         @Test
-        void testFindAllAdverts_shouldReturnAllAdverts() {
+        void testFindAllAdverts_ShouldReturnAllAdverts() {
             advertList = List.of(advert, advert);
             advertReadDtoList = List.of(advertReadDto, advertReadDto);
             when(advertRepository.findAll()).thenReturn(advertList);
@@ -125,7 +125,7 @@ class AdvertSearchServiceImplTest {
         }
 
         @Test
-        void testFindAllAdverts_shouldThrowException() {
+        void testFindAllAdverts_ShouldReturnNoAdverts() {
             advertRepository.deleteAll();
             advertList = new ArrayList<>();
             advertReadDtoList = new ArrayList<>();
@@ -145,7 +145,7 @@ class AdvertSearchServiceImplTest {
     class FindAllAdvertsByUserIdTests {
 
         @Test
-        void testFindAllAdvertsByUserId_shouldReturnAllAdverts() {
+        void testFindAllAdvertsByUserId_ShouldReturnAllAdverts() {
             advertList = List.of(advert, advert);
             advertReadDtoList = List.of(advertReadDto, advertReadDto);
             when(advertRepository.findAllAdvertsByUserId(USER_ID)).thenReturn(advertList);
@@ -155,6 +155,19 @@ class AdvertSearchServiceImplTest {
 
             verify(advertRepository).findAllAdvertsByUserId(USER_ID);
             assertNotNull(result);
+            assertEquals(result, advertReadDtoList);
+            assertThat(result.size()).isEqualTo(advertReadDtoList.size());
+        }
+        @Test
+        void testFindAllAdvertsByUserId_ShouldReturnNoAdverts() {
+            advertList = new ArrayList<>();
+            advertReadDtoList = new ArrayList<>();
+            when(advertRepository.findAllAdvertsByUserId(USER_ID)).thenReturn(advertList);
+
+            List<AdvertReadDto> result = advertSearchService.findAllAdvertsByUserId(USER_ID);
+
+            verify(advertRepository).findAllAdvertsByUserId(USER_ID);
+            assertTrue(result.isEmpty());
             assertEquals(result, advertReadDtoList);
             assertThat(result.size()).isEqualTo(advertReadDtoList.size());
         }
@@ -171,19 +184,6 @@ class AdvertSearchServiceImplTest {
             verify(advertToAdvertReadDtoConverter, never()).convert(any(Advert.class));
         }
 
-        @Test
-        void testFindAllAdvertsByUserId_shouldThrowException() {
-            advertList = new ArrayList<>();
-            advertReadDtoList = new ArrayList<>();
-            when(advertRepository.findAllAdvertsByUserId(USER_ID)).thenReturn(advertList);
-
-            List<AdvertReadDto> result = advertSearchService.findAllAdvertsByUserId(USER_ID);
-
-            verify(advertRepository).findAllAdvertsByUserId(USER_ID);
-            assertTrue(result.isEmpty());
-            assertEquals(result, advertReadDtoList);
-            assertThat(result.size()).isEqualTo(advertReadDtoList.size());
-        }
     }
 
 }

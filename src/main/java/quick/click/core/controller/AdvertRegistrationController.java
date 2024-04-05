@@ -6,10 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 import quick.click.commons.exeptions.AdvertRegistrationException;
 import quick.click.core.domain.dto.AdvertCreateDto;
 import quick.click.core.domain.dto.AdvertReadDto;
@@ -18,6 +16,7 @@ import quick.click.core.service.AdvertRegistrationService;
 import static quick.click.commons.constants.ApiVersion.VERSION_1_0;
 import static quick.click.commons.constants.Constants.Endpoints.ADVERTS_URL;
 
+@CrossOrigin
 @RestController
 @RequestMapping(AdvertRegistrationController.BASE_URL)
 @Tag(name = "Advert Registration Controller", description = "AdvertRegistration API")
@@ -50,6 +49,7 @@ public class AdvertRegistrationController  {
      */
 
     @PostMapping()
+    @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Create an advert with a given request body")
     public ResponseEntity<?> registerAdvert(@RequestBody AdvertCreateDto advertCreateDto) {
 

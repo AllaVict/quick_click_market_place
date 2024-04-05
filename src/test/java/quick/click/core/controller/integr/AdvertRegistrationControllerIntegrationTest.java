@@ -83,7 +83,7 @@ class AdvertRegistrationControllerIntegrationTest {
         }
 
         @Test
-        void testRegisterAdvert_InvalidData_AdvertDtoIsNull() throws Exception {
+        void testRegisterAdvert_ShouldReturn400Status_WhenAdvertDtoIsNull() throws Exception {
             advertCreateDto= null;
             mockMvc.perform(post(VERSION_1_0 + ADVERTS_URL)
                             .with(csrf())
@@ -95,7 +95,7 @@ class AdvertRegistrationControllerIntegrationTest {
         }
 
         @Test
-        void testRegisterAdvert_InvalidData_FieldsAreNull() throws Exception {
+        void testRegisterAdvert_ShouldReturn400Status_WhenFieldsAreNull() throws Exception {
             AdvertCreateDto invalidDto = new AdvertCreateDto();
 
             mockMvc.perform(post(VERSION_1_0 + ADVERTS_URL)

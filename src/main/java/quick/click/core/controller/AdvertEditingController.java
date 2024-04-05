@@ -17,6 +17,7 @@ import static quick.click.commons.constants.ApiVersion.VERSION_1_0;
 import static quick.click.commons.constants.Constants.Endpoints.ADVERTS_URL;
 import static quick.click.core.controller.AdvertEditingController.BASE_URL;
 
+@CrossOrigin
 @RestController
 @RequestMapping(BASE_URL)
 @Tag(name = "Advert Editing Controller", description = "AdvertEditing API")
@@ -63,6 +64,7 @@ public class AdvertEditingController {
         } catch (ResourceNotFoundException exception) {
             LOGGER.error("Advert not found with id : '{}'", advertId, exception);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+
         } catch (Exception exception) {
 
             LOGGER.error("Unexpected error during editing the advert with id {}", advertId, exception);

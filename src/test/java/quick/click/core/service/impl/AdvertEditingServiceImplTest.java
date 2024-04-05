@@ -57,7 +57,7 @@ class AdvertEditingServiceImplTest {
     @DisplayName("When edit an advert")
     class  EditAdvertTests {
         @Test
-        void testEditAdvert_shouldReturnAdvertReadDto() {
+        void testEditAdvert_ShouldReturnAdvertReadDto() {
             when(advertRepository.findById(ADVERT_ID)).thenReturn(Optional.of(advert));
             when(advertRepository.saveAndFlush(advert)).thenReturn(advert);
             when(typeConverterReadDto.convert(advert)).thenReturn(advertReadDto);
@@ -71,7 +71,7 @@ class AdvertEditingServiceImplTest {
         }
 
         @Test
-        void testUpdateAdvert_shouldReturnAdvertReadDto() {
+        void testUpdateAdvert_ShouldReturnUpdatedAdvertReadDto() {
             Advert result = advertEditingService.updateAdvertData(advert, advertEditingDto);
 
             assertNotNull(result);
@@ -80,7 +80,7 @@ class AdvertEditingServiceImplTest {
         }
 
         @Test
-        void testEditAdvert_AdvertDoesNotExist() {
+        void testEditAdvert_ShouldThrowException_WhenAdvertDoesNotExist() {
             when(advertRepository.findById(ADVERT_ID)).thenReturn(Optional.empty());
 
             assertThrows(ResourceNotFoundException.class,
@@ -89,19 +89,13 @@ class AdvertEditingServiceImplTest {
             verify(advertRepository, never()).save(any(Advert.class));
         }
 
-        @Test
-        void testEditAdvert_shouldThrowException() {
-            assertThrows(ResourceNotFoundException.class,
-                    () -> advertEditingService.editAdvert(ADVERT_ID, advertEditingDto));
-        }
-
     }
 
     @Nested
     @DisplayName("When archive an advert")
     class  ArchiveAdvertTests {
         @Test
-        void testArchiveAdvert_shouldReturnAdvertReadDto() {
+        void testArchiveAdvert_ShouldReturnAdvertReadDto() {
             advertReadDto.setStatus(ARCHIVED);
             when(advertRepository.findById(ADVERT_ID)).thenReturn(Optional.of(advert));
             when(advertRepository.saveAndFlush(advert)).thenReturn(advert);
@@ -116,7 +110,7 @@ class AdvertEditingServiceImplTest {
         }
 
         @Test
-        void testArchiveAdvert_AdvertDoesNotExist() {
+        void testArchiveAdvert_ShouldThrowException_WhenAdvertDoesNotExist() {
             when(advertRepository.findById(ADVERT_ID)).thenReturn(Optional.empty());
 
             assertThrows(ResourceNotFoundException.class,
@@ -125,18 +119,13 @@ class AdvertEditingServiceImplTest {
             verify(advertRepository, never()).save(any(Advert.class));
         }
 
-        @Test
-        void testArchiveAdvert_shouldThrowException() {
-            assertThrows(ResourceNotFoundException.class,
-                    () -> advertEditingService.archiveAdvert(ADVERT_ID));
-        }
-
     }
+
     @Nested
     @DisplayName("When delete an advert")
     class DeleteAdvertTests {
         @Test
-        void testDeleteAdvert_shouldReturnAdvertReadDto() {
+        void testDeleteAdvert_ShouldDeleteAndReturnAdvertReadDto() {
             when(advertRepository.findById(anyLong())).thenReturn(Optional.of(advert));
             doNothing().when(advertRepository).delete(any(Advert.class));
 
@@ -146,21 +135,13 @@ class AdvertEditingServiceImplTest {
        }
 
         @Test
-        void testDeleteAdvert_AdvertDoesNotExist() {
+        void testDeleteAdvert_ShouldThrowException_WhenAdvertDoesNotExist() {
             when(advertRepository.findById(ADVERT_ID)).thenReturn(Optional.empty());
 
             assertThrows(ResourceNotFoundException.class,
                     () -> advertEditingService.deleteAdvert(ADVERT_ID));
 
             verify(advertRepository, never()).delete(any(Advert.class));
-        }
-
-        @Test
-        void testDeleteAdvert_shouldThrowException() {
-
-            assertThrows(ResourceNotFoundException.class,
-                    () -> advertEditingService.deleteAdvert(ADVERT_ID));
-            verify(advertRepository, times(0)).delete(advert);
         }
 
     }

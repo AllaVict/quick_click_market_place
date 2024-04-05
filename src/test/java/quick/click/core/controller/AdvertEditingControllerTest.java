@@ -59,7 +59,7 @@ class AdvertEditingControllerTest {
         }
 
         @Test
-        void testEditAdvert_InvalidData() {
+        void testEditAdvert_ShouldnReturn400Status_WhenInvalidRequested() {
             advertEditingDto = new AdvertEditingDto();
 
             ResponseEntity<?> responseEntity = advertEditingController.editAdvert(ADVERT_ID, advertEditingDto);
@@ -68,7 +68,7 @@ class AdvertEditingControllerTest {
         }
 
         @Test
-        void testEditAdvert_AdvertIdDoesNotExist() {
+        void testEditAdvert_ShouldnReturn404Status_WhenAdvertIdDoesNotExist() {
             when(advertEditingService.editAdvert(eq(ADVERT_ID), any(AdvertEditingDto.class)))
                     .thenThrow(new ResourceNotFoundException("Advert", "id", ADVERT_ID));
 
@@ -94,7 +94,7 @@ class AdvertEditingControllerTest {
         }
 
         @Test
-        void testArchiveAdvert_InvalidData() {
+        void testArchiveAdvert_ShouldnReturn400Status_WhenInvalidRequest() {
 
             ResponseEntity<?> responseEntity = advertEditingController.archiveAdvert(null);
 
@@ -102,7 +102,7 @@ class AdvertEditingControllerTest {
         }
 
         @Test
-        void testArchiveAdvert_AdvertIdDoesNotExist() {
+        void testArchiveAdvert_ShouldnReturn404Status_WhenAdvertIdDoesNotExist() {
             when(advertEditingService.archiveAdvert(ADVERT_ID))
                     .thenThrow(new ResourceNotFoundException("Advert", "id", ADVERT_ID));
 
@@ -117,7 +117,7 @@ class AdvertEditingControllerTest {
     @DisplayName("When delete an advert")
     class DeleteAdvertTests {
         @Test
-        void testDeleteAdvert_shouldReturnAdvertReadDto() {
+        void testDeleteAdvert_ShouldReturnAdvertReadDto() {
             doNothing().when(advertEditingService).deleteAdvert(any(Long.class));
 
             ResponseEntity<String> responseEntity = advertEditingController.deleteAdvert(ADVERT_ID);
@@ -126,7 +126,7 @@ class AdvertEditingControllerTest {
             assertEquals("The Advert has deleted successfully", responseEntity.getBody());
         }
         @Test
-        void testDeleteAdvert_AdvertIdDoesNotExist() {
+        void testDeleteAdvert_ShouldnReturn404Status_WhenAdvertIdDoesNotExist() {
             doThrow(new ResourceNotFoundException("Advert", "id", ADVERT_ID))
                     .when(advertEditingService).deleteAdvert(ADVERT_ID);
 

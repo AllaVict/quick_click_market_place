@@ -55,7 +55,7 @@ class AdvertRegistrationServiceImplTest {
     @DisplayName("When register an advert")
     class RegisterAdvertTests {
         @Test
-        void registerAdvert_shouldReturnAdvertReadDto() {
+        void registerAdvert_ShouldReturnAdvertReadDto() {
             when(typeConverterCreateDto.convert(advertCreateDto)).thenReturn(advert);
             when(advertRepository.saveAndFlush(advert)).thenReturn(advert);
             when(typeConverterReadDto.convert(any(Advert.class))).thenReturn(advertReadDto);
@@ -90,7 +90,7 @@ class AdvertRegistrationServiceImplTest {
         }
 
         @Test
-        void testRegisterAdvert_shouldThrowException() {
+        void testRegisterAdvert_ShouldThrowException() {
 
             assertThrows(NoSuchElementException.class,
                     () -> advertRegistrationService.registerAdvert(advertCreateDto));
