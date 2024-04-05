@@ -13,9 +13,7 @@ import quick.click.core.converter.impl.AdvertToAdvertReadDtoConverter;
 import quick.click.core.domain.dto.AdvertEditingDto;
 import quick.click.core.domain.dto.AdvertReadDto;
 import quick.click.core.domain.model.Advert;
-import quick.click.core.enums.AdvertStatus;
 import quick.click.core.repository.AdvertRepository;
-import quick.click.core.repository.FileReferenceRepository;
 
 import java.util.Optional;
 
@@ -34,9 +32,6 @@ class AdvertEditingServiceImplTest {
 
     @Mock
     private AdvertRepository advertRepository;
-
-    @Mock
-    private FileReferenceRepository fileReferenceRepository;
 
     @Mock
     private AdvertToAdvertReadDtoConverter typeConverterReadDto;

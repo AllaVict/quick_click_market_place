@@ -11,20 +11,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import quick.click.commons.exeptions.ResourceNotFoundException;
-import quick.click.core.domain.dto.AdvertCreateDto;
 import quick.click.core.domain.dto.AdvertEditingDto;
 import quick.click.core.domain.dto.AdvertReadDto;
-import quick.click.core.domain.model.Advert;
 import quick.click.core.service.AdvertEditingService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static quick.click.config.factory.AdvertDtoFactory.createAdvertEditingDto;
 import static quick.click.config.factory.AdvertDtoFactory.createAdvertReadDto;
-import static quick.click.config.factory.AdvertFactory.createAdvert;
 import static quick.click.core.enums.AdvertStatus.ARCHIVED;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,14 +35,12 @@ class AdvertEditingControllerTest {
 
     private static final long ADVERT_ID = 101L;
 
-    private Advert advert;
     private AdvertReadDto advertReadDto;
 
     private AdvertEditingDto advertEditingDto;
 
     @BeforeEach
     void setUp() {
-        advert = createAdvert();
         advertReadDto = createAdvertReadDto();
         advertEditingDto =  createAdvertEditingDto();
     }
@@ -141,13 +135,5 @@ class AdvertEditingControllerTest {
             assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
         }
 
-        @Test
-        void testDeleteAdvert_UnauthorizedUser() {
-            // Mocking unauthorized access
-//            doThrow(new AuthorizationException("Unauthorized access"))
-//                    .when(advertEditingService).deleteAdvert(ADVERT_ID);
-//            ResponseEntity<String> responseEntity = advertEditingController.deleteAdvert(ADVERT_ID);
-//            assertEquals(HttpStatus.FORBIDDEN, responseEntity.getStatusCode());
-        }
     }
 }

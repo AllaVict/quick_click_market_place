@@ -9,9 +9,7 @@ import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -20,11 +18,9 @@ import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.core.controller.AdvertEditingController;
 import quick.click.core.domain.dto.AdvertEditingDto;
 import quick.click.core.domain.dto.AdvertReadDto;
-import quick.click.core.domain.model.Advert;
 import quick.click.core.service.AdvertEditingService;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -40,7 +36,6 @@ import static quick.click.commons.constants.ApiVersion.VERSION_1_0;
 import static quick.click.commons.constants.Constants.Endpoints.ADVERTS_URL;
 import static quick.click.config.factory.AdvertDtoFactory.createAdvertEditingDto;
 import static quick.click.config.factory.AdvertDtoFactory.createAdvertReadDto;
-import static quick.click.config.factory.AdvertFactory.createAdvert;
 
 @WithMockUser
 @WebMvcTest(AdvertEditingController.class)
@@ -61,8 +56,6 @@ public class AdvertEditingControllerIntegrationTest {
 
     private static final long ADVERT_ID = 101L;
 
-    private Advert advert;
-
     private AdvertReadDto advertReadDto;
 
     private AdvertEditingDto advertEditingDto;
@@ -79,7 +72,6 @@ public class AdvertEditingControllerIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        advert = createAdvert();
         advertReadDto = createAdvertReadDto();
         advertEditingDto =  createAdvertEditingDto();
     }
