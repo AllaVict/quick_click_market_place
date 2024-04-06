@@ -53,8 +53,6 @@ public class Advert extends BaseEntity {
     @Column(name = "favorite")
     private boolean favorite;
 
-   // @OneToOne(cascade = {CascadeType.ALL}, orphanRemoval = true)
- //   @JoinColumn(name = "image_id")
     @Column(name = "image_id")
     protected Long image;
 
@@ -63,7 +61,7 @@ public class Advert extends BaseEntity {
     private User user;
 
     public Advert() {
-       //Empty
+        //Empty
     }
 
 

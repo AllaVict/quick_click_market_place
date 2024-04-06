@@ -53,6 +53,7 @@ class AdvertRegistrationControllerIntegrationTest {
 
     @Autowired
     private WebApplicationContext context;
+
     @BeforeEach
     public void setupMockMvc() {
         mockMvc = MockMvcBuilders
@@ -60,6 +61,7 @@ class AdvertRegistrationControllerIntegrationTest {
                 .apply(springSecurity())
                 .build();
     }
+
     @BeforeEach
     void setUp() {
         advertReadDto = createAdvertReadDto();
@@ -84,7 +86,7 @@ class AdvertRegistrationControllerIntegrationTest {
 
         @Test
         void testRegisterAdvert_ShouldReturn400Status_WhenAdvertDtoIsNull() throws Exception {
-            advertCreateDto= null;
+            advertCreateDto = null;
             mockMvc.perform(post(VERSION_1_0 + ADVERTS_URL)
                             .with(csrf())
                             .contentType(MediaType.APPLICATION_JSON)

@@ -24,7 +24,7 @@ import quick.click.config.factory.UserFactory;
 import static org.junit.jupiter.api.Assertions.*;
 
 @EnableConfigurationProperties
-@ContextConfiguration(classes = {AppProperties.class })
+@ContextConfiguration(classes = {AppProperties.class})
 @Extensions({
         @ExtendWith(SpringExtension.class),
         @ExtendWith(MockitoExtension.class)
@@ -60,6 +60,7 @@ class TokenProviderTest {
         securityContext = Mockito.mock(SecurityContext.class);
         JWT_TOKEN = appProperties.getAuth().getTokenSecret();
     }
+
     private AuthenticatedUser getUserPrincipal() {
         return AuthenticatedUser.create(UserFactory.createUserWithRole(Role.ROLE_USER));
     }

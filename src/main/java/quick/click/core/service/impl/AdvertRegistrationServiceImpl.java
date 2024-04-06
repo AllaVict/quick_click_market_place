@@ -27,7 +27,7 @@ public class AdvertRegistrationServiceImpl implements AdvertRegistrationService 
 
     public AdvertRegistrationServiceImpl(final AdvertRepository advertRepository,
                                          final TypeConverter<Advert, AdvertReadDto> typeConverterReadDto,
-                                         final TypeConverter<AdvertCreateDto, Advert>  typeConverterCreateDto) {
+                                         final TypeConverter<AdvertCreateDto, Advert> typeConverterCreateDto) {
         this.advertRepository = advertRepository;
         this.typeConverterCreateDto = typeConverterCreateDto;
         this.typeConverterReadDto = typeConverterReadDto;
@@ -36,9 +36,9 @@ public class AdvertRegistrationServiceImpl implements AdvertRegistrationService 
     @Override
     public AdvertReadDto registerAdvert(final AdvertCreateDto advertCreateDto) {
 
-        advertCreateDto.setCreatedDate(LocalDateTime.now());
-        advertCreateDto.setStatus(PUBLISHED);
-        AdvertReadDto advertReadDto= Optional.of(advertCreateDto)
+        AdvertReadDto advertReadDto = Optional.of(advertCreateDto)
+                .map(this::setStatusPublished)
+                .map(this::setCreatedDate)
                 .map(typeConverterCreateDto::convert)
                 .map(advertRepository::saveAndFlush)
                 .map(typeConverterReadDto::convert)
@@ -49,4 +49,13 @@ public class AdvertRegistrationServiceImpl implements AdvertRegistrationService 
         return advertReadDto;
     }
 
+    private AdvertCreateDto setStatusPublished(AdvertCreateDto advertCreateDto) {
+        advertCreateDto.setStatus(PUBLISHED);
+        return advertCreateDto;
+    }
+
+    private AdvertCreateDto setCreatedDate(AdvertCreateDto advertCreateDto) {
+        advertCreateDto.setCreatedDate(LocalDateTime.now());
+        return advertCreateDto;
+    }
 }

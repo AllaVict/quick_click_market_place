@@ -32,7 +32,7 @@ public class SecurityConfiguration {
 
     @Autowired
     public SecurityConfiguration(final UserLoginService userLoginService,
-                                 final TokenProvider tokenProvider){
+                                 final TokenProvider tokenProvider) {
         this.userLoginService = userLoginService;
         this.tokenProvider = tokenProvider;
     }
@@ -54,6 +54,7 @@ public class SecurityConfiguration {
     public AuthenticationManager authenticationManager(final AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
+
     @Bean
     public TokenAuthenticationFilter tokenAuthenticationFilter() {
         return new TokenAuthenticationFilter(tokenProvider, userLoginService);
@@ -64,9 +65,9 @@ public class SecurityConfiguration {
         final MvcRequestMatcher.Builder matcher = new MvcRequestMatcher.Builder(introspector);
 
         http
-               .httpBasic(httpBasic -> httpBasic.disable())
-               .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
-               .headers(httpSecurityHeadersConfigurer -> {
+                .httpBasic(httpBasic -> httpBasic.disable())
+                .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
+                .headers(httpSecurityHeadersConfigurer -> {
                     httpSecurityHeadersConfigurer.frameOptions(frameOptionsConfig -> {
                         frameOptionsConfig.disable();
                     });

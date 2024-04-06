@@ -47,6 +47,7 @@ public class AuthenticatedUser implements UserDetails {
         authenticatedUser.setAttributes(attributes);
         return authenticatedUser;
     }
+
     public Long getId() {
         return id;
     }
@@ -89,6 +90,7 @@ public class AuthenticatedUser implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
     }
+
     public void setAttributes(Map<String, Object> attributes) {
         this.attributes = attributes;
     }

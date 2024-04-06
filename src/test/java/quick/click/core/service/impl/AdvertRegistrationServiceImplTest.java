@@ -30,13 +30,13 @@ import static quick.click.config.factory.AdvertFactory.createAdvert;
 class AdvertRegistrationServiceImplTest {
     @Mock
     private AdvertRepository advertRepository;
-    private AdvertToAdvertReadDtoConverter typeConverterReadDto =mock(AdvertToAdvertReadDtoConverter.class);
+    private AdvertToAdvertReadDtoConverter typeConverterReadDto = mock(AdvertToAdvertReadDtoConverter.class);
 
     private AdvertCreateDtoToAdvertConverter typeConverterCreateDto = mock(AdvertCreateDtoToAdvertConverter.class);
     @Mock
     private FileReferenceRepository fileReferenceRepository;
 
-    AdvertRegistrationServiceImpl advertRegistrationService ;
+    AdvertRegistrationServiceImpl advertRegistrationService;
     private Advert advert;
     private AdvertReadDto advertReadDto;
     private AdvertCreateDto advertCreateDto;
@@ -46,7 +46,7 @@ class AdvertRegistrationServiceImplTest {
         advert = createAdvert();
         advertReadDto = createAdvertReadDto();
         advertCreateDto = createAdvertCreateDto();
-        advertRegistrationService =new AdvertRegistrationServiceImpl(advertRepository,
+        advertRegistrationService = new AdvertRegistrationServiceImpl(advertRepository,
                 typeConverterReadDto, typeConverterCreateDto);
 
     }
@@ -67,6 +67,7 @@ class AdvertRegistrationServiceImplTest {
             verify(advertRepository).saveAndFlush(any(Advert.class));
             assertNotNull(result);
         }
+
         @Test
         void testRegisterAdvert_ConversionFailure() {
             when(typeConverterCreateDto.convert(advertCreateDto)).thenThrow(new IllegalArgumentException("Invalid advert data"));
@@ -81,7 +82,8 @@ class AdvertRegistrationServiceImplTest {
         @Test
         void testRegisterAdvert_RepositorySaveFailure() {
             when(typeConverterCreateDto.convert(advertCreateDto)).thenReturn(advert);
-            when(advertRepository.saveAndFlush(advert)).thenThrow(new DataAccessException("Database error") {});
+            when(advertRepository.saveAndFlush(advert)).thenThrow(new DataAccessException("Database error") {
+            });
 
             assertThrows(DataAccessException.class, () -> advertRegistrationService.registerAdvert(advertCreateDto), "Expected DataAccessException to be thrown");
 

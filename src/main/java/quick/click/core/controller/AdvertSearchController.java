@@ -6,12 +6,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import quick.click.commons.exeptions.AuthorizationException;
 import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.core.domain.dto.AdvertReadDto;
 import quick.click.core.service.AdvertSearchService;
+import quick.click.security.commons.model.AuthenticatedUser;
 
-import java.security.Principal;
 import java.util.List;
 
 import static quick.click.commons.constants.ApiVersion.VERSION_1_0;
@@ -39,6 +41,7 @@ public class AdvertSearchController {
      */
     @GetMapping("/{id}")
     @Operation(summary = "Find advert by id")
+   // @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> findAdvertById(@PathVariable("id") final Long advertId) {
 
         try {
@@ -86,43 +89,28 @@ public class AdvertSearchController {
         }
     }
 
-    @GetMapping("/user/{id}")
-    @Operation(summary = "Find all adverts by user id")
-    public ResponseEntity<?> findAllAdvertsByUserId(@PathVariable("id") final Long userId) {
-
-        try {
-
-            final List<AdvertReadDto> advertReadDtoList =advertSearchService.findAllAdvertsByUserId(userId);
-
-            LOGGER.debug("In findAllAdvertsByUserId find all adverts for the user with id: {}", userId);
-
-            return ResponseEntity.status(HttpStatus.OK).body(advertReadDtoList);
-
-        } catch (Exception exception) {
-
-            LOGGER.error("Error finding adverts by user id {}", userId, exception);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
-
-        }
-    }
-
     @GetMapping("/user")
     @Operation(summary = "Find all adverts by authorized user")
-    public ResponseEntity<?> findAllAdvertsByUser(Principal principal) {
+    public ResponseEntity<?> findAllAdvertsByUser(@AuthenticationPrincipal final AuthenticatedUser authenticatedUser) {
 
         try {
 
-            final List<AdvertReadDto> advertReadDtoList =advertSearchService.findAllAdvertsByUser(principal);
+            final List<AdvertReadDto> advertReadDtoList =advertSearchService.findAllAdvertsByUser(authenticatedUser);
 
-            final String userName = principal.getName();
+            final String userName = authenticatedUser.getEmail();
 
-            LOGGER.debug("In findAllAdvertsByUserId find all adverts for the user with name: {}", userName);
+            LOGGER.debug("In findAllAdvertsByUser find all adverts for the user with name: {}", userName);
 
             return ResponseEntity.status(HttpStatus.OK).body(advertReadDtoList);
 
+        } catch (AuthorizationException exception) {
+
+            LOGGER.error("Unauthorized access attempt by user {}", authenticatedUser.getEmail(), exception);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized access");
+
         } catch (Exception exception) {
 
-            LOGGER.error("Error finding adverts by user with name {}", principal.getName(), exception);
+            LOGGER.error("Error finding adverts by user with name {}", authenticatedUser.getEmail(), exception);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
 
         }

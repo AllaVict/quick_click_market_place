@@ -62,6 +62,7 @@ public class AdvertEditingControllerIntegrationTest {
 
     @Autowired
     private WebApplicationContext context;
+
     @BeforeEach
     public void setupMockMvc() {
         mockMvc = MockMvcBuilders
@@ -73,18 +74,18 @@ public class AdvertEditingControllerIntegrationTest {
     @BeforeEach
     void setUp() {
         advertReadDto = createAdvertReadDto();
-        advertEditingDto =  createAdvertEditingDto();
+        advertEditingDto = createAdvertEditingDto();
     }
 
     @Nested
     @DisplayName("When Edit a Advert")
-    class  EditAdvertTests {
+    class EditAdvertTests {
         @Test
         void testEditAdvert_ShouldReturnAdvertReadDto() throws Exception {
-           given(advertEditingService.editAdvert(ADVERT_ID, advertEditingDto)).willReturn(advertReadDto);
+            given(advertEditingService.editAdvert(ADVERT_ID, advertEditingDto)).willReturn(advertReadDto);
 
-           mockMvc.perform(put(VERSION_1_0+ADVERTS_URL+"/"+ADVERT_ID)//"/v1.0/adverts/101"
-                             .with(csrf())
+            mockMvc.perform(put(VERSION_1_0 + ADVERTS_URL + "/" + ADVERT_ID)//"/v1.0/adverts/101"
+                            .with(csrf())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(advertReadDto)))
                     .andDo(print())
@@ -118,9 +119,9 @@ public class AdvertEditingControllerIntegrationTest {
         }
 
         @Test
-        void testEditAdvert_ShouldnReturn400Status_WhenInvalidRequested() throws Exception{
-            mockMvc.perform(put(VERSION_1_0+ADVERTS_URL+"/invalid")
-                             .with(csrf())
+        void testEditAdvert_ShouldnReturn400Status_WhenInvalidRequested() throws Exception {
+            mockMvc.perform(put(VERSION_1_0 + ADVERTS_URL + "/invalid")
+                            .with(csrf())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(advertEditingDto)))
                     .andDo(print())
@@ -139,7 +140,7 @@ public class AdvertEditingControllerIntegrationTest {
 
     @Nested
     @DisplayName("When archive an advert")
-    class  ArchiveAdvertTests {
+    class ArchiveAdvertTests {
         @Test
         void testArchiveAdvert_ShouldReturnAdvertReadDto() throws Exception {
             given(advertEditingService.archiveAdvert(ADVERT_ID)).willReturn(advertReadDto);
@@ -174,14 +175,15 @@ public class AdvertEditingControllerIntegrationTest {
         }
 
     }
+
     @Nested
     @DisplayName("When Delete a Advert")
     class DeleteAdvertTests {
         @Test
         void testDeleteAdvert_ShouldReturnAdvertReadDto() throws Exception {
-          doNothing().when(advertEditingService).deleteAdvert(any(Long.class));
+            doNothing().when(advertEditingService).deleteAdvert(any(Long.class));
 
-          mockMvc.perform(delete(VERSION_1_0 + ADVERTS_URL+"/"+ADVERT_ID)
+            mockMvc.perform(delete(VERSION_1_0 + ADVERTS_URL + "/" + ADVERT_ID)
                             .with(csrf())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(advertReadDto)))
@@ -203,8 +205,8 @@ public class AdvertEditingControllerIntegrationTest {
         }
 
         @Test
-        void testDeleteAdvert_ShouldnReturn400Status_WhenInvalidRequested() throws Exception{
-            mockMvc.perform(delete(VERSION_1_0+ADVERTS_URL+"/invalid")
+        void testDeleteAdvert_ShouldnReturn400Status_WhenInvalidRequested() throws Exception {
+            mockMvc.perform(delete(VERSION_1_0 + ADVERTS_URL + "/invalid")
                             .with(csrf())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(advertEditingDto)))

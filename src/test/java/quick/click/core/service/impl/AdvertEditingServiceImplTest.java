@@ -55,7 +55,7 @@ class AdvertEditingServiceImplTest {
 
     @Nested
     @DisplayName("When edit an advert")
-    class  EditAdvertTests {
+    class EditAdvertTests {
         @Test
         void testEditAdvert_ShouldReturnAdvertReadDto() {
             when(advertRepository.findById(ADVERT_ID)).thenReturn(Optional.of(advert));
@@ -93,7 +93,7 @@ class AdvertEditingServiceImplTest {
 
     @Nested
     @DisplayName("When archive an advert")
-    class  ArchiveAdvertTests {
+    class ArchiveAdvertTests {
         @Test
         void testArchiveAdvert_ShouldReturnAdvertReadDto() {
             advertReadDto.setStatus(ARCHIVED);
@@ -132,7 +132,7 @@ class AdvertEditingServiceImplTest {
             advertEditingService.deleteAdvert(ADVERT_ID);
 
             verify(advertRepository, times(1)).delete(advert);
-       }
+        }
 
         @Test
         void testDeleteAdvert_ShouldThrowException_WhenAdvertDoesNotExist() {
@@ -146,5 +146,5 @@ class AdvertEditingServiceImplTest {
 
     }
 
- }
+}
 

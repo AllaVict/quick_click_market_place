@@ -11,15 +11,19 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import quick.click.commons.exeptions.AuthorizationException;
 import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.core.domain.dto.AdvertReadDto;
 import quick.click.core.service.AdvertSearchService;
+import quick.click.security.commons.model.AuthenticatedUser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static quick.click.config.factory.AdvertDtoFactory.createAdvertReadDto;
 
@@ -41,9 +45,14 @@ class AdvertSearchControllerTest {
     @Spy
     private List<AdvertReadDto> advertReadDtoList;
 
+    private AuthenticatedUser authenticatedUser;
+
+    private static final String EMAIL = "test@example.com";
+
     @BeforeEach
     void setUp() {
         advertReadDto = createAdvertReadDto();
+        authenticatedUser = mock(AuthenticatedUser.class);
     }
 
     @Nested
@@ -99,32 +108,44 @@ class AdvertSearchControllerTest {
         }
 
         @Nested
-        @DisplayName("When find all adverts by user id ")
-        class FindAllAdvertsByUserIdTests {
+        @DisplayName("When find all adverts by user")
+        class FindAllAdvertsByUserTests {
 
             @Test
-            void testFindAllAdvertsByUserId_ShouldReturnAllAdverts() {
+            void testFindAllAdvertsByUser_ShouldReturnAllAdverts() {
                 advertReadDtoList = List.of(advertReadDto, advertReadDto);
-                when(advertSearchService.findAllAdvertsByUserId(USER_ID)).thenReturn(advertReadDtoList);
+                when(authenticatedUser.getEmail()).thenReturn(EMAIL);
+                when(advertSearchService.findAllAdvertsByUser(authenticatedUser)).thenReturn(advertReadDtoList);
 
-                ResponseEntity<?> responseEntity = advertSearchController.findAllAdvertsByUserId(USER_ID);
+                ResponseEntity<?> responseEntity = advertSearchController.findAllAdvertsByUser(authenticatedUser);
 
                 assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
                 assertEquals(advertReadDtoList, responseEntity.getBody());
             }
 
             @Test
-            void testFindAllAdvertsByUserId_ShouldReturn200Status_WhenReturnEmptyList() {
+            void testFindAllAdvertsByUser_ShouldReturn200Status_WhenReturnEmptyList() {
                 advertReadDtoList = new ArrayList<>();
-                when(advertSearchService.findAllAdvertsByUserId(USER_ID)).thenReturn(advertReadDtoList);
+                when(authenticatedUser.getEmail()).thenReturn(EMAIL);
+                when(advertSearchService.findAllAdvertsByUser(authenticatedUser)).thenReturn(advertReadDtoList);
 
-                ResponseEntity<?> responseEntity = advertSearchController.findAllAdvertsByUserId(USER_ID);
+                ResponseEntity<?> responseEntity = advertSearchController.findAllAdvertsByUser(authenticatedUser);
 
                 assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
                 assertEquals(advertReadDtoList, responseEntity.getBody());
 
             }
 
+            @Test
+            void testFindAllAdvertsByUser_UnauthorizedUser() {
+                when(advertSearchService.findAllAdvertsByUser(authenticatedUser))
+                        .thenThrow(new AuthorizationException("Unauthorized access"));
+
+                ResponseEntity<?> responseEntity = advertSearchController.findAllAdvertsByUser(authenticatedUser);
+
+                assertEquals(HttpStatus.FORBIDDEN, responseEntity.getStatusCode());
+
+            }
         }
 
     }

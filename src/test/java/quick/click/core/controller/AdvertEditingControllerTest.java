@@ -42,12 +42,12 @@ class AdvertEditingControllerTest {
     @BeforeEach
     void setUp() {
         advertReadDto = createAdvertReadDto();
-        advertEditingDto =  createAdvertEditingDto();
+        advertEditingDto = createAdvertEditingDto();
     }
 
     @Nested
     @DisplayName("When edit an advert")
-    class  EditAdvertTests {
+    class EditAdvertTests {
         @Test
         void testEditAdvert_shouldReturnAdvertReadDto() {
             when(advertEditingService.editAdvert(ADVERT_ID, advertEditingDto)).thenReturn(advertReadDto);
@@ -81,7 +81,7 @@ class AdvertEditingControllerTest {
 
     @Nested
     @DisplayName("When archive an advert")
-    class  ArchiveAdvertTests {
+    class ArchiveAdvertTests {
         @Test
         void testArchiveAdvert_shouldReturnAdvertReadDto() {
             advertReadDto.setStatus(ARCHIVED);
@@ -125,6 +125,7 @@ class AdvertEditingControllerTest {
             assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
             assertEquals("The Advert has deleted successfully", responseEntity.getBody());
         }
+
         @Test
         void testDeleteAdvert_ShouldnReturn404Status_WhenAdvertIdDoesNotExist() {
             doThrow(new ResourceNotFoundException("Advert", "id", ADVERT_ID))

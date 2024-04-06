@@ -18,7 +18,7 @@ public class UserFactory {
 
     private static final String JOHNSON = "Johnson";
 
-    private static final String EMAIL =  "test@example.com";
+    private static final String EMAIL = "test@example.com";
 
     private static final String PASSWORD = "password";
 
@@ -49,6 +49,7 @@ public class UserFactory {
         user.setRole(role);
         return user;
     }
+
     public static User createUserWithGoogle() {
         final User user = createUser(USER_ID, JOHN, JOHNSON, MALE, EMAIL, PASSWORD);
         user.setProvider(AuthProvider.GOOGLE);

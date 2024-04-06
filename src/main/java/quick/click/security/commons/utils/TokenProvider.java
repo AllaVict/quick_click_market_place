@@ -37,7 +37,7 @@ public class TokenProvider {
 
     public Long getUserIdFromToken(final String token) {
 
-        final var key =appProperties.getAuth().getTokenSecret();
+        final var key = appProperties.getAuth().getTokenSecret();
         Claims claims = Jwts.parser()
                 .setSigningKey(key).build()
                 .parseClaimsJws(token)
@@ -47,7 +47,7 @@ public class TokenProvider {
 
     public boolean validateToken(final String authToken) {
         try {
-              Jwts.parser()
+            Jwts.parser()
                     .setSigningKey(appProperties.getAuth().getTokenSecret()).build()
                     .parseClaimsJws(authToken);
             return true;

@@ -2,8 +2,8 @@ package quick.click.core.service.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import quick.click.commons.exeptions.AuthorizationException;
 import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.core.converter.TypeConverter;
 import quick.click.core.domain.dto.AdvertReadDto;
@@ -12,8 +12,8 @@ import quick.click.core.domain.model.User;
 import quick.click.core.repository.AdvertRepository;
 import quick.click.core.repository.UserRepository;
 import quick.click.core.service.AdvertSearchService;
+import quick.click.security.commons.model.AuthenticatedUser;
 
-import java.security.Principal;
 import java.util.List;
 
 @Service
@@ -38,7 +38,7 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
     @Override
     public AdvertReadDto findAdvertById(final Long advertId) {
 
-        final AdvertReadDto advertReadDto =  advertRepository.findById(advertId)
+        final AdvertReadDto advertReadDto = advertRepository.findById(advertId)
                 .map(typeConverterReadDto::convert)
                 .orElseThrow(() -> new ResourceNotFoundException("Advert", "id", advertId));
 
@@ -50,7 +50,7 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
     @Override
     public List<AdvertReadDto> findAllAdverts() {
 
-        final List<AdvertReadDto> advertReadDtoList =  advertRepository.findAll()
+        final List<AdvertReadDto> advertReadDtoList = advertRepository.findAll()
                 .stream()
                 .map(typeConverterReadDto::convert)
                 .toList();
@@ -61,35 +61,24 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
     }
 
     @Override
-    public List<AdvertReadDto> findAllAdvertsByUserId(Long userId) {
+    public List<AdvertReadDto> findAllAdvertsByUser(final AuthenticatedUser authenticatedUser) {
 
-      final List<AdvertReadDto> advertReadDtoList =  advertRepository.findAllAdvertsByUserId(userId)
+        final User user = getUserByAuthenticatedUser(authenticatedUser);
+
+        final List<AdvertReadDto> advertReadDtoList = advertRepository.findAllByUserOrderByCreatedDateDesc(user)
                 .stream()
                 .map(typeConverterReadDto::convert)
                 .toList();
 
-        LOGGER.debug("In findAllAdvertsByUserId find all adverts for the user with id: {}", userId);
+        LOGGER.debug("In findAllAdvertsByUser find all adverts for the user with id: {}, {}", user.getId(), advertReadDtoList);
 
         return advertReadDtoList;
     }
 
-    @Override
-    public List<AdvertReadDto> findAllAdvertsByUser(Principal principal) {
-        User user = getUserByPrincipal(principal);
-        final List<AdvertReadDto> advertReadDtoList =  advertRepository.findAllByUserOrderByCreatedDateDesc(user)
-                .stream()
-                .map(typeConverterReadDto::convert)
-                .toList();
-
-        LOGGER.debug("In findAllAdvertsByUser find all adverts for the user with id: {}", user.getId());
-
-        return advertReadDtoList;
-    }
-
-    private User getUserByPrincipal(Principal principal) {
-        String username = principal.getName();
+    private User getUserByAuthenticatedUser(final AuthenticatedUser authenticatedUser) {
+        String username = authenticatedUser.getEmail();
         return userRepository.findUserByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Username not found with username " + username));
+                .orElseThrow(() -> new AuthorizationException("Unauthorized access"));
 
     }
 

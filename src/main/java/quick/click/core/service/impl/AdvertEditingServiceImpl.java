@@ -8,7 +8,6 @@ import quick.click.core.converter.TypeConverter;
 import quick.click.core.domain.dto.AdvertEditingDto;
 import quick.click.core.domain.dto.AdvertReadDto;
 import quick.click.core.domain.model.Advert;
-import quick.click.core.enums.AdvertStatus;
 import quick.click.core.repository.AdvertRepository;
 import quick.click.core.repository.FileReferenceRepository;
 import quick.click.core.service.AdvertEditingService;
@@ -39,20 +38,18 @@ public class AdvertEditingServiceImpl implements AdvertEditingService {
 
     }
 
-
-
     @Override
     public AdvertReadDto editAdvert(final Long advertId, final AdvertEditingDto advertEditingDto) {
 
         final Optional<Advert> advertForUpdate = advertRepository.findById(advertId);
-        if(advertForUpdate.isEmpty())
+        if (advertForUpdate.isEmpty())
             advertForUpdate.orElseThrow(() -> new ResourceNotFoundException("Advert", "id", advertId));
 
         advertEditingDto.setStatus(PUBLISHED);
 
-        LOGGER.debug("In editAdvert advert has updated successfully with id {} ",advertId);
+        LOGGER.debug("In editAdvert advert has updated successfully with id {} ", advertId);
 
-        return  advertForUpdate
+        return advertForUpdate
                 .map(advert -> this.updateAdvertData(advert, advertEditingDto))
                 .map(advertRepository::saveAndFlush)
                 .map(typeConverterReadDto::convert)
@@ -60,15 +57,15 @@ public class AdvertEditingServiceImpl implements AdvertEditingService {
     }
 
     @Override
-    public AdvertReadDto archiveAdvert(Long advertId) {
+    public AdvertReadDto archiveAdvert(final Long advertId) {
 
         final Optional<Advert> advertToArchive = advertRepository.findById(advertId);
-        if(advertToArchive.isEmpty())
+        if (advertToArchive.isEmpty())
             advertToArchive.orElseThrow(() -> new ResourceNotFoundException("Advert", "id", advertId));
 
-        LOGGER.debug("In archiveAdvert advert has archived successfully with id {} ",advertId);
+        LOGGER.debug("In archiveAdvert advert has archived successfully with id {} ", advertId);
 
-        return  advertToArchive
+        return advertToArchive
                 .map(this::archive)
                 .map(advertRepository::saveAndFlush)
                 .map(typeConverterReadDto::convert)
@@ -78,18 +75,18 @@ public class AdvertEditingServiceImpl implements AdvertEditingService {
     @Override
     public void deleteAdvert(final Long advertId) {
 
-       final Optional<Advert> advertForDelete = advertRepository.findById(advertId);
+        final Optional<Advert> advertForDelete = advertRepository.findById(advertId);
 
-       if(advertForDelete.isEmpty())
+        if (advertForDelete.isEmpty())
             advertForDelete.orElseThrow(() -> new ResourceNotFoundException("Advert", "id", advertId));
 
-       final Long fileReferenceForDelete = advertForDelete.orElseThrow().getImage();
-       LOGGER.debug("Deleting fileReference for advert with id {}", fileReferenceForDelete);
-       if(fileReferenceForDelete!=null){
-             fileReferenceRepository.deleteById(fileReferenceForDelete);
-       } else {
-           LOGGER.debug("Deleting fileReference for advert with id {}", fileReferenceForDelete);
-       }
+        final Long fileReferenceForDelete = advertForDelete.orElseThrow().getImage();
+        LOGGER.debug("Deleting fileReference for advert with id {}", fileReferenceForDelete);
+        if (fileReferenceForDelete != null) {
+            fileReferenceRepository.deleteById(fileReferenceForDelete);
+        } else {
+            LOGGER.debug("Deleting fileReference for advert with id {}", fileReferenceForDelete);
+        }
 
         advertRepository.delete(advertForDelete.orElseThrow());
 
@@ -112,7 +109,7 @@ public class AdvertEditingServiceImpl implements AdvertEditingService {
         return advert;
     }
 
-    private Advert archive(Advert advert) {
+    private Advert archive(final Advert advert) {
         advert.setStatus(ARCHIVED);
         return advert;
     }

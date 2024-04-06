@@ -15,15 +15,18 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import quick.click.commons.exeptions.ResourceNotFoundException;
+import quick.click.config.factory.WithMockAuthenticatedUser;
 import quick.click.core.controller.AdvertRegistrationController;
 import quick.click.core.controller.AdvertSearchController;
 import quick.click.core.domain.dto.AdvertReadDto;
 import quick.click.core.service.AdvertSearchService;
+import quick.click.security.commons.model.AuthenticatedUser;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -61,6 +64,9 @@ class AdvertSearchControllerIntegrationTest {
 
     @Autowired
     private WebApplicationContext context;
+
+    private AuthenticatedUser authenticatedUser;
+
     @BeforeEach
     public void setupMockMvc() {
         mockMvc = MockMvcBuilders
@@ -71,6 +77,7 @@ class AdvertSearchControllerIntegrationTest {
     @BeforeEach
     void setUp() {
         advertReadDto = createAdvertReadDto();
+        authenticatedUser = mock(AuthenticatedUser.class);
     }
 
     @Nested
@@ -160,31 +167,32 @@ class AdvertSearchControllerIntegrationTest {
     }
 
     @Nested
-    @DisplayName("When find all adverts by user id ")
-    class FindAllAdvertsByUserIdTests {
+    @DisplayName("When find all adverts by user")
+    @WithMockAuthenticatedUser
+    class FindAllAdvertsByUserTests {
 
         @Test
-        void testFindAllAdvertsByUserId_ShouldReturnAllAdverts() throws Exception {
+        void testFindAllAdvertsByUser_ShouldReturnAllAdverts() throws Exception {
             advertReadDtoList = List.of(advertReadDto, advertReadDto);
-            when(advertSearchService.findAllAdvertsByUserId(USER_ID)).thenReturn(advertReadDtoList);
+            when(advertSearchService.findAllAdvertsByUser(authenticatedUser)).thenReturn(advertReadDtoList);
 
-            mockMvc.perform(get(VERSION_1_0+"/user/"+USER_ID)
+            mockMvc.perform(get(VERSION_1_0+ADVERTS_URL+"/user")
                             .with(csrf())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(advertReadDtoList)))
                     .andDo(print())
-                    .andExpect(status().isNotFound());
+                    .andExpect(status().isOk());
         }
 
         @Test
-        void testFindAllAdvertsByUserId_ShouldReturn404Status_WhenReturnEmptyList() throws Exception {
+        void testFindAllAdvertsByUser_ShouldReturn404Status_WhenReturnEmptyList() throws Exception {
             advertReadDtoList =new ArrayList<>();
-            when(advertSearchService.findAllAdvertsByUserId(USER_ID)).thenReturn(advertReadDtoList);
+            when(advertSearchService.findAllAdvertsByUser(authenticatedUser)).thenReturn(advertReadDtoList);
 
-            mockMvc.perform(get(VERSION_1_0 + "/user/" + USER_ID)
+            mockMvc.perform(get(VERSION_1_0 +ADVERTS_URL+"/user")
                             .with(csrf()))
                     .andDo(print())
-                    .andExpect(status().isNotFound());
+                    .andExpect(status().isOk());
         }
 
     }

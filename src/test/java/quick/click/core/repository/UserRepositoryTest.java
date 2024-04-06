@@ -28,7 +28,7 @@ class UserRepositoryTest {
     @Autowired
     private FileReferenceRepository fileReferenceRepository;
 
-    private static final String EMAIL =  "test@example.com";
+    private static final String EMAIL = "test@example.com";
 
     private User user;
 
@@ -58,6 +58,7 @@ class UserRepositoryTest {
         }
 
     }
+
     @Nested
     @DisplayName("When user exists with email")
     class ExistsByEmailTests {
@@ -98,6 +99,7 @@ class UserRepositoryTest {
             assertThat(foundUser).isEmpty();
         }
     }
+
     @Nested
     @DisplayName("When find all user")
     class FindALlUseTests {
@@ -119,7 +121,7 @@ class UserRepositoryTest {
             userRepository.deleteAll();
             List<User> userList = userRepository.findAll();
 
-            assertEquals(0, userList.size() );
+            assertEquals(0, userList.size());
             assertTrue(userList.isEmpty());
         }
     }

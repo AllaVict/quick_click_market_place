@@ -35,18 +35,18 @@ public class AdvertEditingController {
 
     /**
      * PUT   http://localhost:8081/v1.0/adverts/3
-     {
-     "title": "Big dog",
-     "description": "description a toy Big dog",
-     "category": "TOYS",
-     "status": "PUBLISHED",
-     "phone": "+380507778855",
-     "price": "100.00",
-     "firstPriceDisplayed": "true",
-     "currency": "EUR",
-     "address": "Dania",
-     "userId": "1"
-     }
+     * {
+     * "title": "Big dog",
+     * "description": "description a toy Big dog",
+     * "category": "TOYS",
+     * "status": "PUBLISHED",
+     * "phone": "+380507778855",
+     * "price": "100.00",
+     * "firstPriceDisplayed": "true",
+     * "currency": "EUR",
+     * "address": "Dania",
+     * "userId": "1"
+     * }
      */
     @PutMapping("{id}")
     @Operation(summary = "Update an advert by id and a given request body")

@@ -13,6 +13,7 @@ import quick.click.config.factory.AdvertFactory;
 import quick.click.config.factory.UserFactory;
 import quick.click.core.domain.model.Advert;
 import quick.click.core.domain.model.User;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -103,7 +104,7 @@ class AdvertRepositoryTest {
     }
 
     @Nested
-    @DisplayName("When find all adverts by user id")
+    @DisplayName("When find all adverts by user sorted by CreatedDateDesc")
     class FindAllAdvertsByUserIdTests {
         @Test
         @Transactional
@@ -112,7 +113,7 @@ class AdvertRepositoryTest {
             advertRepository.save(expectedAdvertOne);
             advertRepository.save(expectedAdvertTwo);
 
-            List<Advert> result = advertRepository.findAllAdvertsByUserId(user.getId());
+            List<Advert> result = advertRepository.findAllByUserOrderByCreatedDateDesc(user);
 
             assertThat(result).containsExactlyInAnyOrder(expectedAdvertOne, expectedAdvertTwo);
             assertNotNull(result);
@@ -124,7 +125,7 @@ class AdvertRepositoryTest {
         @Test
         void testFindAllAdvertsByUserId_shouldReturnEmptyAdvertList() {
             advertRepository.deleteAll();
-            List<Advert> result = advertRepository.findAllAdvertsByUserId(user.getId());
+            List<Advert> result = advertRepository.findAllByUserOrderByCreatedDateDesc(user);
 
             assertThrows(DataIntegrityViolationException.class, () -> advertRepository.save(new Advert()));
             assertEquals(0, result.size());

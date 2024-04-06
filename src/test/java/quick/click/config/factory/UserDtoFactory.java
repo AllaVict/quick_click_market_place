@@ -14,7 +14,7 @@ public class UserDtoFactory {
 
     private static final String JOHNSON = "Johnson";
 
-    private static final String EMAIL =  "test@example.com";
+    private static final String EMAIL = "test@example.com";
 
     private static final String PASSWORD = "password";
 
@@ -22,12 +22,14 @@ public class UserDtoFactory {
 
     private UserDtoFactory() {
     }
+
     public static UserLoginDto createUserLoginDto() {
         final UserLoginDto userLoginDto = new UserLoginDto();
         userLoginDto.setEmail(EMAIL);
         userLoginDto.setPassword(PASSWORD);
         return userLoginDto;
     }
+
     public static UserSignupDto createUserSignupDto() {
         final UserSignupDto userSignupDto = new UserSignupDto();
         userSignupDto.setName(JOHN);
