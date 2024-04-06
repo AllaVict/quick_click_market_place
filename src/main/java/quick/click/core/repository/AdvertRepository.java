@@ -13,6 +13,8 @@ public interface AdvertRepository extends JpaRepository<Advert, Long> {
 
     Optional<Advert> findAdvertById(Long id);
 
+    Optional<Advert> findAdvertByIdAndUserId(Long advertId, Long userId);
+
     List<Advert> findAllByUserOrderByCreatedDateDesc(User user);
 
 

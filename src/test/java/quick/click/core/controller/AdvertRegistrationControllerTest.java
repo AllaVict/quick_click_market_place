@@ -11,13 +11,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import quick.click.commons.exeptions.AdvertRegistrationException;
+import quick.click.commons.exeptions.AuthorizationException;
 import quick.click.core.domain.dto.AdvertCreateDto;
 import quick.click.core.domain.dto.AdvertReadDto;
 import quick.click.core.service.AdvertRegistrationService;
+import quick.click.security.commons.model.AuthenticatedUser;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static quick.click.config.factory.AdvertDtoFactory.createAdvertCreateDto;
 import static quick.click.config.factory.AdvertDtoFactory.createAdvertReadDto;
@@ -34,10 +37,13 @@ class AdvertRegistrationControllerTest {
 
     private AdvertCreateDto advertCreateDto;
 
+    private AuthenticatedUser authenticatedUser  = mock(AuthenticatedUser.class);
+
     @BeforeEach
     void setUp() {
         advertReadDto = createAdvertReadDto();
         advertCreateDto = createAdvertCreateDto();
+
     }
 
     @Nested
@@ -45,9 +51,9 @@ class AdvertRegistrationControllerTest {
     class RegisterAdvertTests {
         @Test
         void testRegisterAdvert_ShouldReturnAdvertReadDTO() {
-            when(advertRegistrationService.registerAdvert(advertCreateDto)).thenReturn(advertReadDto);
+            when(advertRegistrationService.registerAdvert(advertCreateDto,authenticatedUser)).thenReturn(advertReadDto);
 
-            ResponseEntity<?> responseEntity = advertRegistrationController.registerAdvert(advertCreateDto);
+            ResponseEntity<?> responseEntity = advertRegistrationController.registerAdvert(advertCreateDto,authenticatedUser);
 
             assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
             assertEquals(advertReadDto, responseEntity.getBody());
@@ -57,20 +63,31 @@ class AdvertRegistrationControllerTest {
         void testRegisterAdvert_ShouldReturn400Status_WhenInvalidRequest() {
             advertCreateDto = new AdvertCreateDto();
 
-            ResponseEntity<?> responseEntity = advertRegistrationController.registerAdvert(advertCreateDto);
+            ResponseEntity<?> responseEntity = advertRegistrationController.registerAdvert(advertCreateDto,authenticatedUser);
 
             assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
         }
 
         @Test
         void testRegisterAdvert_ShouldReturn400Status_WhenThrowsException() {
-            when(advertRegistrationService.registerAdvert(any(AdvertCreateDto.class)))
+            when(advertRegistrationService.registerAdvert(any(AdvertCreateDto.class), any(AuthenticatedUser.class)))
                     .thenThrow(new AdvertRegistrationException("Registration failed due to XYZ"));
 
-            ResponseEntity<?> responseEntity = advertRegistrationController.registerAdvert(advertCreateDto);
+            ResponseEntity<?> responseEntity = advertRegistrationController.registerAdvert(advertCreateDto,authenticatedUser);
 
             assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
             assertTrue(responseEntity.getBody().toString().contains("Registration failed due to XYZ"));
+        }
+
+        @Test
+        void testRegisterAdvert_UnauthorizedUser() {
+            when(advertRegistrationService.registerAdvert(any(AdvertCreateDto.class),any(AuthenticatedUser.class)))
+                    .thenThrow(new AuthorizationException("Unauthorized access"));
+
+            ResponseEntity<?> responseEntity = advertRegistrationController.registerAdvert(advertCreateDto,authenticatedUser);
+
+            assertEquals(HttpStatus.FORBIDDEN, responseEntity.getStatusCode());
+
         }
 
     }

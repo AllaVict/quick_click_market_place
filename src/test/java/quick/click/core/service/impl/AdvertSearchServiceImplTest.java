@@ -56,10 +56,9 @@ class AdvertSearchServiceImplTest {
 
     private User user;
 
-    private AuthenticatedUser authenticatedUser;
-
     private static final long ADVERT_ID = 101L;
 
+    private AuthenticatedUser authenticatedUser = mock(AuthenticatedUser.class);
     private static final String EMAIL = "test@example.com";
 
     @BeforeEach
@@ -67,7 +66,6 @@ class AdvertSearchServiceImplTest {
         user = createUser();
         advert = createAdvert();
         advertReadDto = createAdvertReadDto();
-        authenticatedUser = mock(AuthenticatedUser.class);
         advertSearchService = new AdvertSearchServiceImpl(advertRepository, userRepository, advertToAdvertReadDtoConverter);
 
     }

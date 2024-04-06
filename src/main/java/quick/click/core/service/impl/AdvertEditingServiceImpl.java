@@ -3,14 +3,18 @@ package quick.click.core.service.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import quick.click.commons.exeptions.AuthorizationException;
 import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.core.converter.TypeConverter;
 import quick.click.core.domain.dto.AdvertEditingDto;
 import quick.click.core.domain.dto.AdvertReadDto;
 import quick.click.core.domain.model.Advert;
+import quick.click.core.domain.model.User;
 import quick.click.core.repository.AdvertRepository;
 import quick.click.core.repository.FileReferenceRepository;
+import quick.click.core.repository.UserRepository;
 import quick.click.core.service.AdvertEditingService;
+import quick.click.security.commons.model.AuthenticatedUser;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -25,23 +29,31 @@ public class AdvertEditingServiceImpl implements AdvertEditingService {
 
     private final AdvertRepository advertRepository;
 
+    private final UserRepository userRepository;
+
     private final FileReferenceRepository fileReferenceRepository;
 
     private final TypeConverter<Advert, AdvertReadDto> typeConverterReadDto;
 
     public AdvertEditingServiceImpl(final AdvertRepository advertRepository,
+                                    final UserRepository userRepository,
                                     final FileReferenceRepository fileReferenceRepository,
                                     final TypeConverter<Advert, AdvertReadDto> typeConverterReadDto) {
         this.advertRepository = advertRepository;
+        this.userRepository = userRepository;
         this.fileReferenceRepository = fileReferenceRepository;
         this.typeConverterReadDto = typeConverterReadDto;
 
     }
 
     @Override
-    public AdvertReadDto editAdvert(final Long advertId, final AdvertEditingDto advertEditingDto) {
+    public AdvertReadDto editAdvert(final Long advertId,
+                                    final AdvertEditingDto advertEditingDto,
+                                    final AuthenticatedUser authenticatedUser) {
 
-        final Optional<Advert> advertForUpdate = advertRepository.findById(advertId);
+        final Long userId = getUserIdByAuthenticatedUser(authenticatedUser);
+
+        final Optional<Advert> advertForUpdate = advertRepository.findAdvertByIdAndUserId(advertId, userId);
         if (advertForUpdate.isEmpty())
             advertForUpdate.orElseThrow(() -> new ResourceNotFoundException("Advert", "id", advertId));
 
@@ -57,9 +69,11 @@ public class AdvertEditingServiceImpl implements AdvertEditingService {
     }
 
     @Override
-    public AdvertReadDto archiveAdvert(final Long advertId) {
+    public AdvertReadDto archiveAdvert(final Long advertId,
+                                       final AuthenticatedUser authenticatedUser) {
 
-        final Optional<Advert> advertToArchive = advertRepository.findById(advertId);
+        final Long userId = getUserIdByAuthenticatedUser(authenticatedUser);
+        final Optional<Advert> advertToArchive = advertRepository.findAdvertByIdAndUserId(advertId, userId);
         if (advertToArchive.isEmpty())
             advertToArchive.orElseThrow(() -> new ResourceNotFoundException("Advert", "id", advertId));
 
@@ -73,15 +87,18 @@ public class AdvertEditingServiceImpl implements AdvertEditingService {
     }
 
     @Override
-    public void deleteAdvert(final Long advertId) {
+    public void deleteAdvert(final Long advertId,
+                             final AuthenticatedUser authenticatedUser) {
 
-        final Optional<Advert> advertForDelete = advertRepository.findById(advertId);
+        final Long userId = getUserIdByAuthenticatedUser(authenticatedUser);
+        final Optional<Advert> advertForDelete = advertRepository.findAdvertByIdAndUserId(advertId, userId);
 
         if (advertForDelete.isEmpty())
             advertForDelete.orElseThrow(() -> new ResourceNotFoundException("Advert", "id", advertId));
 
         final Long fileReferenceForDelete = advertForDelete.orElseThrow().getImage();
         LOGGER.debug("Deleting fileReference for advert with id {}", fileReferenceForDelete);
+
         if (fileReferenceForDelete != null) {
             fileReferenceRepository.deleteById(fileReferenceForDelete);
         } else {
@@ -112,6 +129,14 @@ public class AdvertEditingServiceImpl implements AdvertEditingService {
     private Advert archive(final Advert advert) {
         advert.setStatus(ARCHIVED);
         return advert;
+    }
+
+    private Long getUserIdByAuthenticatedUser(final AuthenticatedUser authenticatedUser) {
+        String username = authenticatedUser.getEmail();
+        return userRepository.findUserByEmail(username)
+                .orElseThrow(() -> new AuthorizationException("Unauthorized access"))
+                .getId();
+
     }
 
 }

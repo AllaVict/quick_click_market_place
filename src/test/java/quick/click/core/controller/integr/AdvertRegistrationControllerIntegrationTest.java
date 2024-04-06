@@ -14,14 +14,21 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import quick.click.commons.exeptions.AuthorizationException;
+import quick.click.config.factory.WithMockAuthenticatedUser;
 import quick.click.core.controller.AdvertRegistrationController;
 import quick.click.core.domain.dto.AdvertCreateDto;
 import quick.click.core.domain.dto.AdvertReadDto;
 import quick.click.core.service.AdvertRegistrationService;
+import quick.click.security.commons.model.AuthenticatedUser;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -53,6 +60,7 @@ class AdvertRegistrationControllerIntegrationTest {
 
     @Autowired
     private WebApplicationContext context;
+    private AuthenticatedUser authenticatedUser  = mock(AuthenticatedUser.class);
 
     @BeforeEach
     public void setupMockMvc() {
@@ -70,11 +78,13 @@ class AdvertRegistrationControllerIntegrationTest {
 
     @Nested
     @DisplayName("When Register a Advert")
+    @WithMockAuthenticatedUser
     class RegisterAdvertTests {
 
         @Test
         void testRegisterAdvert_ShouldReturnAdvertReadDTO() throws Exception {
-            given(advertRegistrationService.registerAdvert(advertCreateDto)).willReturn(advertReadDto);
+            given(advertRegistrationService.registerAdvert(advertCreateDto,authenticatedUser))
+                    .willReturn(advertReadDto);
 
             mockMvc.perform(post(VERSION_1_0 + ADVERTS_URL)
                             .with(csrf())
@@ -106,6 +116,19 @@ class AdvertRegistrationControllerIntegrationTest {
                             .content(new ObjectMapper().writeValueAsString(invalidDto)))
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$").value(containsString("Please fill all fields")));
+        }
+
+        @Test
+        void  testRegisterAdvert_UnauthorizedUser() throws Exception {
+            given(advertRegistrationService.registerAdvert(any(AdvertCreateDto.class), any(AuthenticatedUser.class)))
+                    .willThrow(new AuthorizationException("Unauthorized access"));
+
+            mockMvc.perform(post(VERSION_1_0 + ADVERTS_URL)
+                    .with(csrf())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(new ObjectMapper().writeValueAsString(advertCreateDto)))
+                    .andDo(print())
+                    .andExpect(status().isForbidden());
         }
 
     }

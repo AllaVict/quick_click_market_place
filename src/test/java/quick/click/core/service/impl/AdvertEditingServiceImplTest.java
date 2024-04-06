@@ -14,6 +14,7 @@ import quick.click.core.domain.dto.AdvertEditingDto;
 import quick.click.core.domain.dto.AdvertReadDto;
 import quick.click.core.domain.model.Advert;
 import quick.click.core.repository.AdvertRepository;
+import quick.click.security.commons.model.AuthenticatedUser;
 
 import java.util.Optional;
 
@@ -46,6 +47,8 @@ class AdvertEditingServiceImplTest {
 
     private AdvertEditingDto advertEditingDto;
 
+    private AuthenticatedUser authenticatedUser = mock(AuthenticatedUser.class);
+
     @BeforeEach
     void setUp() {
         advert = createAdvert();
@@ -62,7 +65,7 @@ class AdvertEditingServiceImplTest {
             when(advertRepository.saveAndFlush(advert)).thenReturn(advert);
             when(typeConverterReadDto.convert(advert)).thenReturn(advertReadDto);
 
-            AdvertReadDto result = advertEditingService.editAdvert(ADVERT_ID, advertEditingDto);
+            AdvertReadDto result = advertEditingService.editAdvert(ADVERT_ID, advertEditingDto, authenticatedUser);
 
             assertEquals(advertReadDto, result);
             assertThat(result.getTitle()).isEqualTo(advertReadDto.getTitle());
@@ -84,7 +87,7 @@ class AdvertEditingServiceImplTest {
             when(advertRepository.findById(ADVERT_ID)).thenReturn(Optional.empty());
 
             assertThrows(ResourceNotFoundException.class,
-                    () -> advertEditingService.editAdvert(ADVERT_ID, advertEditingDto));
+                    () -> advertEditingService.editAdvert(ADVERT_ID, advertEditingDto, authenticatedUser));
 
             verify(advertRepository, never()).save(any(Advert.class));
         }
@@ -101,7 +104,7 @@ class AdvertEditingServiceImplTest {
             when(advertRepository.saveAndFlush(advert)).thenReturn(advert);
             when(typeConverterReadDto.convert(advert)).thenReturn(advertReadDto);
 
-            AdvertReadDto result = advertEditingService.archiveAdvert(ADVERT_ID);
+            AdvertReadDto result = advertEditingService.archiveAdvert(ADVERT_ID, authenticatedUser);
 
             assertEquals(advertReadDto, result);
             assertNotNull(result);
@@ -114,7 +117,7 @@ class AdvertEditingServiceImplTest {
             when(advertRepository.findById(ADVERT_ID)).thenReturn(Optional.empty());
 
             assertThrows(ResourceNotFoundException.class,
-                    () -> advertEditingService.archiveAdvert(ADVERT_ID));
+                    () -> advertEditingService.archiveAdvert(ADVERT_ID, authenticatedUser));
 
             verify(advertRepository, never()).save(any(Advert.class));
         }
@@ -129,7 +132,7 @@ class AdvertEditingServiceImplTest {
             when(advertRepository.findById(anyLong())).thenReturn(Optional.of(advert));
             doNothing().when(advertRepository).delete(any(Advert.class));
 
-            advertEditingService.deleteAdvert(ADVERT_ID);
+            advertEditingService.deleteAdvert(ADVERT_ID, authenticatedUser);
 
             verify(advertRepository, times(1)).delete(advert);
         }
@@ -139,7 +142,7 @@ class AdvertEditingServiceImplTest {
             when(advertRepository.findById(ADVERT_ID)).thenReturn(Optional.empty());
 
             assertThrows(ResourceNotFoundException.class,
-                    () -> advertEditingService.deleteAdvert(ADVERT_ID));
+                    () -> advertEditingService.deleteAdvert(ADVERT_ID, authenticatedUser));
 
             verify(advertRepository, never()).delete(any(Advert.class));
         }

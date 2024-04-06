@@ -43,14 +43,13 @@ class AdvertSearchControllerTest {
     @Spy
     private List<AdvertReadDto> advertReadDtoList;
 
-    private AuthenticatedUser authenticatedUser;
+    private AuthenticatedUser authenticatedUser  = mock(AuthenticatedUser.class);
 
     private static final String EMAIL = "test@example.com";
 
     @BeforeEach
     void setUp() {
         advertReadDto = createAdvertReadDto();
-        authenticatedUser = mock(AuthenticatedUser.class);
     }
 
     @Nested

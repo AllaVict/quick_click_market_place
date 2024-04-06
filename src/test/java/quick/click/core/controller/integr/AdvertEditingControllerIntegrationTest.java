@@ -10,15 +10,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import quick.click.commons.exeptions.AuthorizationException;
 import quick.click.commons.exeptions.ResourceNotFoundException;
+import quick.click.config.factory.WithMockAuthenticatedUser;
 import quick.click.core.controller.AdvertEditingController;
 import quick.click.core.domain.dto.AdvertEditingDto;
 import quick.click.core.domain.dto.AdvertReadDto;
+import quick.click.core.repository.UserRepository;
 import quick.click.core.service.AdvertEditingService;
+import quick.click.security.commons.model.AuthenticatedUser;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
@@ -27,8 +30,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -37,7 +39,7 @@ import static quick.click.commons.constants.Constants.Endpoints.ADVERTS_URL;
 import static quick.click.config.factory.AdvertDtoFactory.createAdvertEditingDto;
 import static quick.click.config.factory.AdvertDtoFactory.createAdvertReadDto;
 
-@WithMockUser
+@WithMockAuthenticatedUser
 @WebMvcTest(AdvertEditingController.class)
 @DisplayName("AdvertEditingController")
 public class AdvertEditingControllerIntegrationTest {
@@ -47,6 +49,8 @@ public class AdvertEditingControllerIntegrationTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+    @MockBean
+    private UserRepository userRepository;
 
     @MockBean
     private AdvertEditingService advertEditingService;
@@ -63,6 +67,8 @@ public class AdvertEditingControllerIntegrationTest {
     @Autowired
     private WebApplicationContext context;
 
+    private AuthenticatedUser authenticatedUser = mock(AuthenticatedUser.class);
+
     @BeforeEach
     public void setupMockMvc() {
         mockMvc = MockMvcBuilders
@@ -75,6 +81,7 @@ public class AdvertEditingControllerIntegrationTest {
     void setUp() {
         advertReadDto = createAdvertReadDto();
         advertEditingDto = createAdvertEditingDto();
+        authenticatedUser = mock(AuthenticatedUser.class);
     }
 
     @Nested
@@ -82,7 +89,7 @@ public class AdvertEditingControllerIntegrationTest {
     class EditAdvertTests {
         @Test
         void testEditAdvert_ShouldReturnAdvertReadDto() throws Exception {
-            given(advertEditingService.editAdvert(ADVERT_ID, advertEditingDto)).willReturn(advertReadDto);
+            given(advertEditingService.editAdvert(ADVERT_ID, advertEditingDto, authenticatedUser)).willReturn(advertReadDto);
 
             mockMvc.perform(put(VERSION_1_0 + ADVERTS_URL + "/" + ADVERT_ID)//"/v1.0/adverts/101"
                             .with(csrf())
@@ -107,7 +114,7 @@ public class AdvertEditingControllerIntegrationTest {
 
         @Test
         void testEditAdvert_ShouldnReturn404Status_WhenAdvertIdDoesNotExist() throws Exception {
-            given(advertEditingService.editAdvert(anyLong(), any(AdvertEditingDto.class)))
+            given(advertEditingService.editAdvert(anyLong(), any(AdvertEditingDto.class), any(AuthenticatedUser.class)))
                     .willThrow(new ResourceNotFoundException("Advert", "id", ADVERT_ID));
 
             mockMvc.perform(put(VERSION_1_0 + ADVERTS_URL + "/" + ADVERT_ID)
@@ -143,7 +150,7 @@ public class AdvertEditingControllerIntegrationTest {
     class ArchiveAdvertTests {
         @Test
         void testArchiveAdvert_ShouldReturnAdvertReadDto() throws Exception {
-            given(advertEditingService.archiveAdvert(ADVERT_ID)).willReturn(advertReadDto);
+            given(advertEditingService.archiveAdvert(ADVERT_ID, authenticatedUser)).willReturn(advertReadDto);
 
             mockMvc.perform(put(VERSION_1_0 + ADVERTS_URL + "/archive/" + ADVERT_ID)
                             .with(csrf())
@@ -157,7 +164,7 @@ public class AdvertEditingControllerIntegrationTest {
         @Test
         void testArchiveAdvert_ShouldnReturn404Status_WhenAdvertIdDoesNotExist() throws Exception {
             doThrow(new ResourceNotFoundException("Advert", "id", ADVERT_ID))
-                    .when(advertEditingService).archiveAdvert(ADVERT_ID);
+                    .when(advertEditingService).archiveAdvert(any(Long.class), any(AuthenticatedUser.class));
 
             mockMvc.perform(put(VERSION_1_0 + ADVERTS_URL + "/archive/" + ADVERT_ID)
                             .with(csrf())
@@ -181,7 +188,6 @@ public class AdvertEditingControllerIntegrationTest {
     class DeleteAdvertTests {
         @Test
         void testDeleteAdvert_ShouldReturnAdvertReadDto() throws Exception {
-            doNothing().when(advertEditingService).deleteAdvert(any(Long.class));
 
             mockMvc.perform(delete(VERSION_1_0 + ADVERTS_URL + "/" + ADVERT_ID)
                             .with(csrf())
@@ -195,7 +201,7 @@ public class AdvertEditingControllerIntegrationTest {
         @Test
         void testDeleteAdvert_ShouldnReturn404Status_WhenAdvertIdDoesNotExist() throws Exception {
             doThrow(new ResourceNotFoundException("Advert", "id", ADVERT_ID))
-                    .when(advertEditingService).deleteAdvert(ADVERT_ID);
+                    .when(advertEditingService).deleteAdvert(any(Long.class), any(AuthenticatedUser.class));
 
             mockMvc.perform(delete(VERSION_1_0 + ADVERTS_URL + "/" + ADVERT_ID)
                             .with(csrf())
@@ -207,9 +213,7 @@ public class AdvertEditingControllerIntegrationTest {
         @Test
         void testDeleteAdvert_ShouldnReturn400Status_WhenInvalidRequested() throws Exception {
             mockMvc.perform(delete(VERSION_1_0 + ADVERTS_URL + "/invalid")
-                            .with(csrf())
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(advertEditingDto)))
+                            .with(csrf()))
                     .andDo(print())
                     .andExpect(status().isBadRequest());
         }
@@ -218,6 +222,18 @@ public class AdvertEditingControllerIntegrationTest {
         void testDeleteAdvert_MissingCsrf() throws Exception {
             mockMvc.perform(delete(VERSION_1_0 + ADVERTS_URL + "/" + ADVERT_ID)
                             .contentType(MediaType.APPLICATION_JSON))
+                    .andDo(print())
+                    .andExpect(status().isForbidden());
+        }
+
+        @Test
+        void testDeleteAdvert_UnauthorizedUser() throws Exception {
+
+/**/            doThrow(new AuthorizationException("Unauthorized access"))
+                    .when(advertEditingService).deleteAdvert(any(Long.class), any(AuthenticatedUser.class));
+
+            mockMvc.perform(delete(VERSION_1_0 + ADVERTS_URL + "/" + ADVERT_ID)
+                            .with(csrf()))
                     .andDo(print())
                     .andExpect(status().isForbidden());
         }
