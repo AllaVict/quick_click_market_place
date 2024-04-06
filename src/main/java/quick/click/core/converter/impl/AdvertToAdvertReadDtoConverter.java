@@ -43,7 +43,6 @@ public class AdvertToAdvertReadDtoConverter implements TypeConverter<Advert, Adv
         advertReadDto.setCurrency(advert.getCurrency());
         advertReadDto.setAddress(advert.getAddress());
         advertReadDto.setFavorite(advert.isFavorite());
-       // advertReadDto.setImagId(advert.getImage().getId());
         advertReadDto.setUser(typeConverterUserReadDto.convert(advert.getUser()));
         return advertReadDto;
     }

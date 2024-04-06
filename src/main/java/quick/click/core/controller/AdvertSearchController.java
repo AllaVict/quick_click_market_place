@@ -4,10 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import quick.click.core.domain.dto.AdvertReadDto;
 import quick.click.core.service.AdvertSearchService;
@@ -15,10 +12,11 @@ import quick.click.core.service.AdvertSearchService;
 import java.util.List;
 import java.util.Optional;
 
-import static quick.click.commons.config.ApiVersion.VERSION_1_0;
+import static quick.click.commons.constants.ApiVersion.VERSION_1_0;
 import static quick.click.commons.constants.Constants.Endpoints.ADVERTS_URL;
 import static quick.click.core.controller.AdvertSearchController.BASE_URL;
 
+@CrossOrigin
 @RestController
 @RequestMapping(BASE_URL)
 public class AdvertSearchController {
@@ -35,8 +33,6 @@ public class AdvertSearchController {
 
     /**
      * GET   http://localhost:8081/v1.0/adverts/1
-     @GetMapping("/adverts/{id}")
-     public AdvertReadDto findById(@PathVariable("id") Long id) {
      */
     @GetMapping("/{id}")
     public ResponseEntity<AdvertReadDto> findAdvertById(@PathVariable("id") final Long advertId) {
@@ -52,8 +48,6 @@ public class AdvertSearchController {
 
     /**
      GET    http://localhost:8081/v1.0/adverts
-     @GetMapping("/adverts")
-     public ResponseEntity<List<AdvertReadDto>> findAll(){
      */
     @GetMapping()
     public ResponseEntity<?> findAllAdverts() {

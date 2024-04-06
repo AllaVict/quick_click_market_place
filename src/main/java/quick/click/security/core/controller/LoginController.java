@@ -13,10 +13,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import quick.click.core.domain.dto.UserReadDto;
 import quick.click.security.commons.model.dto.ApiResponse;
 import quick.click.security.commons.model.dto.AuthResponse;
@@ -28,16 +25,16 @@ import quick.click.security.core.service.UserRegistrationService;
 import static quick.click.commons.constants.ApiVersion.VERSION_1_0;
 import static quick.click.commons.constants.Constants.Endpoints.*;
 import static quick.click.commons.constants.Constants.Tokens.UNAUTHORIZED;
+import static quick.click.security.core.controller.LoginController.BASE_URL;
 
+@CrossOrigin
 @RestController
-@RequestMapping(LoginController.BASE_URL)
+@RequestMapping(BASE_URL)
 public class LoginController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
 
    public static final String BASE_URL = VERSION_1_0 + AUTH_URL;
-
-    //public static final String BASE_URL = AUTH_URL;
 
     private final AuthenticationManager authenticationManager;
 
