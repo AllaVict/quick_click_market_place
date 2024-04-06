@@ -11,6 +11,7 @@ import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.core.domain.dto.AdvertReadDto;
 import quick.click.core.service.AdvertSearchService;
 
+import java.security.Principal;
 import java.util.List;
 
 import static quick.click.commons.constants.ApiVersion.VERSION_1_0;
@@ -100,6 +101,28 @@ public class AdvertSearchController {
         } catch (Exception exception) {
 
             LOGGER.error("Error finding adverts by user id {}", userId, exception);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
+
+        }
+    }
+
+    @GetMapping("/user")
+    @Operation(summary = "Find all adverts by authorized user")
+    public ResponseEntity<?> findAllAdvertsByUser(Principal principal) {
+
+        try {
+
+            final List<AdvertReadDto> advertReadDtoList =advertSearchService.findAllAdvertsByUser(principal);
+
+            final String userName = principal.getName();
+
+            LOGGER.debug("In findAllAdvertsByUserId find all adverts for the user with name: {}", userName);
+
+            return ResponseEntity.status(HttpStatus.OK).body(advertReadDtoList);
+
+        } catch (Exception exception) {
+
+            LOGGER.error("Error finding adverts by user with name {}", principal.getName(), exception);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
 
         }

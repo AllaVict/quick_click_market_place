@@ -64,8 +64,13 @@ public class SecurityConfiguration {
         final MvcRequestMatcher.Builder matcher = new MvcRequestMatcher.Builder(introspector);
 
         http
-                .csrf(csrf -> csrf.disable())
-                .httpBasic(httpBasic -> httpBasic.disable())
+               .httpBasic(httpBasic -> httpBasic.disable())
+               .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
+               .headers(httpSecurityHeadersConfigurer -> {
+                    httpSecurityHeadersConfigurer.frameOptions(frameOptionsConfig -> {
+                        frameOptionsConfig.disable();
+                    });
+                })
                 .authenticationProvider(daoAuthenticationProvider())
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations(),

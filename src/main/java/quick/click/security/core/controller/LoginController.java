@@ -39,8 +39,6 @@ public class LoginController {
 
    public static final String BASE_URL = VERSION_1_0 + AUTH_URL;
 
-    //public static final String BASE_URL = AUTH_URL;
-
     private final AuthenticationManager authenticationManager;
 
     private final TokenProvider tokenProvider;

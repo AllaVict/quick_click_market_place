@@ -55,7 +55,7 @@ class AdvertSearchServiceImplTest {
     void setUp() {
         advert = createAdvert();
         advertReadDto = createAdvertReadDto();
-        advertSearchService = new AdvertSearchServiceImpl(advertRepository, advertToAdvertReadDtoConverter);
+        advertSearchService = new AdvertSearchServiceImpl(advertRepository, userRepository, advertToAdvertReadDtoConverter);
     }
 
     @Nested
