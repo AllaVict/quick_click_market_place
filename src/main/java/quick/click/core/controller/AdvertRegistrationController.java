@@ -3,20 +3,17 @@ package quick.click.core.controller;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import quick.click.core.domain.dto.AdvertCreateDto;
 import quick.click.core.domain.dto.AdvertReadDto;
 import quick.click.core.service.AdvertRegistrationService;
 
-import static quick.click.commons.config.ApiVersion.VERSION_1_0;
+import static quick.click.commons.constants.ApiVersion.VERSION_1_0;
 import static quick.click.commons.constants.Constants.Endpoints.ADVERTS_URL;
 
+@CrossOrigin
 @RestController
 @RequestMapping(AdvertRegistrationController.BASE_URL)
 public class AdvertRegistrationController  {
@@ -33,8 +30,6 @@ public class AdvertRegistrationController  {
 
     /**
      * POST   http://localhost:8080/v1.0/adverts
-     @PostMapping("/adverts/{id}")
-     ResponseEntity<AdvertReadDto> createProduct(@RequestBody AdvertCreateDto request)
      {
      "title": "Big dog",
      "description": "description a toy Big dog",
