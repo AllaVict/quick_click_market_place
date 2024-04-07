@@ -54,6 +54,12 @@ public class LoginController {
         this.userRegistrationService = userRegistrationService;
     }
 
+    /**
+     * Authenticates a user based on their login credentials.
+     *
+     * @param userLoginDto the data transfer object containing the user's login credentials.
+     * @return a ResponseEntity containing the authentication token if authentication is successful.
+     */
     @PostMapping(LOGIN_URL)
     public ResponseEntity<?> authenticateUser
             (@Valid @RequestBody final UserLoginDto userLoginDto) {
@@ -83,6 +89,12 @@ public class LoginController {
         return ResponseEntity.ok().body(new AuthResponse(token));
     }
 
+    /**
+     * Registers a new user in the system.
+     *
+     * @param userSignUpDto the data transfer object containing the user's signup information.
+     * @return a ResponseEntity containing a message of success or failure.
+     */
     @PostMapping(SIGNUP_URL)
     public ResponseEntity<ApiResponse> registerUser(@Valid @RequestBody UserSignupDto userSignUpDto) {
 
@@ -100,6 +112,13 @@ public class LoginController {
                 .body(new ApiResponse(true, "User registered successfully!"));
     }
 
+    /**
+     * Logs out the current user.
+     *
+     * @param request the HttpServletRequest object.
+     * @return a ResponseEntity containing a message of success.
+     * @throws ServletException if an error occurs during logout.
+     */
     @PostMapping(LOGOUT_URL)
     public ResponseEntity<String> logout(final HttpServletRequest request) throws ServletException {
 

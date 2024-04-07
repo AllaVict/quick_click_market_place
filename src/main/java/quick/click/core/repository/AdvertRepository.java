@@ -8,6 +8,11 @@ import quick.click.core.domain.model.User;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repository interface for performing CRUD operations on adverts.
+ *
+ * @author Alla Borodina
+ */
 @Repository
 public interface AdvertRepository extends JpaRepository<Advert, Long> {
 

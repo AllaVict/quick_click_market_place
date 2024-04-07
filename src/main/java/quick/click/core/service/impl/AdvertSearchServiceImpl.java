@@ -16,6 +16,11 @@ import quick.click.security.commons.model.AuthenticatedUser;
 
 import java.util.List;
 
+/**
+ * Service implementation for handling search operations related to adverts.
+ *
+ * @author Alla Borodina
+ */
 @Service
 public class AdvertSearchServiceImpl implements AdvertSearchService {
 
@@ -35,6 +40,13 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
         this.typeConverterReadDto = typeConverterReadDto;
     }
 
+    /**
+     * Finds an advert by its ID.
+     *
+     * @param advertId The ID of the advert to find.
+     * @return An AdvertReadDto containing the advert details if found.
+     * @throws ResourceNotFoundException If no advert is found with the given ID.
+     */
     @Override
     public AdvertReadDto findAdvertById(final Long advertId) {
 
@@ -47,6 +59,11 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
         return advertReadDto;
     }
 
+    /**
+     * Retrieves all adverts.
+     *
+     * @return A list of AdvertReadDto containing details of all adverts.
+     */
     @Override
     public List<AdvertReadDto> findAllAdverts() {
 
@@ -60,6 +77,11 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
         return advertReadDtoList;
     }
 
+    /**
+     * Retrieves all adverts ordered by creation date in descending order.
+     *
+     * @return A list of AdvertReadDto containing details of all adverts sorted by creation date.
+     */
     @Override
     public List<AdvertReadDto> findAllByOrderByCreatedDateDesc() {
 
@@ -73,6 +95,13 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
         return advertReadDtoList;
     }
 
+    /**
+     * Finds all adverts created by a specific user.
+     *
+     * @param authenticatedUser The authenticated user whose adverts are to be found.
+     * @return A list of AdvertReadDto containing details of the adverts created by the specified user.
+     * @throws AuthorizationException If the authenticated user cannot be authorized.
+     */
     @Override
     public List<AdvertReadDto> findAllAdvertsByUser(final AuthenticatedUser authenticatedUser) {
 

@@ -19,15 +19,20 @@ import quick.click.security.commons.model.AuthenticatedUser;
 import static quick.click.commons.constants.ApiVersion.VERSION_1_0;
 import static quick.click.commons.constants.Constants.Endpoints.ADVERTS_URL;
 
+/**
+ * Controller for handling advert registration requests.
+ *
+ * @author Alla Borodina
+ */
 @CrossOrigin
 @RestController
 @RequestMapping(AdvertRegistrationController.BASE_URL)
 @Tag(name = "Advert Registration Controller", description = "AdvertRegistration API")
-public class AdvertRegistrationController  {
+public class AdvertRegistrationController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdvertRegistrationController.class);
 
-     public static final String BASE_URL = VERSION_1_0 + ADVERTS_URL;
+    public static final String BASE_URL = VERSION_1_0 + ADVERTS_URL;
 
     public final AdvertRegistrationService advertRegistrationService;
 
@@ -36,20 +41,16 @@ public class AdvertRegistrationController  {
     }
 
     /**
-     * POST   http://localhost:8080/v1.0/adverts
-
-     {
-     "title": "Big dog",
-     "description": "description a toy Big dog",
-     "category": "TOYS",
-     "status": "PUBLISHED",
-     "phone": "+380507778855",
-     "price": "100.00"
-     "firstPriceDisplayed": "true"
-     "currency": "EUR"
-     "address": "Dania"
+     * Handles the HTTP POST request to register a new advert. Validates the request body for necessary fields
+     * and uses the AdvertRegistrationService to create the advert. Returns the created advert details on success.
+     *
+     * @param advertCreateDto   DTO containing the advert's creation data.
+     * @param authenticatedUser The currently authenticated user trying to create the advert.
+     * @return A ResponseEntity containing the created AdvertReadDto or an error message.
+     * @throws AuthorizationException      If the authenticated user does not have permission to create an advert.
+     * @throws AdvertRegistrationException If there are issues during the registration process.
+     * @throws Exception                   For any other unexpected errors.
      */
-
     @PostMapping()
     @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Create an advert with a given request body")

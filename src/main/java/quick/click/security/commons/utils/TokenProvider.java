@@ -21,6 +21,12 @@ public class TokenProvider {
         this.appProperties = appProperties;
     }
 
+    /**
+     * Constructs a JWT token based on the authentication object provided.
+     *
+     * @param authentication the authentication object containing the principal from which the user ID is extracted.
+     * @return a JWT token string that represents the user's authentication.
+     */
     public String createToken(final Authentication authentication) {
         final AuthenticatedUser authenticatedUser = (AuthenticatedUser) authentication.getPrincipal();
 
@@ -35,7 +41,13 @@ public class TokenProvider {
                 .compact();
     }
 
-    public Long getUserIdFromToken(final String token) {
+    /**
+     * Extracts the user ID from a JWT token.
+     *
+     * @param token the JWT token from which the user ID is to be extracted.
+     * @return the user ID extracted from the token.
+     */
+     public Long getUserIdFromToken(final String token) {
 
         final var key = appProperties.getAuth().getTokenSecret();
         Claims claims = Jwts.parser()
@@ -45,6 +57,12 @@ public class TokenProvider {
         return Long.parseLong(claims.getSubject());
     }
 
+    /**
+     * Validates a JWT token by checking its signature, structure, and expiration.
+     *
+     * @param authToken the JWT token to be validated.
+     * @return true if the token is valid, false otherwise.
+     */
     public boolean validateToken(final String authToken) {
         try {
             Jwts.parser()

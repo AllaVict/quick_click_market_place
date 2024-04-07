@@ -6,6 +6,11 @@ import quick.click.security.commons.model.AuthenticatedUser;
 
 import java.util.List;
 
+/**
+ * Service interface for searching adverts.
+ *
+ * @author Alla Borodina
+ */
 public interface AdvertSearchService {
 
     AdvertReadDto findAdvertById(Long storyId);

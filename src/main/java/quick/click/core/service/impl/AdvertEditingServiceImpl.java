@@ -20,6 +20,11 @@ import java.util.Optional;
 import static quick.click.core.enums.AdvertStatus.ARCHIVED;
 import static quick.click.core.enums.AdvertStatus.PUBLISHED;
 
+/**
+ * Service implementation for editing adverts.
+ *
+ * @author Alla Borodina
+ */
 @Service
 public class AdvertEditingServiceImpl implements AdvertEditingService {
 
@@ -40,6 +45,17 @@ public class AdvertEditingServiceImpl implements AdvertEditingService {
 
     }
 
+    /**
+     * Edits an existing advert based on the provided editing details and the authenticated user's information.
+     * Only the owner of the advert can edit it.
+     *
+     * @param advertId The ID of the advert to edit.
+     * @param advertEditingDto The data transfer object containing the editing details.
+     * @param authenticatedUser The currently authenticated user attempting to edit the advert.
+     * @return An {@link AdvertReadDto} containing the updated advert details.
+     * @throws ResourceNotFoundException If the advert to be edited is not found.
+     * @throws AuthorizationException If the authenticated user does not own the advert or is unauthorized.
+     */
     @Override
     public AdvertReadDto editAdvert(final Long advertId,
                                     final AdvertEditingDto advertEditingDto,
@@ -62,6 +78,16 @@ public class AdvertEditingServiceImpl implements AdvertEditingService {
                 .orElseThrow();
     }
 
+    /**
+     * Archives an existing advert based on the authenticated user's information.
+     * Only the owner of the advert can archive it.
+     *
+     * @param advertId The ID of the advert to archive.
+     * @param authenticatedUser The currently authenticated user attempting to archive the advert.
+     * @return An {@link AdvertReadDto} containing the archived advert details.
+     * @throws ResourceNotFoundException If the advert to be archived is not found.
+     * @throws AuthorizationException If the authenticated user does not own the advert or is unauthorized.
+     */
     @Override
     public AdvertReadDto archiveAdvert(final Long advertId,
                                        final AuthenticatedUser authenticatedUser) {
@@ -80,6 +106,15 @@ public class AdvertEditingServiceImpl implements AdvertEditingService {
                 .orElseThrow();
     }
 
+    /**
+     * Deletes an existing advert based on the authenticated user's information.
+     * Only the owner of the advert can delete it.
+     *
+     * @param advertId The ID of the advert to delete.
+     * @param authenticatedUser The currently authenticated user attempting to delete the advert.
+     * @throws ResourceNotFoundException If the advert to be deleted is not found.
+     * @throws AuthorizationException If the authenticated user does not own the advert or is unauthorized.
+     */
     @Override
     public void deleteAdvert(final Long advertId,
                              final AuthenticatedUser authenticatedUser) {

@@ -8,7 +8,6 @@ import quick.click.core.converter.TypeConverter;
 import quick.click.core.domain.dto.AdvertCreateDto;
 import quick.click.core.domain.dto.AdvertReadDto;
 import quick.click.core.domain.model.Advert;
-import quick.click.core.domain.model.User;
 import quick.click.core.repository.AdvertRepository;
 import quick.click.core.repository.UserRepository;
 import quick.click.core.service.AdvertRegistrationService;
@@ -19,6 +18,11 @@ import java.util.Optional;
 
 import static quick.click.core.enums.AdvertStatus.PUBLISHED;
 
+/**
+ * Service implementation for registering adverts.
+ *
+ * @author Alla Borodina
+ */
 @Service
 public class AdvertRegistrationServiceImpl implements AdvertRegistrationService {
 
@@ -41,6 +45,16 @@ public class AdvertRegistrationServiceImpl implements AdvertRegistrationService 
         this.typeConverterReadDto = typeConverterReadDto;
     }
 
+    /**
+     * Registers a new advert based on the provided AdvertCreateDto and the authenticated user.
+     * This method handles setting up advert details, converting them to an Advert entity,
+     * saving the advert, and then converting it back to an AdvertReadDto.
+     *
+     * @param advertCreateDto       DTO containing advert creation data.
+     * @param authenticatedUser     The user attempting to create the advert.
+     * @return                      An AdvertReadDto containing the saved advert's details.
+     * @throws AuthorizationException If the user is not authorized.
+     */
     @Override
     public AdvertReadDto registerAdvert(final AdvertCreateDto advertCreateDto,
                                         final AuthenticatedUser authenticatedUser) {

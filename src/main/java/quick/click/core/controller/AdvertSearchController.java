@@ -20,6 +20,11 @@ import static quick.click.commons.constants.ApiVersion.VERSION_1_0;
 import static quick.click.commons.constants.Constants.Endpoints.ADVERTS_URL;
 import static quick.click.core.controller.AdvertSearchController.BASE_URL;
 
+/**
+ * Controller for handling API requests related to searching adverts.
+ *
+ * @author Alla Borodina
+ */
 @CrossOrigin
 @RestController
 @RequestMapping(BASE_URL)
@@ -30,18 +35,20 @@ public class AdvertSearchController {
 
     public static final String BASE_URL = VERSION_1_0 + ADVERTS_URL;
 
-    public  final AdvertSearchService advertSearchService;
+    public final AdvertSearchService advertSearchService;
 
     public AdvertSearchController(final AdvertSearchService advertSearchService) {
         this.advertSearchService = advertSearchService;
     }
 
     /**
-     * GET   http://localhost:8081/v1.0/adverts/1
+     * Finds an advert by its ID and returns it.
+     *
+     * @param advertId The ID of the advert to find.
+     * @return A ResponseEntity containing the found advert or an error message.
      */
     @GetMapping("/{id}")
     @Operation(summary = "Find advert by id")
-   // @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> findAdvertById(@PathVariable("id") final Long advertId) {
 
         try {
@@ -67,9 +74,10 @@ public class AdvertSearchController {
     }
 
     /**
-     GET    http://localhost:8081/v1.0/adverts
+     * Retrieves all adverts and returns them.
+     *
+     * @return A ResponseEntity containing a list of all adverts or an error message.
      */
-
     @GetMapping()
     @Operation(summary = "Find all adverts")
     public ResponseEntity<?> findAllAdverts() {
@@ -89,13 +97,19 @@ public class AdvertSearchController {
         }
     }
 
+    /**
+     * Retrieves all adverts created by the currently authenticated user.
+     *
+     * @param authenticatedUser The currently authenticated user.
+     * @return A ResponseEntity containing a list of all adverts created by the authenticated user or an error message.
+     */
     @GetMapping("/user")
     @Operation(summary = "Find all adverts by authorized user")
     public ResponseEntity<?> findAllAdvertsByUser(@AuthenticationPrincipal final AuthenticatedUser authenticatedUser) {
 
         try {
 
-            final List<AdvertReadDto> advertReadDtoList =advertSearchService.findAllAdvertsByUser(authenticatedUser);
+            final List<AdvertReadDto> advertReadDtoList = advertSearchService.findAllAdvertsByUser(authenticatedUser);
 
             final String userName = authenticatedUser.getEmail();
 

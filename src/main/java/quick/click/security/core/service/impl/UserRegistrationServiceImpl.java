@@ -17,6 +17,11 @@ import quick.click.security.core.service.UserRegistrationService;
 
 import java.time.LocalDateTime;
 
+/**
+ * Service implementation for registering an user.
+ *
+ * @author Alla Borodina
+ */
 @Service
 public class UserRegistrationServiceImpl implements UserRegistrationService {
 
@@ -35,6 +40,12 @@ public class UserRegistrationServiceImpl implements UserRegistrationService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * Saves a new user to the database.
+     *
+     * @param userSignupDto the data transfer object containing signup information.
+     * @return a Data Transfer Object representing the read view of the user.
+     */
     @Override
     public UserReadDto save(final UserSignupDto userSignupDto) {
 
@@ -51,7 +62,12 @@ public class UserRegistrationServiceImpl implements UserRegistrationService {
 
         return typeConverter.convert(userRepository.save(user));
     }
-
+    /**
+     * Finds a user by their ID.
+     *
+     * @param userId the ID of the user to find.
+     * @return a Data Transfer Object representing the read view of the user.
+     */
     @Override
     public UserReadDto findById(final Long userId) {
 
@@ -62,6 +78,12 @@ public class UserRegistrationServiceImpl implements UserRegistrationService {
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
     }
 
+    /**
+     * Checks if a user exists by their email.
+     *
+     * @param email the email to check.
+     * @return true if a user exists with the given email, false otherwise.
+     */
     @Override
     public boolean existsByEmail(final String email) {
 
