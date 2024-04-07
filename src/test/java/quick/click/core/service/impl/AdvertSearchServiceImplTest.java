@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataAccessException;
 import quick.click.commons.exeptions.ResourceNotFoundException;
+import quick.click.config.factory.AdvertFactory;
 import quick.click.core.converter.impl.AdvertToAdvertReadDtoConverter;
 import quick.click.core.domain.dto.AdvertReadDto;
 import quick.click.core.domain.model.Advert;
@@ -27,7 +28,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static quick.click.config.factory.AdvertDtoFactory.createAdvertReadDto;
-import static quick.click.config.factory.AdvertFactory.createAdvert;
 import static quick.click.config.factory.UserFactory.createUser;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,9 +46,12 @@ class AdvertSearchServiceImplTest {
     @InjectMocks
     AdvertSearchServiceImpl advertSearchService;
 
-    private Advert advert;
+    private Advert advertOne;
 
-    private AdvertReadDto advertReadDto;
+    private Advert advertTwo;
+
+    private AdvertReadDto advertReadDtoOne;
+    private AdvertReadDto advertReadDtoTwo;
 
     private List<AdvertReadDto> advertReadDtoList;
 
@@ -64,8 +67,9 @@ class AdvertSearchServiceImplTest {
     @BeforeEach
     void setUp() {
         user = createUser();
-        advert = createAdvert();
-        advertReadDto = createAdvertReadDto();
+        advertOne = AdvertFactory.createAdvertOne(user);
+        advertTwo = AdvertFactory.createAdvertOne(user);
+        advertReadDtoOne = createAdvertReadDto();
         advertSearchService = new AdvertSearchServiceImpl(advertRepository, userRepository, advertToAdvertReadDtoConverter);
 
     }
@@ -75,15 +79,15 @@ class AdvertSearchServiceImplTest {
     class FindAdvertByIdTests {
         @Test
         void testFindAdvertById_shouldReturnAdvertReadDtoByGivenId() {
-            when(advertRepository.findById(advert.getId())).thenReturn(Optional.ofNullable(advert));
-            when(advertToAdvertReadDtoConverter.convert(advert)).thenReturn(advertReadDto);
+            when(advertRepository.findById(ADVERT_ID)).thenReturn(Optional.ofNullable(advertOne));
+            when(advertToAdvertReadDtoConverter.convert(advertOne)).thenReturn(advertReadDtoOne);
 
-            AdvertReadDto result = advertSearchService.findAdvertById(advert.getId());
+            AdvertReadDto result = advertSearchService.findAdvertById(advertOne.getId());
 
             verify(advertRepository).findById(any(Long.class));
             assertNotNull(result);
-            assertEquals(result, advertReadDto);
-            assertThat(result.getTitle()).isEqualTo(advertReadDto.getTitle());
+            assertEquals(result, advertReadDtoOne);
+            assertThat(result.getTitle()).isEqualTo(advertReadDtoOne.getTitle());
         }
 
         @Test
@@ -101,7 +105,7 @@ class AdvertSearchServiceImplTest {
         void testFindAdvertById_ShouldThrowException() {
 
             assertThrows(ResourceNotFoundException.class,
-                    () -> advertSearchService.findAdvertById(advert.getId()));
+                    () -> advertSearchService.findAdvertById(advertOne.getId()));
         }
     }
 
@@ -111,10 +115,10 @@ class AdvertSearchServiceImplTest {
 
         @Test
         void testFindAllAdverts_ShouldReturnAllAdverts() {
-            advertList = List.of(advert, advert);
-            advertReadDtoList = List.of(advertReadDto, advertReadDto);
+            advertList = List.of(advertOne, advertTwo);
+            advertReadDtoList = List.of(advertReadDtoOne, advertReadDtoOne);
             when(advertRepository.findAll()).thenReturn(advertList);
-            when(advertToAdvertReadDtoConverter.convert(any(Advert.class))).thenReturn(advertReadDto);
+            when(advertToAdvertReadDtoConverter.convert(any(Advert.class))).thenReturn(advertReadDtoOne);
 
             List<AdvertReadDto> result = advertSearchService.findAllAdverts();
 
@@ -152,18 +156,65 @@ class AdvertSearchServiceImplTest {
         }
     }
 
+
+    @Nested
+    @DisplayName("When find all adverts by created date desc")
+    class FindAllByOrderByCreatedDateDescTests {
+
+        @Test
+        void testFindAllByOrderByCreatedDateDesc_ShouldReturnAllAdverts() {
+            advertList = List.of(advertOne, advertTwo);
+            advertReadDtoList = List.of(advertReadDtoOne, advertReadDtoOne);
+            when(advertRepository.findAllByOrderByCreatedDateDesc()).thenReturn(advertList);
+            when(advertToAdvertReadDtoConverter.convert(any(Advert.class))).thenReturn(advertReadDtoOne);
+
+            List<AdvertReadDto> result = advertSearchService.findAllByOrderByCreatedDateDesc();
+
+            verify(advertRepository).findAllByOrderByCreatedDateDesc();
+            assertNotNull(result);
+            assertEquals(result, advertReadDtoList);
+            assertThat(result.size()).isEqualTo(advertReadDtoList.size());
+
+        }
+
+        @Test
+        void testFindAllByOrderByCreatedDateDesc_DatabaseError() {
+            when(advertRepository.findAllByOrderByCreatedDateDesc()).thenThrow(new DataAccessException("Data access exception") {});
+
+            Exception exception = assertThrows(DataAccessException.class, advertSearchService::findAllByOrderByCreatedDateDesc);
+
+            assertEquals("Data access exception", exception.getMessage());
+            verify(advertRepository).findAllByOrderByCreatedDateDesc();
+            verify(advertToAdvertReadDtoConverter, never()).convert(any(Advert.class));
+        }
+
+        @Test
+        void testFindAllByOrderByCreatedDateDesc_ShouldReturnNoAdverts() {
+            advertRepository.deleteAll();
+            advertList = new ArrayList<>();
+            advertReadDtoList = new ArrayList<>();
+            when(advertRepository.findAllByOrderByCreatedDateDesc()).thenReturn(advertList);
+
+            List<AdvertReadDto> result = advertSearchService.findAllByOrderByCreatedDateDesc();
+
+            verify(advertRepository).findAllByOrderByCreatedDateDesc();
+            assertTrue(result.isEmpty());
+            assertEquals(result, advertReadDtoList);
+            assertThat(result.size()).isEqualTo(advertReadDtoList.size());
+        }
+    }
     @Nested
     @DisplayName("When find all adverts by user ")
     class FindAllAdvertsByUserTests {
 
         @Test
         void testFindAllAdvertsByUser_ShouldReturnAllAdverts() {
-            advertList = List.of(advert, advert);
-            advertReadDtoList = List.of(advertReadDto, advertReadDto);
+            advertList = List.of(advertOne, advertTwo);
+            advertReadDtoList = List.of(advertReadDtoOne, advertReadDtoOne);
             when(authenticatedUser.getEmail()).thenReturn(EMAIL);
             when(userRepository.findUserByEmail(EMAIL)).thenReturn(Optional.of(user));
             when(advertRepository.findAllByUserOrderByCreatedDateDesc(any(User.class))).thenReturn(advertList);
-            when(advertToAdvertReadDtoConverter.convert(any(Advert.class))).thenReturn(advertReadDto);
+            when(advertToAdvertReadDtoConverter.convert(any(Advert.class))).thenReturn(advertReadDtoOne);
 
             List<AdvertReadDto> result = advertSearchService.findAllAdvertsByUser(authenticatedUser);
 

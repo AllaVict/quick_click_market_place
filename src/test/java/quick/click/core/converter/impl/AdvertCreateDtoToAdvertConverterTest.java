@@ -30,7 +30,7 @@ class AdvertCreateDtoToAdvertConverterTest {
 
     @BeforeEach
     public void setUp() {
-        advert = AdvertFactory.createAdvert();
+        advert = AdvertFactory.createAdvertOne();
         advertCreateDto = AdvertDtoFactory.createAdvertCreateDto();
         userRepository = Mockito.mock(UserRepository.class);
         advertCreateDtoAdvertTypeConverter = new AdvertCreateDtoToAdvertConverter(userRepository);

@@ -55,7 +55,20 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
                 .map(typeConverterReadDto::convert)
                 .toList();
 
-        LOGGER.debug("In findAdvertById find all adverts");
+        LOGGER.debug("In findAllAdverts find all adverts");
+
+        return advertReadDtoList;
+    }
+
+    @Override
+    public List<AdvertReadDto> findAllByOrderByCreatedDateDesc() {
+
+        final List<AdvertReadDto> advertReadDtoList = advertRepository.findAllByOrderByCreatedDateDesc()
+                .stream()
+                .map(typeConverterReadDto::convert)
+                .toList();
+
+        LOGGER.debug("In findAllByOrderByCreatedDateDesc find all adverts sorted by createdDate desc");
 
         return advertReadDtoList;
     }

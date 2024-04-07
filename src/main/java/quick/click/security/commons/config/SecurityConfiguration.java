@@ -21,6 +21,8 @@ import quick.click.commons.constants.Constants;
 import quick.click.security.commons.utils.*;
 import quick.click.security.core.service.UserLoginService;
 
+import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
+
 @Configuration
 @EnableMethodSecurity
 @EnableWebSecurity
@@ -97,6 +99,7 @@ public class SecurityConfiguration {
                                 matcher.pattern("/swagger-ui/*"),
                                 matcher.pattern("/v3/api-docs/**")
                         ).permitAll()
+                        .requestMatchers(toH2Console()).permitAll()
                         // .requestMatchers("/v1.0/**").hasAuthority("ADMIN")
                         .requestMatchers("/auth/admin").hasRole("ADMIN")
                         .requestMatchers("/auth/user").hasRole("USER")

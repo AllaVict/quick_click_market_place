@@ -8,7 +8,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataAccessException;
 import quick.click.commons.exeptions.AuthorizationException;
-import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.config.factory.WithMockAuthenticatedUser;
 import quick.click.core.converter.impl.AdvertCreateDtoToAdvertConverter;
 import quick.click.core.converter.impl.AdvertToAdvertReadDtoConverter;
@@ -20,7 +19,6 @@ import quick.click.core.repository.AdvertRepository;
 import quick.click.core.repository.UserRepository;
 import quick.click.security.commons.model.AuthenticatedUser;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -28,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static quick.click.config.factory.AdvertDtoFactory.*;
-import static quick.click.config.factory.AdvertFactory.createAdvert;
+import static quick.click.config.factory.AdvertFactory.createAdvertOne;
 import static quick.click.config.factory.UserFactory.createUser;
 
 @ExtendWith(MockitoExtension.class)
@@ -55,7 +53,7 @@ class AdvertRegistrationServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        advert = createAdvert();
+        advert = createAdvertOne();
         user = createUser();
         advertReadDto = createAdvertReadDto();
         advertCreateDto = createAdvertCreateDto();

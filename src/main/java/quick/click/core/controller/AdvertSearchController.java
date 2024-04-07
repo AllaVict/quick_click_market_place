@@ -75,7 +75,7 @@ public class AdvertSearchController {
     public ResponseEntity<?> findAllAdverts() {
 
         try {
-            final List<AdvertReadDto> advertReadDtoList = advertSearchService.findAllAdverts();
+            final List<AdvertReadDto> advertReadDtoList = advertSearchService.findAllByOrderByCreatedDateDesc();
 
             LOGGER.debug("In findAllAdvert received GET find all advert successfully ");
 

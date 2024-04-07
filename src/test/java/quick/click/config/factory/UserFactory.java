@@ -22,7 +22,7 @@ public class UserFactory {
 
     private static final String PASSWORD = "password";
 
-    private static final LocalDateTime CREATED_DATE = LocalDateTime.of(2024, 10, 24, 20, 24);
+    private static final LocalDateTime CREATED_DATE = LocalDateTime.of(2024, 3, 24, 20, 24);
 
     private UserFactory() {
     }

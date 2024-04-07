@@ -82,7 +82,7 @@ class AdvertSearchControllerTest {
             @Test
             void testFindAllAdverts_ShouldReturnAllAdverts() {
                 advertReadDtoList = List.of(advertReadDto, advertReadDto);
-                when(advertSearchService.findAllAdverts()).thenReturn(advertReadDtoList);
+                when(advertSearchService.findAllByOrderByCreatedDateDesc()).thenReturn(advertReadDtoList);
 
                 ResponseEntity<?> responseEntity = advertSearchController.findAllAdverts();
 
@@ -93,7 +93,7 @@ class AdvertSearchControllerTest {
             @Test
             void testFindAllAdverts_ShouldReturn200Status_WhenReturnEmptyList() {
                 advertReadDtoList = new ArrayList<>();
-                when(advertSearchService.findAllAdverts()).thenReturn(advertReadDtoList);
+                when(advertSearchService.findAllByOrderByCreatedDateDesc()).thenReturn(advertReadDtoList);
 
                 ResponseEntity<?> responseEntity = advertSearchController.findAllAdverts();
 

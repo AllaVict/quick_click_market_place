@@ -26,7 +26,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import static quick.click.config.factory.AdvertDtoFactory.*;
-import static quick.click.config.factory.AdvertFactory.createAdvert;
+import static quick.click.config.factory.AdvertFactory.createAdvertOne;
 import static quick.click.config.factory.UserFactory.createUser;
 import static quick.click.core.enums.AdvertStatus.ARCHIVED;
 
@@ -61,7 +61,7 @@ class AdvertEditingServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        advert = createAdvert();
+        advert = createAdvertOne();
         advertReadDto = createAdvertReadDto();
         advertEditingDto = createAdvertEditingDto();
         user = createUser();
