@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataAccessException;
+import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.config.factory.WithMockAuthenticatedUser;
 import quick.click.core.converter.impl.AdvertCreateDtoToAdvertConverter;
 import quick.click.core.converter.impl.AdvertToAdvertReadDtoConverter;
@@ -86,7 +87,8 @@ class AdvertRegistrationServiceImplTest {
         void testRegisterAdvert_ConversionFailure() {
             when(authenticatedUser.getEmail()).thenReturn(EMAIL);
             when(userRepository.findUserByEmail(EMAIL)).thenReturn(Optional.of(user));
-            when(typeConverterCreateDto.convert(advertCreateDto)).thenThrow(new IllegalArgumentException("Invalid advert data"));
+            when(typeConverterCreateDto.convert(advertCreateDto))
+                    .thenThrow(new IllegalArgumentException("Invalid advert data"));
 
             Exception exception = assertThrows(IllegalArgumentException.class,
                     () -> advertRegistrationService.registerAdvert(advertCreateDto, authenticatedUser));
@@ -101,8 +103,7 @@ class AdvertRegistrationServiceImplTest {
             when(authenticatedUser.getEmail()).thenReturn(EMAIL);
             when(userRepository.findUserByEmail(EMAIL)).thenReturn(Optional.of(user));
             when(typeConverterCreateDto.convert(advertCreateDto)).thenReturn(advert);
-            when(advertRepository.saveAndFlush(advert)).thenThrow(new DataAccessException("Database error") {
-            });
+            when(advertRepository.saveAndFlush(advert)).thenThrow(new DataAccessException("Database error") {});
 
             assertThrows(DataAccessException.class,
                     () -> advertRegistrationService.registerAdvert(advertCreateDto, authenticatedUser),
@@ -116,6 +117,7 @@ class AdvertRegistrationServiceImplTest {
         void testRegisterAdvert_ShouldThrowException() {
             when(authenticatedUser.getEmail()).thenReturn(EMAIL);
             when(userRepository.findUserByEmail(EMAIL)).thenReturn(Optional.of(user));
+
             assertThrows(NoSuchElementException.class,
                     () -> advertRegistrationService.registerAdvert(advertCreateDto, authenticatedUser));
 

@@ -127,8 +127,7 @@ class AdvertSearchServiceImplTest {
 
         @Test
         void testFindAllAdverts_DatabaseError() {
-            when(advertRepository.findAll()).thenThrow(new DataAccessException("Data access exception") {
-            });
+            when(advertRepository.findAll()).thenThrow(new DataAccessException("Data access exception") {});
 
             Exception exception = assertThrows(DataAccessException.class, advertSearchService::findAllAdverts);
 

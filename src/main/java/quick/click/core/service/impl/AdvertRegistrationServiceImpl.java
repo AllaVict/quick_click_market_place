@@ -44,35 +44,33 @@ public class AdvertRegistrationServiceImpl implements AdvertRegistrationService 
     @Override
     public AdvertReadDto registerAdvert(final AdvertCreateDto advertCreateDto,
                                         final AuthenticatedUser authenticatedUser) {
-        final User user = getUserByAuthenticatedUser(authenticatedUser);
 
         AdvertReadDto advertReadDto = Optional.of(advertCreateDto)
-                .map(this::setStatusPublished)
-                .map(this::setCreatedDate)
+                .map(advertDto -> settingsForAdvertCreateDto(advertDto,authenticatedUser))
                 .map(typeConverterCreateDto::convert)
                 .map(advertRepository::saveAndFlush)
                 .map(typeConverterReadDto::convert)
                 .orElseThrow();
 
-        LOGGER.debug("Registering Advert with id {}", advertReadDto);
+        LOGGER.debug("In registerAdvert registering Advert with id {}", advertReadDto);
 
         return advertReadDto;
     }
 
-    private AdvertCreateDto setStatusPublished(AdvertCreateDto advertCreateDto) {
-        advertCreateDto.setStatus(PUBLISHED);
-        return advertCreateDto;
-    }
-
-    private AdvertCreateDto setCreatedDate(AdvertCreateDto advertCreateDto) {
+    private AdvertCreateDto settingsForAdvertCreateDto(final AdvertCreateDto advertCreateDto,
+                                                        final AuthenticatedUser authenticatedUser) {
         advertCreateDto.setCreatedDate(LocalDateTime.now());
+        advertCreateDto.setStatus(PUBLISHED);
+        advertCreateDto.setUserId(getUserByAuthenticatedUser(authenticatedUser));
         return advertCreateDto;
     }
 
-    private User getUserByAuthenticatedUser(final AuthenticatedUser authenticatedUser) {
+
+    private Long getUserByAuthenticatedUser(final AuthenticatedUser authenticatedUser) {
         String username = authenticatedUser.getEmail();
         return userRepository.findUserByEmail(username)
-                .orElseThrow(() -> new AuthorizationException("Unauthorized access"));
+                .orElseThrow(() -> new AuthorizationException("Unauthorized access"))
+                .getId();
 
     }
 }
