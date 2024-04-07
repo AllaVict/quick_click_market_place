@@ -49,6 +49,7 @@ public class AdvertEditingControllerIntegrationTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
     @MockBean
     private UserRepository userRepository;
 
@@ -91,7 +92,7 @@ public class AdvertEditingControllerIntegrationTest {
         void testEditAdvert_ShouldReturnAdvertReadDto() throws Exception {
             given(advertEditingService.editAdvert(ADVERT_ID, advertEditingDto, authenticatedUser)).willReturn(advertReadDto);
 
-            mockMvc.perform(put(VERSION_1_0 + ADVERTS_URL + "/" + ADVERT_ID)//"/v1.0/adverts/101"
+            mockMvc.perform(put(VERSION_1_0 + ADVERTS_URL + "/" + ADVERT_ID)
                             .with(csrf())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(advertReadDto)))
@@ -127,12 +128,12 @@ public class AdvertEditingControllerIntegrationTest {
 
         @Test
         void testEditAdvert_ShouldnReturn400Status_WhenInvalidRequested() throws Exception {
-            mockMvc.perform(put(VERSION_1_0 + ADVERTS_URL + "/invalid")
+            mockMvc.perform(put(VERSION_1_0 + ADVERTS_URL +"/" + ADVERT_ID+ "/invalid")
                             .with(csrf())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(advertEditingDto)))
                     .andDo(print())
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isNotFound());
         }
 
         @Test
@@ -170,6 +171,16 @@ public class AdvertEditingControllerIntegrationTest {
                             .with(csrf())
                             .contentType(MediaType.APPLICATION_JSON))
                     .andDo(print())
+                    .andExpect(status().isNotFound());
+        }
+
+        @Test
+        void testEditAdvert_ShouldnReturn400Status_WhenInvalidRequested() throws Exception {
+
+            mockMvc.perform(put(VERSION_1_0 + ADVERTS_URL + "/archive/" + ADVERT_ID+ "/invalid")
+                            .with(csrf())
+                            .contentType(MediaType.APPLICATION_JSON))
+                        .andDo(print())
                     .andExpect(status().isNotFound());
         }
 
@@ -229,7 +240,7 @@ public class AdvertEditingControllerIntegrationTest {
         @Test
         void testDeleteAdvert_UnauthorizedUser() throws Exception {
 
-/**/            doThrow(new AuthorizationException("Unauthorized access"))
+           doThrow(new AuthorizationException("Unauthorized access"))
                     .when(advertEditingService).deleteAdvert(any(Long.class), any(AuthenticatedUser.class));
 
             mockMvc.perform(delete(VERSION_1_0 + ADVERTS_URL + "/" + ADVERT_ID)

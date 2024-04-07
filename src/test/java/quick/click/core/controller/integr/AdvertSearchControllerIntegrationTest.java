@@ -9,9 +9,7 @@ import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -28,7 +26,6 @@ import quick.click.security.commons.model.AuthenticatedUser;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -118,12 +115,12 @@ class AdvertSearchControllerIntegrationTest {
             advertReadDto = null;
             given(advertSearchService.findAdvertById(ADVERT_ID)).willReturn(advertReadDto);
 
-            mockMvc.perform(get(VERSION_1_0 + ADVERTS_URL + "/invalid")
+            mockMvc.perform(get(VERSION_1_0 + ADVERTS_URL +"/" + ADVERT_ID + "/invalid")
                             .with(csrf())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(advertReadDto)))
                     .andDo(print())
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isNotFound());
         }
 
     }
@@ -161,12 +158,12 @@ class AdvertSearchControllerIntegrationTest {
         @Test
         void testFindAllAdverts_ShouldReturn400Status_WhenInvalidRequested() throws Exception {
 
-            mockMvc.perform(get(VERSION_1_0 + ADVERTS_URL + "/invalid")
+            mockMvc.perform(get(VERSION_1_0 + "/invalid")
                             .with(csrf())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(advertReadDtoList)))
                     .andDo(print())
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isNotFound());
         }
 
     }

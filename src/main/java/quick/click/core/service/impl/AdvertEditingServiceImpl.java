@@ -9,9 +9,7 @@ import quick.click.core.converter.TypeConverter;
 import quick.click.core.domain.dto.AdvertEditingDto;
 import quick.click.core.domain.dto.AdvertReadDto;
 import quick.click.core.domain.model.Advert;
-import quick.click.core.domain.model.User;
 import quick.click.core.repository.AdvertRepository;
-import quick.click.core.repository.FileReferenceRepository;
 import quick.click.core.repository.UserRepository;
 import quick.click.core.service.AdvertEditingService;
 import quick.click.security.commons.model.AuthenticatedUser;
@@ -31,17 +29,13 @@ public class AdvertEditingServiceImpl implements AdvertEditingService {
 
     private final UserRepository userRepository;
 
-    private final FileReferenceRepository fileReferenceRepository;
-
     private final TypeConverter<Advert, AdvertReadDto> typeConverterReadDto;
 
     public AdvertEditingServiceImpl(final AdvertRepository advertRepository,
                                     final UserRepository userRepository,
-                                    final FileReferenceRepository fileReferenceRepository,
                                     final TypeConverter<Advert, AdvertReadDto> typeConverterReadDto) {
         this.advertRepository = advertRepository;
         this.userRepository = userRepository;
-        this.fileReferenceRepository = fileReferenceRepository;
         this.typeConverterReadDto = typeConverterReadDto;
 
     }
@@ -95,15 +89,6 @@ public class AdvertEditingServiceImpl implements AdvertEditingService {
 
         if (advertForDelete.isEmpty())
             advertForDelete.orElseThrow(() -> new ResourceNotFoundException("Advert", "id", advertId));
-
-        final Long fileReferenceForDelete = advertForDelete.orElseThrow().getImage();
-        LOGGER.debug("Deleting fileReference for advert with id {}", fileReferenceForDelete);
-
-        if (fileReferenceForDelete != null) {
-            fileReferenceRepository.deleteById(fileReferenceForDelete);
-        } else {
-            LOGGER.debug("Deleting fileReference for advert with id {}", fileReferenceForDelete);
-        }
 
         advertRepository.delete(advertForDelete.orElseThrow());
 

@@ -194,8 +194,8 @@ class AdvertSearchServiceImplTest {
         void testFindAllAdvertsByUser_DatabaseError() {
             when(authenticatedUser.getEmail()).thenReturn(EMAIL);
             when(userRepository.findUserByEmail(EMAIL)).thenReturn(Optional.of(user));
-            when(advertRepository.findAllByUserOrderByCreatedDateDesc(any(User.class))).thenThrow(new DataAccessException("Data access exception") {
-            });
+            when(advertRepository.findAllByUserOrderByCreatedDateDesc(any(User.class)))
+                    .thenThrow(new DataAccessException("Data access exception") {});
 
             Exception exception = assertThrows(DataAccessException.class,
                     () -> advertSearchService.findAllAdvertsByUser(authenticatedUser));

@@ -13,7 +13,9 @@ import quick.click.core.converter.impl.AdvertToAdvertReadDtoConverter;
 import quick.click.core.domain.dto.AdvertEditingDto;
 import quick.click.core.domain.dto.AdvertReadDto;
 import quick.click.core.domain.model.Advert;
+import quick.click.core.domain.model.User;
 import quick.click.core.repository.AdvertRepository;
+import quick.click.core.repository.UserRepository;
 import quick.click.security.commons.model.AuthenticatedUser;
 
 import java.util.Optional;
@@ -25,6 +27,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import static quick.click.config.factory.AdvertDtoFactory.*;
 import static quick.click.config.factory.AdvertFactory.createAdvert;
+import static quick.click.config.factory.UserFactory.createUser;
 import static quick.click.core.enums.AdvertStatus.ARCHIVED;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,6 +36,9 @@ class AdvertEditingServiceImplTest {
 
     @Mock
     private AdvertRepository advertRepository;
+    @Mock
+
+    private UserRepository userRepository;
 
     @Mock
     private AdvertToAdvertReadDtoConverter typeConverterReadDto;
@@ -49,11 +55,16 @@ class AdvertEditingServiceImplTest {
 
     private AuthenticatedUser authenticatedUser = mock(AuthenticatedUser.class);
 
+    private static final String EMAIL = "test@example.com";
+
+    private User user;
+
     @BeforeEach
     void setUp() {
         advert = createAdvert();
         advertReadDto = createAdvertReadDto();
         advertEditingDto = createAdvertEditingDto();
+        user = createUser();
     }
 
     @Nested
@@ -61,7 +72,9 @@ class AdvertEditingServiceImplTest {
     class EditAdvertTests {
         @Test
         void testEditAdvert_ShouldReturnAdvertReadDto() {
-            when(advertRepository.findById(ADVERT_ID)).thenReturn(Optional.of(advert));
+            when(authenticatedUser.getEmail()).thenReturn(EMAIL);
+            when(userRepository.findUserByEmail(EMAIL)).thenReturn(Optional.of(user));
+            when(advertRepository.findAdvertByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.of(advert));
             when(advertRepository.saveAndFlush(advert)).thenReturn(advert);
             when(typeConverterReadDto.convert(advert)).thenReturn(advertReadDto);
 
@@ -75,6 +88,8 @@ class AdvertEditingServiceImplTest {
 
         @Test
         void testUpdateAdvert_ShouldReturnUpdatedAdvertReadDto() {
+            when(authenticatedUser.getEmail()).thenReturn(EMAIL);
+
             Advert result = advertEditingService.updateAdvertData(advert, advertEditingDto);
 
             assertNotNull(result);
@@ -84,7 +99,8 @@ class AdvertEditingServiceImplTest {
 
         @Test
         void testEditAdvert_ShouldThrowException_WhenAdvertDoesNotExist() {
-            when(advertRepository.findById(ADVERT_ID)).thenReturn(Optional.empty());
+            when(authenticatedUser.getEmail()).thenReturn(EMAIL);
+            when(userRepository.findUserByEmail(EMAIL)).thenReturn(Optional.of(user));
 
             assertThrows(ResourceNotFoundException.class,
                     () -> advertEditingService.editAdvert(ADVERT_ID, advertEditingDto, authenticatedUser));
@@ -99,10 +115,12 @@ class AdvertEditingServiceImplTest {
     class ArchiveAdvertTests {
         @Test
         void testArchiveAdvert_ShouldReturnAdvertReadDto() {
+            when(authenticatedUser.getEmail()).thenReturn(EMAIL);
+            when(userRepository.findUserByEmail(EMAIL)).thenReturn(Optional.of(user));
             advertReadDto.setStatus(ARCHIVED);
-            when(advertRepository.findById(ADVERT_ID)).thenReturn(Optional.of(advert));
-            when(advertRepository.saveAndFlush(advert)).thenReturn(advert);
-            when(typeConverterReadDto.convert(advert)).thenReturn(advertReadDto);
+            when(advertRepository.findAdvertByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.of(advert));
+            when(advertRepository.saveAndFlush(any(Advert.class))).thenReturn(advert);
+            when(typeConverterReadDto.convert(any(Advert.class))).thenReturn(advertReadDto);
 
             AdvertReadDto result = advertEditingService.archiveAdvert(ADVERT_ID, authenticatedUser);
 
@@ -114,7 +132,8 @@ class AdvertEditingServiceImplTest {
 
         @Test
         void testArchiveAdvert_ShouldThrowException_WhenAdvertDoesNotExist() {
-            when(advertRepository.findById(ADVERT_ID)).thenReturn(Optional.empty());
+            when(authenticatedUser.getEmail()).thenReturn(EMAIL);
+            when(userRepository.findUserByEmail(EMAIL)).thenReturn(Optional.of(user));
 
             assertThrows(ResourceNotFoundException.class,
                     () -> advertEditingService.archiveAdvert(ADVERT_ID, authenticatedUser));
@@ -129,17 +148,22 @@ class AdvertEditingServiceImplTest {
     class DeleteAdvertTests {
         @Test
         void testDeleteAdvert_ShouldDeleteAndReturnAdvertReadDto() {
-            when(advertRepository.findById(anyLong())).thenReturn(Optional.of(advert));
+            when(authenticatedUser.getEmail()).thenReturn(EMAIL);
+            when(userRepository.findUserByEmail(EMAIL)).thenReturn(Optional.of(user));
+            when(advertRepository.findAdvertByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.of(advert));
             doNothing().when(advertRepository).delete(any(Advert.class));
 
             advertEditingService.deleteAdvert(ADVERT_ID, authenticatedUser);
 
             verify(advertRepository, times(1)).delete(advert);
+            verify(userRepository).findUserByEmail(any(String.class));
+            verify(advertRepository).findAdvertByIdAndUserId(anyLong(), anyLong());
         }
 
         @Test
         void testDeleteAdvert_ShouldThrowException_WhenAdvertDoesNotExist() {
-            when(advertRepository.findById(ADVERT_ID)).thenReturn(Optional.empty());
+            when(authenticatedUser.getEmail()).thenReturn(EMAIL);
+            when(userRepository.findUserByEmail(EMAIL)).thenReturn(Optional.of(user));
 
             assertThrows(ResourceNotFoundException.class,
                     () -> advertEditingService.deleteAdvert(ADVERT_ID, authenticatedUser));
