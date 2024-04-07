@@ -54,7 +54,7 @@ public class Advert extends BaseEntity {
     private boolean favorite;
 
     @Column(name = "image_id")
-    protected Long image;
+    protected Long imageId;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
@@ -161,12 +161,12 @@ public class Advert extends BaseEntity {
         this.favorite = favorite;
     }
 
-    public Long getImage() {
-        return image;
+    public Long getImageId() {
+        return imageId;
     }
 
-    public void setImage(Long image) {
-        this.image = image;
+    public void setImageId(Long image) {
+        this.imageId = image;
     }
 
     public User getUser() {
@@ -182,12 +182,12 @@ public class Advert extends BaseEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Advert advert = (Advert) o;
-        return firstPriceDisplayed == advert.firstPriceDisplayed && favorite == advert.favorite && Objects.equals(id, advert.id) && Objects.equals(title, advert.title) && Objects.equals(description, advert.description) && category == advert.category && status == advert.status && Objects.equals(phone, advert.phone) && Objects.equals(price, advert.price) && Objects.equals(firstPrice, advert.firstPrice) && currency == advert.currency && Objects.equals(address, advert.address) && Objects.equals(image, advert.image) && Objects.equals(user, advert.user);
+        return firstPriceDisplayed == advert.firstPriceDisplayed && favorite == advert.favorite && Objects.equals(id, advert.id) && Objects.equals(title, advert.title) && Objects.equals(description, advert.description) && category == advert.category && status == advert.status && Objects.equals(phone, advert.phone) && Objects.equals(price, advert.price) && Objects.equals(firstPrice, advert.firstPrice) && currency == advert.currency && Objects.equals(address, advert.address) && Objects.equals(imageId, advert.imageId) && Objects.equals(user, advert.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, description, category, status, phone, price, firstPrice, firstPriceDisplayed, currency, address, favorite, image, user);
+        return Objects.hash(id, title, description, category, status, phone, price, firstPrice, firstPriceDisplayed, currency, address, favorite, imageId, user);
     }
 
     @Override
@@ -205,7 +205,7 @@ public class Advert extends BaseEntity {
                 ", currency=" + currency +
                 ", address='" + address + '\'' +
                 ", favorite=" + favorite +
-                ", image=" + image +
+                ", image=" + imageId +
                 ", user=" + user +
                 '}';
     }
