@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataAccessException;
+import quick.click.commons.exeptions.AuthorizationException;
 import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.config.factory.WithMockAuthenticatedUser;
 import quick.click.core.converter.impl.AdvertCreateDtoToAdvertConverter;
@@ -116,9 +117,9 @@ class AdvertRegistrationServiceImplTest {
         @Test
         void testRegisterAdvert_ShouldThrowException() {
             when(authenticatedUser.getEmail()).thenReturn(EMAIL);
-            when(userRepository.findUserByEmail(EMAIL)).thenReturn(Optional.of(user));
+            when(userRepository.findUserByEmail(EMAIL)).thenReturn(Optional.empty());
 
-            assertThrows(NoSuchElementException.class,
+            assertThrows(AuthorizationException.class,
                     () -> advertRegistrationService.registerAdvert(advertCreateDto, authenticatedUser));
 
         }
