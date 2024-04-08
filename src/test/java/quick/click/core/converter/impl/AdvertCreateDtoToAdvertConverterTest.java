@@ -15,13 +15,14 @@ import quick.click.config.factory.AdvertFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 @DisplayName("AdvertCreateDtoToAdvertConverterTest")
 class AdvertCreateDtoToAdvertConverterTest {
     @Mock
     private UserRepository userRepository;
 
     @InjectMocks
-    private TypeConverter<AdvertCreateDto, Advert>  advertCreateDtoAdvertTypeConverter;
+    private TypeConverter<AdvertCreateDto, Advert> advertCreateDtoAdvertTypeConverter;
 
     private Advert advert;
 
@@ -29,7 +30,7 @@ class AdvertCreateDtoToAdvertConverterTest {
 
     @BeforeEach
     public void setUp() {
-        advert = AdvertFactory.createAdvert();
+        advert = AdvertFactory.createAdvertOne();
         advertCreateDto = AdvertDtoFactory.createAdvertCreateDto();
         userRepository = Mockito.mock(UserRepository.class);
         advertCreateDtoAdvertTypeConverter = new AdvertCreateDtoToAdvertConverter(userRepository);

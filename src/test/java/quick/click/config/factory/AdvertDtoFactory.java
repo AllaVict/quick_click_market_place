@@ -24,7 +24,7 @@ public class AdvertDtoFactory {
 
     private static final String PHONE = "+380507778855";
 
-    private static final LocalDateTime CREATED_DATE = LocalDateTime.of(2024, 10, 24, 20, 24);
+    private static final LocalDateTime CREATED_DATE = LocalDateTime.of(2024, 3, 24, 20, 24);
 
     private AdvertDtoFactory() {
     }

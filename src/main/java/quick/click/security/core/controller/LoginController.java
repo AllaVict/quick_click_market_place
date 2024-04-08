@@ -1,5 +1,6 @@
 package quick.click.security.core.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -29,12 +30,14 @@ import static quick.click.security.core.controller.LoginController.BASE_URL;
 
 @CrossOrigin
 @RestController
+@RequestMapping(LoginController.BASE_URL)
+@Tag(name = "Login Controller", description = "Login API")
 @RequestMapping(BASE_URL)
 public class LoginController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
 
-   public static final String BASE_URL = VERSION_1_0 + AUTH_URL;
+    public static final String BASE_URL = VERSION_1_0 + AUTH_URL;
 
     private final AuthenticationManager authenticationManager;
 
@@ -51,6 +54,12 @@ public class LoginController {
         this.userRegistrationService = userRegistrationService;
     }
 
+    /**
+     * Authenticates a user based on their login credentials.
+     *
+     * @param userLoginDto the data transfer object containing the user's login credentials.
+     * @return a ResponseEntity containing the authentication token if authentication is successful.
+     */
     @PostMapping(LOGIN_URL)
     public ResponseEntity<?> authenticateUser
             (@Valid @RequestBody final UserLoginDto userLoginDto) {
@@ -74,16 +83,22 @@ public class LoginController {
             LOGGER.debug("In authenticateUser BadCredentialsException occurs during an attempt login " +
                     "with username {} ", userLoginDto.getEmail());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User has bad credentials and not "
-                    +UNAUTHORIZED);
+                    + UNAUTHORIZED);
         }
 
         return ResponseEntity.ok().body(new AuthResponse(token));
     }
 
+    /**
+     * Registers a new user in the system.
+     *
+     * @param userSignUpDto the data transfer object containing the user's signup information.
+     * @return a ResponseEntity containing a message of success or failure.
+     */
     @PostMapping(SIGNUP_URL)
     public ResponseEntity<ApiResponse> registerUser(@Valid @RequestBody UserSignupDto userSignUpDto) {
 
-        if(userRegistrationService.existsByEmail(userSignUpDto.getEmail())){
+        if (userRegistrationService.existsByEmail(userSignUpDto.getEmail())) {
 
             return ResponseEntity.badRequest()
                     .body(new ApiResponse(false, "Email is already exist!"));
@@ -97,12 +112,19 @@ public class LoginController {
                 .body(new ApiResponse(true, "User registered successfully!"));
     }
 
+    /**
+     * Logs out the current user.
+     *
+     * @param request the HttpServletRequest object.
+     * @return a ResponseEntity containing a message of success.
+     * @throws ServletException if an error occurs during logout.
+     */
     @PostMapping(LOGOUT_URL)
     public ResponseEntity<String> logout(final HttpServletRequest request) throws ServletException {
 
         final String userName = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        if(userName.equals("anonymousUser")){
+        if (userName.equals("anonymousUser")) {
             LOGGER.debug("In logout user was not login with username {} ", userName);
 
             return ResponseEntity.status(HttpStatus.OK).body("User was not login");

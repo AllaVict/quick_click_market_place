@@ -8,7 +8,6 @@ public enum FileType {
     PRODUCT_IMAGE("PRODUCT_IMAGE", "product_image-dir"),
     UNSUPPORTED_FILE_TYPE("UNSUPPORTED FILE TYPE", "unsupported-file-type-dir") ;
 
-
     private final String value;
 
     private final String dirName;
