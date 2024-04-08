@@ -1,0 +1,2 @@
+DELETE FROM adverts WHERE title IN ('Black cat', 'Blue jeans','Black cat');
+

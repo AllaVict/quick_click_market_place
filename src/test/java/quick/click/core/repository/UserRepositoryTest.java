@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import quick.click.config.factory.UserFactory;
 import quick.click.core.domain.model.User;
+import quick.click.config.factory.UserFactory;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +19,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class UserRepositoryTest {
+    @Autowired
+    private AdvertRepository advertRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -26,7 +28,7 @@ class UserRepositoryTest {
     @Autowired
     private FileReferenceRepository fileReferenceRepository;
 
-    private static final String EMAIL =  "test@example.com";
+    private static final String EMAIL = "test@example.com";
 
     private User user;
 
@@ -36,7 +38,7 @@ class UserRepositoryTest {
     }
 
     @Nested
-    @DisplayName("When find User By Email")
+    @DisplayName("When find user by email")
     class FindUserByEmailTests {
         @Test
         void testFindUserByEmail_shouldReturnExistingUserWithGivenEmail() {
@@ -56,8 +58,9 @@ class UserRepositoryTest {
         }
 
     }
+
     @Nested
-    @DisplayName("When User Exists with Email")
+    @DisplayName("When user exists with email")
     class ExistsByEmailTests {
         @Test
         void testExistsByEmail_shouldReturnTrue() {
@@ -76,7 +79,7 @@ class UserRepositoryTest {
     }
 
     @Nested
-    @DisplayName("When Find User by Id")
+    @DisplayName("When find user by id")
     class FindUserByIdTests {
 
         @Test
@@ -96,32 +99,35 @@ class UserRepositoryTest {
             assertThat(foundUser).isEmpty();
         }
     }
+
     @Nested
-    @DisplayName("When Find All User")
+    @DisplayName("When find all user")
     class FindALlUseTests {
 
         @Test
         void testFindAllUser_shouldReturnUserList() {
+            advertRepository.deleteAll();
             userRepository.deleteAll();
             userRepository.save(user);
             List<User> userList = userRepository.findAll();
 
-            assertEquals(userList.size(), 1);
+            assertEquals(1, userList.size());
             assertFalse(userList.isEmpty());
         }
 
         @Test
         void testFindAllUser_shouldReturnEmptyUserList() {
+            advertRepository.deleteAll();
             userRepository.deleteAll();
             List<User> userList = userRepository.findAll();
 
-            assertEquals(userList.size(), 0);
+            assertEquals(0, userList.size());
             assertTrue(userList.isEmpty());
         }
     }
 
     @Nested
-    @DisplayName("When Delete User By Id")
+    @DisplayName("When delete user by id")
     class DeleteUserByIdTests {
         @Test
         void testDeleteUserById_shouldDeleteUserById() {

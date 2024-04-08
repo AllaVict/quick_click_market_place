@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 public class UserLoginServiceImplTest {
 
     private static final long USER_ID = 101L;
-    private static final String EMAIL =  "test@example.com";
+    private static final String EMAIL = "test@example.com";
 
     private User user;
     @Mock
@@ -59,7 +59,7 @@ public class UserLoginServiceImplTest {
             when(userRepository.findUserByEmail(EMAIL)).thenReturn(Optional.empty());
 
             assertThrows(UsernameNotFoundException.class,
-                    () ->  userLoginService.loadUserByUsername(EMAIL));
+                    () -> userLoginService.loadUserByUsername(EMAIL));
         }
 
     }
