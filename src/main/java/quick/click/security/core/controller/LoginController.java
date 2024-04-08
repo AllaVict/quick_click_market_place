@@ -30,7 +30,6 @@ import static quick.click.security.core.controller.LoginController.BASE_URL;
 
 @CrossOrigin
 @RestController
-@RequestMapping(LoginController.BASE_URL)
 @Tag(name = "Login Controller", description = "Login API")
 @RequestMapping(BASE_URL)
 public class LoginController {
