@@ -14,6 +14,8 @@ public interface ImageDataService  {
 
     List<byte[]> findByteListToAdvert(Long advertId);
 
+    byte[] findImageByIdAndByAdvertId(Long advertId, Long imageById);
+
     void deleteImageDataListToAdvert(Long advertId);
 
     void deleteImageById(Long imageId);

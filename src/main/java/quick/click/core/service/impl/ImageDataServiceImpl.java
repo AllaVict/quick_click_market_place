@@ -82,6 +82,14 @@ public class ImageDataServiceImpl implements ImageDataService {
     }
 
     @Override
+    public byte[] findImageByIdAndByAdvertId(Long imageId,Long advertId) {
+        ImageData imageDataToDecompress = imageRepository.findByIdAndAdvertId(imageId, advertId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Image", "id", imageId));
+        return   decompressImage(imageDataToDecompress.getImageData());
+    }
+
+
+    @Override
     public void deleteImageById(Long imageId) {
         ImageData imageToDelete = imageRepository.findById(imageId)
                 .orElseThrow(() -> new ResourceNotFoundException("Image", "id", imageId));

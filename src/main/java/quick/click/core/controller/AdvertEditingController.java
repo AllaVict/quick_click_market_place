@@ -15,7 +15,6 @@ import static quick.click.commons.constants.ApiVersion.VERSION_1_0;
 import static quick.click.commons.constants.Constants.Endpoints.ADVERTS_URL;
 import static quick.click.core.controller.AdvertEditingController.BASE_URL;
 
-@CrossOrigin
 @PreAuthorize("permitAll()")
 @RestController
 @RequestMapping(BASE_URL)

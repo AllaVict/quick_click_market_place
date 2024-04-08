@@ -70,6 +70,23 @@ public class ImageDataController {
     }
 
     /**
+     /**
+     GET    http://localhost:8080/v1.0/images/1
+     get a images as byte[] for the given image id and advert id
+     */
+
+    @GetMapping("/{advertId}/{imageId}")
+    public ResponseEntity<?> getImageByIdAndByAdvertId(@PathVariable("advertId") Long advertId,
+                                                       @PathVariable("imageId") Long imageId){
+        byte[] image = imageDataService.findImageByIdAndByAdvertId(advertId, imageId);
+
+        LOGGER.debug("In getImageByIdAndByAdvertId received GET image for the given image id {} and advert id {} ",
+                imageId, advertId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(image);
+    }
+
+    /**
      DELETE    http://localhost:8080/v1.0/images/1
      delete image for the given image id
      */
