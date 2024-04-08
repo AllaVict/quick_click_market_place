@@ -23,12 +23,14 @@ public class AdvertFactory {
 
     private static final String PHONE = "+380507778855";
 
-    private static final LocalDateTime CREATED_DATE = LocalDateTime.of(2024, 10, 24, 20, 24);
+    private static final LocalDateTime CREATED_DATE_ONE = LocalDateTime.of(2024, 3, 24, 20, 24);
+
+    private static final LocalDateTime CREATED_DATE_TWO = LocalDateTime.of(2024, 2, 24, 20, 24);
 
     private AdvertFactory() {
     }
 
-    public static Advert createAdvert() {
+    public static Advert createAdvertOne() {
         final Advert advert = new Advert();
         advert.setId(ADVERT_ID);
         advert.setTitle(TITLE);
@@ -42,11 +44,29 @@ public class AdvertFactory {
         advert.setCurrency(Currency.EUR);
         advert.setAddress(ADDRESS);
         advert.setUser(UserFactory.createUser());
-        advert.setCreatedDate(CREATED_DATE);
+        advert.setCreatedDate(CREATED_DATE_ONE);
         return advert;
     }
 
-    public static Advert createAdvert(User user) {
+    public static Advert createAdvertOne(User user) {
+        final Advert advert = new Advert();
+        advert.setId(ADVERT_ID);
+        advert.setTitle(TITLE);
+        advert.setDescription(DESCRIPTION);
+        advert.setCategory(Category.TOYS);
+        advert.setStatus(AdvertStatus.PUBLISHED);
+        advert.setPhone(PHONE);
+        advert.setPrice(PRICE);
+        advert.setFirstPrice(FIRST_PRICE);
+        advert.setFirstPriceDisplayed(true);
+        advert.setCurrency(Currency.EUR);
+        advert.setAddress(ADDRESS);
+        advert.setUser(user);
+        advert.setCreatedDate(CREATED_DATE_TWO);
+        return advert;
+    }
+
+    public static Advert createAdvertTwo(User user) {
         final Advert advert = new Advert();
         advert.setTitle(TITLE);
         advert.setDescription(DESCRIPTION);
@@ -59,7 +79,7 @@ public class AdvertFactory {
         advert.setCurrency(Currency.EUR);
         advert.setAddress(ADDRESS);
         advert.setUser(user);
-        advert.setCreatedDate(CREATED_DATE);
+        advert.setCreatedDate(CREATED_DATE_TWO);
         return advert;
     }
 }

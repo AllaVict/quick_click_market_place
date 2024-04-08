@@ -23,7 +23,7 @@ class AdvertToAdvertReadDtoConverterTest {
     private TypeConverter<User, UserReadDto> userToUserReadDtoConverter;
 
     @InjectMocks
-    private TypeConverter<Advert, AdvertReadDto>  advertToAdvertReadDtoConverter;
+    private TypeConverter<Advert, AdvertReadDto> advertToAdvertReadDtoConverter;
 
     private Advert advert;
 
@@ -34,8 +34,8 @@ class AdvertToAdvertReadDtoConverterTest {
     @BeforeEach
     public void setUp() {
         user = UserFactory.createUser();
-        advert = AdvertFactory.createAdvert();
-        userToUserReadDtoConverter =new UserToUserReadDtoConverter();
+        advert = AdvertFactory.createAdvertOne();
+        userToUserReadDtoConverter = new UserToUserReadDtoConverter();
         advertToAdvertReadDtoConverter = new AdvertToAdvertReadDtoConverter(userToUserReadDtoConverter);
     }
 
