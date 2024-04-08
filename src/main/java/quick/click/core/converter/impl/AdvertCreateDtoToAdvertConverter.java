@@ -46,7 +46,6 @@ public class AdvertCreateDtoToAdvertConverter implements TypeConverter<AdvertCre
         advert.setFavorite(advert.isFavorite());
         advert.setUser(getUser(advertCreateDto.getUserId()));
         advert.setCreatedDate(advertCreateDto.getCreatedDate());
-        // advert.setImagId(advert.getImage().getId());
         return advert;
     }
 
