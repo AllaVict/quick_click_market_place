@@ -10,6 +10,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import quick.click.commons.exeptions.AuthorizationException;
 import quick.click.commons.exeptions.ResourceNotFoundException;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import quick.click.core.domain.dto.AdvertReadDto;
 import quick.click.core.service.AdvertSearchService;
 import quick.click.security.commons.model.AuthenticatedUser;

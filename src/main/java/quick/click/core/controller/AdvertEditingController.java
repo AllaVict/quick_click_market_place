@@ -81,6 +81,7 @@ public class AdvertEditingController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
         }
     }
+  
     /**
      * Handles the request to archive an existing advert. Only the owner of the advert can archive it.
      *
@@ -92,6 +93,7 @@ public class AdvertEditingController {
     @Operation(summary = "Archive an advert by id")
     public ResponseEntity<?> archiveAdvert(@PathVariable("id") final Long advertId,
                                            @AuthenticationPrincipal final AuthenticatedUser authenticatedUser) {
+                                           @Valid @RequestBody final AdvertEditingDto advertEditingDto) {
 
         if (advertId == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please fill all fields");

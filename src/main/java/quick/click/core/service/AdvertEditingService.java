@@ -10,6 +10,7 @@ import quick.click.security.commons.model.AuthenticatedUser;
  * @author Alla Borodina
  */
 public interface AdvertEditingService {
+  
     AdvertReadDto editAdvert(Long advertId, AdvertEditingDto advertEditingDto, AuthenticatedUser authenticatedUser);
 
     AdvertReadDto archiveAdvert(Long advertId, AuthenticatedUser authenticatedUser);
