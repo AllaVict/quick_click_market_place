@@ -14,11 +14,9 @@ public interface ImageDataService  {
 
     List<byte[]> findByteListToAdvert(Long advertId);
 
-    byte[] findImageByIdAndByAdvertId(Long advertId, Long imageById);
+    void deleteImageByIdAndByAdvertId(Long advertId, Long imageById);
 
     void deleteImageDataListToAdvert(Long advertId);
-
-    void deleteImageById(Long imageId);
 
     byte[] downloadImageFromFileSystem(Long advertId) throws IOException;
 

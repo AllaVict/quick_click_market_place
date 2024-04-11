@@ -70,30 +70,27 @@ public class ImageDataController {
     }
 
     /**
-     /**
-     GET    http://localhost:8080/v1.0/images/1
-     get a images as byte[] for the given image id and advert id
+     DELETE    http://localhost:8080/v1.0/images/1
+     delete all images for the given advert id and given image id
      */
+    @DeleteMapping("/{advertId}")
+    public ResponseEntity<?> deleteAllImagesByAdvertId(@PathVariable("advertId") Long advertId){
+        imageDataService.deleteImageDataListToAdvert(advertId);
 
-    @GetMapping("/{advertId}/{imageId}")
-    public ResponseEntity<?> getImageByIdAndByAdvertId(@PathVariable("advertId") Long advertId,
-                                                       @PathVariable("imageId") Long imageId){
-        byte[] image = imageDataService.findImageByIdAndByAdvertId(advertId, imageId);
+        LOGGER.debug("In deleteAllImagesByAdvertId received DELETE all images for advert with id : {} ", advertId);
 
-        LOGGER.debug("In getImageByIdAndByAdvertId received GET image for the given image id {} and advert id {} ",
-                imageId, advertId);
-
-        return ResponseEntity.status(HttpStatus.OK).body(image);
+        return ResponseEntity.status(HttpStatus.OK).body("All Images has been deleted successfully.");
     }
 
     /**
-     DELETE    http://localhost:8080/v1.0/images/1
-     delete image for the given image id
+     DELETE    http://localhost:8080/v1.0/images/1/2
+     delete an image for the given advert id and given image id
      */
     @DeleteMapping("/{imageId}")
-    public ResponseEntity<?> deleteImageById(@PathVariable("imageId") Long imageId){
+    public ResponseEntity<?> deleteImageByIdAndByAdvertId(@PathVariable("advertId") Long advertId,
+                                                          @PathVariable("imageId") Long imageId){
 
-        imageDataService.deleteImageById(imageId);
+        imageDataService.deleteImageByIdAndByAdvertId(advertId, imageId);
 
         LOGGER.debug("In deleteImageById received DELETE image with id : {} ", imageId);
 

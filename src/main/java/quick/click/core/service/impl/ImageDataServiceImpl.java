@@ -82,29 +82,21 @@ public class ImageDataServiceImpl implements ImageDataService {
     }
 
     @Override
-    public byte[] findImageByIdAndByAdvertId(Long imageId,Long advertId) {
-        ImageData imageDataToDecompress = imageRepository.findByIdAndAdvertId(imageId, advertId)
-                        .orElseThrow(() -> new ResourceNotFoundException("Image", "id", imageId));
-        return   decompressImage(imageDataToDecompress.getImageData());
-    }
-
-
-    @Override
-    public void deleteImageById(Long imageId) {
-        ImageData imageToDelete = imageRepository.findById(imageId)
-                .orElseThrow(() -> new ResourceNotFoundException("Image", "id", imageId));
-        imageRepository.delete(imageToDelete);
-    }
-
-
- @Override
- public void deleteImageDataListToAdvert(Long advertId) {
-    List<ImageData> listToDelete = imageRepository.findAllByAdvertId(advertId);
-    if (!listToDelete.isEmpty()){
-        for (int i=0; i < listToDelete.size(); i++) {
-                  imageRepository.deleteById(listToDelete.get(i).getId());
+    public void deleteImageDataListToAdvert(Long advertId) {
+        List<ImageData> listToDelete = imageRepository.findAllByAdvertId(advertId);
+        if (!listToDelete.isEmpty()){
+            for (int i=0; i < listToDelete.size(); i++) {
+                imageRepository.deleteById(listToDelete.get(i).getId());
             }
         }
+    }
+
+    @Override
+    public void deleteImageByIdAndByAdvertId(Long imageId,Long advertId) {
+        ImageData imageToDelete = imageRepository.findByIdAndAdvertId(imageId,advertId)
+                .orElseThrow(() -> new ResourceNotFoundException("Image", "id", imageId));
+        imageRepository.delete(imageToDelete);
+
     }
 
     public String uploadImageToFileSystem(MultipartFile file, ImageData imageData) throws IOException {
