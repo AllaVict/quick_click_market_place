@@ -7,6 +7,8 @@ import quick.click.core.enums.AdvertStatus;
 import quick.click.core.enums.Category;
 import quick.click.core.enums.Currency;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -19,6 +21,7 @@ public class Advert extends BaseEntity {
     @Column(name = "title")
     @Size(max = 100)
     private String title;
+
     @Column(name = "description")
     @Size(max = 500)
     private String description;
@@ -26,6 +29,7 @@ public class Advert extends BaseEntity {
     @Column(name = "category")
     @Enumerated(EnumType.STRING)
     private Category category;
+
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private AdvertStatus status;
@@ -53,15 +57,15 @@ public class Advert extends BaseEntity {
     @Column(name = "favorite")
     private boolean favorite;
 
-    @Column(name = "image_id")
-    protected Long imageId;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 
+    @OneToMany(mappedBy = "advert", cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
+
     public Advert() {
-        //Empty
+       //Empty
     }
 
 
@@ -161,13 +165,14 @@ public class Advert extends BaseEntity {
         this.favorite = favorite;
     }
 
-    public Long getImageId() {
-        return imageId;
+    public List<Comment> getComments() {
+        return comments;
     }
 
-    public void setImageId(Long image) {
-        this.imageId = image;
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
+
 
     public User getUser() {
         return user;
@@ -182,12 +187,12 @@ public class Advert extends BaseEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Advert advert = (Advert) o;
-        return firstPriceDisplayed == advert.firstPriceDisplayed && favorite == advert.favorite && Objects.equals(id, advert.id) && Objects.equals(title, advert.title) && Objects.equals(description, advert.description) && category == advert.category && status == advert.status && Objects.equals(phone, advert.phone) && Objects.equals(price, advert.price) && Objects.equals(firstPrice, advert.firstPrice) && currency == advert.currency && Objects.equals(address, advert.address) && Objects.equals(imageId, advert.imageId) && Objects.equals(user, advert.user);
+        return firstPriceDisplayed == advert.firstPriceDisplayed && favorite == advert.favorite && Objects.equals(id, advert.id) && Objects.equals(title, advert.title) && Objects.equals(description, advert.description) && category == advert.category && status == advert.status && Objects.equals(phone, advert.phone) && Objects.equals(price, advert.price) && Objects.equals(firstPrice, advert.firstPrice) && currency == advert.currency && Objects.equals(address, advert.address) && Objects.equals(user, advert.user) && Objects.equals(comments, advert.comments);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, description, category, status, phone, price, firstPrice, firstPriceDisplayed, currency, address, favorite, imageId, user);
+        return Objects.hash(id, title, description, category, status, phone, price, firstPrice, firstPriceDisplayed, currency, address, favorite, user, comments);
     }
 
     @Override
@@ -205,8 +210,8 @@ public class Advert extends BaseEntity {
                 ", currency=" + currency +
                 ", address='" + address + '\'' +
                 ", favorite=" + favorite +
-                ", image=" + imageId +
                 ", user=" + user +
+                ", comments=" + comments +
                 '}';
     }
 }
