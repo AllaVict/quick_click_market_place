@@ -54,7 +54,7 @@ class AdvertEditingControllerTest {
     @DisplayName("When edit an advert")
     class EditAdvertTests {
         @Test
-        void testEditAdvert_shouldReturnAdvertReadDto() {
+        void testEditAdvert_ShouldReturnAdvertReadDto() {
             when(advertEditingService.editAdvert(ADVERT_ID, advertEditingDto, authenticatedUser))
                     .thenReturn(advertReadDto);
 
@@ -76,7 +76,7 @@ class AdvertEditingControllerTest {
         }
 
         @Test
-        void testEditAdvert_ShouldnReturn404Status_WhenAdvertIdDoesNotExist() {
+        void testEditAdvert_ShouldnReturn404Status_WhenAdvertDoesNotExist() {
             when(advertEditingService.editAdvert(eq(ADVERT_ID), any(AdvertEditingDto.class), any(AuthenticatedUser.class)))
                     .thenThrow(new ResourceNotFoundException("Advert", "id", ADVERT_ID));
 
@@ -91,7 +91,7 @@ class AdvertEditingControllerTest {
     @DisplayName("When archive an advert")
     class ArchiveAdvertTests {
         @Test
-        void testArchiveAdvert_shouldReturnAdvertReadDto() {
+        void testArchiveAdvert_ShouldReturnAdvertReadDto() {
             advertReadDto.setStatus(ARCHIVED);
             when(advertEditingService.archiveAdvert(any(Long.class), any(AuthenticatedUser.class))).thenReturn(advertReadDto);
 
@@ -110,7 +110,7 @@ class AdvertEditingControllerTest {
         }
 
         @Test
-        void testArchiveAdvert_ShouldnReturn404Status_WhenAdvertIdDoesNotExist() {
+        void testArchiveAdvert_ShouldnReturn404Status_WhenAdvertDoesNotExist() {
             when(advertEditingService.archiveAdvert(ADVERT_ID, authenticatedUser))
                     .thenThrow(new ResourceNotFoundException("Advert", "id", ADVERT_ID));
 
