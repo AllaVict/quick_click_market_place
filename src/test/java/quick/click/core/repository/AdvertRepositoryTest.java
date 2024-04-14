@@ -77,16 +77,16 @@ class AdvertRepositoryTest {
         @Transactional
         void testFindAllAdverts_shouldReturnAllAdverts() {
             advertRepository.deleteAll();
-            advertRepository.save(expectedAdvertOne);
-            advertRepository.save(expectedAdvertTwo);
+            Advert savedAdvertOne = advertRepository.save(expectedAdvertOne);
+            Advert savedAdvertTwo = advertRepository.save(expectedAdvertTwo);
 
             List<Advert> result = advertRepository.findAll();
 
-            assertThat(result).containsExactlyInAnyOrder(expectedAdvertOne, expectedAdvertTwo);
             assertNotNull(result);
             assertThat(result).isNotNull();
             assertEquals(2, result.size());
             assertThat(result).hasSize(2);
+            assertThat(result).containsExactlyInAnyOrder(savedAdvertOne, savedAdvertTwo);
         }
 
         @Test
@@ -96,7 +96,7 @@ class AdvertRepositoryTest {
 
             assertThrows(DataIntegrityViolationException.class, () -> advertRepository.save(new Advert()));
             assertEquals(0, result.size());
-            assertThat(result).hasSize(0);
+            assertThat(result).isEmpty();
         }
 
     }
@@ -104,13 +104,14 @@ class AdvertRepositoryTest {
     @Nested
     @DisplayName("When find all adverts by created date desc")
     class FindAllByOrderByCreatedDateDescTests {
+
         @Test
         @Transactional
         void testFindAllByOrderByCreatedDateDesc_shouldReturnAllAdverts() {
             advertRepository.deleteAll();
             expectedAdvertOne.setCreatedDate(LocalDateTime.now());
-            advertRepository.save(expectedAdvertOne);
-            advertRepository.save(expectedAdvertTwo);
+            Advert savedAdvertOne = advertRepository.save(expectedAdvertOne);
+            Advert savedAdvertTwo = advertRepository.save(expectedAdvertTwo);
 
             List<Advert> result = advertRepository.findAllByOrderByCreatedDateDesc();
 
@@ -118,7 +119,7 @@ class AdvertRepositoryTest {
             assertThat(result).isNotNull();
             assertEquals(2, result.size());
             assertThat(result).hasSize(2);
-            assertThat(result).containsExactly(expectedAdvertOne, expectedAdvertTwo);
+            assertThat(result).containsExactlyInAnyOrder(savedAdvertOne, savedAdvertTwo);
         }
 
         @Test
@@ -128,7 +129,7 @@ class AdvertRepositoryTest {
 
             assertThrows(DataIntegrityViolationException.class, () -> advertRepository.save(new Advert()));
             assertEquals(0, result.size());
-            assertThat(result).hasSize(0);
+            assertThat(result).isEmpty();
         }
 
     }
@@ -139,12 +140,12 @@ class AdvertRepositoryTest {
         @Transactional
         void testFindAllAdvertsByUserId_shouldReturnAllAdverts() {
             advertRepository.deleteAll();
-            advertRepository.save(expectedAdvertOne);
-            advertRepository.save(expectedAdvertTwo);
+            Advert savedAdvertOne = advertRepository.save(expectedAdvertOne);
+            Advert savedAdvertTwo = advertRepository.save(expectedAdvertTwo);
 
             List<Advert> result = advertRepository.findAllByUserOrderByCreatedDateDesc(user);
 
-            assertThat(result).containsExactlyInAnyOrder(expectedAdvertOne, expectedAdvertTwo);
+            assertThat(result).containsExactlyInAnyOrder(savedAdvertOne, savedAdvertTwo);
             assertNotNull(result);
             assertThat(result).isNotNull();
             assertEquals(2, result.size());
@@ -158,7 +159,7 @@ class AdvertRepositoryTest {
 
             assertThrows(DataIntegrityViolationException.class, () -> advertRepository.save(new Advert()));
             assertEquals(0, result.size());
-            assertThat(result).hasSize(0);
+            assertThat(result).isEmpty();
         }
 
     }

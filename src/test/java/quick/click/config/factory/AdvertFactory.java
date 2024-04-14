@@ -23,9 +23,9 @@ public class AdvertFactory {
 
     private static final String PHONE = "+380507778855";
 
-    private static final LocalDateTime CREATED_DATE_ONE = LocalDateTime.of(2024, 3, 24, 20, 24);
+    private static final LocalDateTime CREATED_DATE_ONE = LocalDateTime.of(2024, 2, 24, 20, 24);
 
-    private static final LocalDateTime CREATED_DATE_TWO = LocalDateTime.of(2024, 2, 24, 20, 24);
+    private static final LocalDateTime CREATED_DATE_TWO = LocalDateTime.of(2024, 3, 24, 20, 24);
 
     private AdvertFactory() {
     }
