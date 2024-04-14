@@ -66,7 +66,7 @@ class AdvertSearchControllerTest {
         }
 
         @Test
-        void testEditAdvert_ShouldReturn404Status_WhenAdvertIdDoesNotExist() {
+        void testEditAdvert_ShouldReturn404Status_WhenAdvertDoesNotExist() {
             when(advertSearchService.findAdvertById(ADVERT_ID))
                     .thenThrow(new ResourceNotFoundException("Advert", "id", ADVERT_ID));
 
@@ -74,6 +74,7 @@ class AdvertSearchControllerTest {
 
             assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
         }
+
 
         @Nested
         @DisplayName("When find all adverts")

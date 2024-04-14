@@ -72,7 +72,7 @@ public class AdvertRegistrationServiceImpl implements AdvertRegistrationService 
     }
 
     private AdvertCreateDto settingsForAdvertCreateDto(final AdvertCreateDto advertCreateDto,
-                                                        final AuthenticatedUser authenticatedUser) {
+                                                       final AuthenticatedUser authenticatedUser) {
         advertCreateDto.setCreatedDate(LocalDateTime.now());
         advertCreateDto.setStatus(PUBLISHED);
         advertCreateDto.setUserId(getUserByAuthenticatedUser(authenticatedUser));
