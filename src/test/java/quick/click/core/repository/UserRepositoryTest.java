@@ -28,7 +28,7 @@ class UserRepositoryTest {
     @Autowired
     private FileReferenceRepository fileReferenceRepository;
 
-    private static final String EMAIL =  "test@example.com";
+    private static final String EMAIL = "test@example.com";
 
     private User user;
 
@@ -38,7 +38,7 @@ class UserRepositoryTest {
     }
 
     @Nested
-    @DisplayName("When find User By Email")
+    @DisplayName("When find user by email")
     class FindUserByEmailTests {
         @Test
         void testFindUserByEmail_shouldReturnExistingUserWithGivenEmail() {
@@ -58,8 +58,9 @@ class UserRepositoryTest {
         }
 
     }
+
     @Nested
-    @DisplayName("When User Exists with Email")
+    @DisplayName("When user exists with email")
     class ExistsByEmailTests {
         @Test
         void testExistsByEmail_shouldReturnTrue() {
@@ -78,7 +79,7 @@ class UserRepositoryTest {
     }
 
     @Nested
-    @DisplayName("When Find User by Id")
+    @DisplayName("When find user by id")
     class FindUserByIdTests {
 
         @Test
@@ -98,8 +99,9 @@ class UserRepositoryTest {
             assertThat(foundUser).isEmpty();
         }
     }
+
     @Nested
-    @DisplayName("When Find All User")
+    @DisplayName("When find all user")
     class FindALlUseTests {
 
         @Test
@@ -109,7 +111,7 @@ class UserRepositoryTest {
             userRepository.save(user);
             List<User> userList = userRepository.findAll();
 
-            assertEquals(userList.size(), 1);
+            assertEquals(1, userList.size());
             assertFalse(userList.isEmpty());
         }
 
@@ -119,13 +121,13 @@ class UserRepositoryTest {
             userRepository.deleteAll();
             List<User> userList = userRepository.findAll();
 
-            assertEquals(userList.size(), 0);
+            assertEquals(0, userList.size());
             assertTrue(userList.isEmpty());
         }
     }
 
     @Nested
-    @DisplayName("When Delete User By Id")
+    @DisplayName("When delete user by id")
     class DeleteUserByIdTests {
         @Test
         void testDeleteUserById_shouldDeleteUserById() {

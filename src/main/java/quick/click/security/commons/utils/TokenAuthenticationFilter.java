@@ -20,6 +20,12 @@ import java.io.IOException;
 import static quick.click.commons.constants.Constants.Headers.AUTHORIZATION_HEADER;
 import static quick.click.commons.constants.Constants.Tokens.ACCESS_TOKEN_PREFIX;
 
+/**
+ * A filter that intercepts HTTP requests to authenticate users by validating
+ * JWT tokens and setting authentication in the security context.
+ *
+ * @author Alla Borodina
+ */
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TokenAuthenticationFilter.class);
@@ -35,6 +41,16 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         this.userLoginService = userLoginService;
     }
 
+    /**
+     * Processes an incoming request to authenticate the user by validating the JWT token.
+     * If the token is valid, the user's authentication is set in the security context.
+     *
+     * @param request     the request to be processed.
+     * @param response    the response to be filled during the processing of the request.
+     * @param filterChain the filter chain to which the request and response should be passed for further processing.
+     * @throws ServletException if an error occurs during the processing of the request.
+     * @throws IOException      if an I/O error is encountered.
+     */
     @Override
     public void doFilterInternal(final HttpServletRequest request,
                                  final HttpServletResponse response,

@@ -25,7 +25,7 @@ public class WithMockAuthenticatedUserSecurityContextFactory
                 Stream.of(mockAuthenticatedUser.role())
                         .map(role -> new SimpleGrantedAuthority(role.name()))
                         .collect(Collectors.toList())
-                );
+        );
 
         final Authentication authentication = new UsernamePasswordAuthenticationToken(
                 authUser,
