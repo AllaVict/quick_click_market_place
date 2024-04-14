@@ -141,7 +141,7 @@ class AdvertSearchServiceImplTest {
         }
 
         @Test
-        void testFindAllAdverts_ShouldReturnNoAdverts() {
+        void testFindAllAdverts_ShouldReturnEmptyList() {
             advertRepository.deleteAll();
             advertList = new ArrayList<>();
             advertReadDtoList = new ArrayList<>();
@@ -152,7 +152,8 @@ class AdvertSearchServiceImplTest {
             verify(advertRepository).findAll();
             assertTrue(result.isEmpty());
             assertEquals(result, advertReadDtoList);
-            assertThat(result.size()).isEqualTo(advertReadDtoList.size());
+            assertTrue(result.isEmpty());
+
         }
     }
 
@@ -189,7 +190,7 @@ class AdvertSearchServiceImplTest {
         }
 
         @Test
-        void testFindAllByOrderByCreatedDateDesc_ShouldReturnNoAdverts() {
+        void testFindAllByOrderByCreatedDateDesc_ShouldReturnEmptyList() {
             advertRepository.deleteAll();
             advertList = new ArrayList<>();
             advertReadDtoList = new ArrayList<>();
@@ -200,7 +201,7 @@ class AdvertSearchServiceImplTest {
             verify(advertRepository).findAllByOrderByCreatedDateDesc();
             assertTrue(result.isEmpty());
             assertEquals(result, advertReadDtoList);
-            assertThat(result.size()).isEqualTo(advertReadDtoList.size());
+            assertTrue(result.isEmpty());
         }
     }
     @Nested
