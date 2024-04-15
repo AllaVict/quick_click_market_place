@@ -4,6 +4,8 @@ import quick.click.core.enums.AdvertStatus;
 import quick.click.core.enums.Category;
 import quick.click.core.enums.Currency;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class AdvertReadDto {
@@ -14,13 +16,11 @@ public class AdvertReadDto {
 
     private String description;
 
-
     private Category category;
 
     private AdvertStatus status;
 
     private String phone;
-
 
     private Double price;
 
@@ -34,7 +34,8 @@ public class AdvertReadDto {
 
     private boolean favorite;
 
-    protected FileReferenceDto image;
+    protected List<CommentReadDto> comments = new ArrayList<>();
+
 
     protected UserReadDto user;
 
@@ -134,12 +135,12 @@ public class AdvertReadDto {
         this.favorite = favorite;
     }
 
-    public FileReferenceDto getImage() {
-        return image;
+    public List<CommentReadDto> getComments() {
+        return comments;
     }
 
-    public void setImage(FileReferenceDto image) {
-        this.image = image;
+    public void setComments(List<CommentReadDto> comments) {
+        this.comments = comments;
     }
 
     public UserReadDto getUser() {
@@ -155,12 +156,12 @@ public class AdvertReadDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AdvertReadDto that = (AdvertReadDto) o;
-        return firstPriceDisplayed == that.firstPriceDisplayed && favorite == that.favorite && Objects.equals(id, that.id) && Objects.equals(title, that.title) && Objects.equals(description, that.description) && category == that.category && status == that.status && Objects.equals(phone, that.phone) && Objects.equals(price, that.price) && Objects.equals(firstPrice, that.firstPrice) && currency == that.currency && Objects.equals(address, that.address) && Objects.equals(image, that.image) && Objects.equals(user, that.user);
+        return firstPriceDisplayed == that.firstPriceDisplayed && favorite == that.favorite && Objects.equals(id, that.id) && Objects.equals(title, that.title) && Objects.equals(description, that.description) && category == that.category && status == that.status && Objects.equals(phone, that.phone) && Objects.equals(price, that.price) && Objects.equals(firstPrice, that.firstPrice) && currency == that.currency && Objects.equals(address, that.address) && Objects.equals(comments, that.comments) && Objects.equals(user, that.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, description, category, status, phone, price, firstPrice, firstPriceDisplayed, currency, address, favorite, image, user);
+        return Objects.hash(id, title, description, category, status, phone, price, firstPrice, firstPriceDisplayed, currency, address, favorite, comments, user);
     }
 
     @Override
@@ -178,7 +179,7 @@ public class AdvertReadDto {
                 ", currency=" + currency +
                 ", address='" + address + '\'' +
                 ", favorite=" + favorite +
-                ", image=" + image +
+                ", comments=" + comments +
                 ", user=" + user +
                 '}';
     }

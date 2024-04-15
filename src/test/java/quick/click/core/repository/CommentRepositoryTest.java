@@ -57,21 +57,21 @@ class CommentRepositoryTest {
         commentList = Arrays.asList(comment,comment);
     }
         @Nested
-        @DisplayName("When Find Comment By Advert")
+        @DisplayName("When Find Comment By AdvertId")
         class FindAllByAdvertTests {
             @Test
-            void testFindAllByAdvert_shouldReturnExtraFeeSuccessfully() {
+            void testFindAllByAdvertId_shouldReturnExtraFeeSuccessfully() {
                 commentRepository.save(comment);
-                List<Comment> result = commentRepository.findAllByAdvert(advert);
+                List<Comment> result = commentRepository.findAllByAdvertId(advert.getId());
 
                 assertNotNull(result);
                 assertEquals("John Johnson", result.get(0).getUsername());
             }
 
             @Test
-            void testFFindAllByAdvert_shouldReturnNoExtraFee() {
+            void testFFindAllByAdvertId_shouldReturnNoExtraFee() {
                 commentRepository.deleteAll();
-                List<Comment> result = commentRepository.findAllByAdvert(advert);
+                List<Comment> result = commentRepository.findAllByAdvertId(advert.getId());
 
                 assertTrue(result.isEmpty());
                 assertEquals(0, result.size());
