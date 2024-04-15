@@ -64,17 +64,6 @@ public class CommentServiceImpl implements CommentService {
         return commentDto;
     }
 
-    @Override
-    public List<CommentReadDto> getAllCommentsForAdvert(Long advertId) {
-
-        List<CommentReadDto> comments = commentRepository.findAllByAdvertId(advertId)
-                .stream().map(typeConverterCommentReadDto::convert)
-                .collect(Collectors.toList());
-
-        LOGGER.debug("In getAllCommentsForAdvert find all comments for Advert with id : {}", advertId);
-
-        return comments;
-    }
 
     @Override
     public CommentReadDto editComment(final Long commentId, final CommentEditingDto commentEditingDto) {
@@ -94,12 +83,31 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    public List<CommentReadDto> findAllCommentsForAdvert(Long advertId) {
+
+        List<CommentReadDto> comments = commentRepository.findAllByAdvertId(advertId)
+                .stream().map(typeConverterCommentReadDto::convert)
+                .collect(Collectors.toList());
+
+        LOGGER.debug("In getAllCommentsForAdvert find all comments for Advert with id : {}", advertId);
+
+        return comments;
+    }
+
+    @Override
+    public CommentReadDto findCommentById(Long commentId) {
+       Comment foundComment = commentRepository.findById(commentId)
+               .orElseThrow(() -> new ResourceNotFoundException("Comment", "id", commentId));
+        LOGGER.debug("In deleteComment Deleting success Comment with id {}", commentId);
+        return typeConverterCommentReadDto.convert(foundComment);
+    }
+
+    @Override
     public void deleteComment(Long commentId) {
         Optional<Comment> commentForDelete = commentRepository.findById(commentId);
         if(commentForDelete.isEmpty())
             commentForDelete.orElseThrow(() -> new ResourceNotFoundException("Comment", "id", commentId));
 
-       // commentForDelete.ifPresent(commentRepository::delete);
         commentRepository.delete(commentForDelete.orElseThrow());
         LOGGER.debug("In deleteComment Deleting success Comment with id {}", commentId);
     }
