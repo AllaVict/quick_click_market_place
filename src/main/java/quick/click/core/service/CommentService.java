@@ -8,13 +8,15 @@ import java.util.List;
 
 public interface CommentService {
 
-    public CommentReadDto registerComment(Long advertId, CommentCreatingDto commentDTO);
+    CommentReadDto registerComment(Long advertId, CommentCreatingDto commentDTO);
 
-    public CommentReadDto editComment(Long advertId, CommentEditingDto commentDTO);
+    CommentReadDto editComment(Long advertId, CommentEditingDto commentDTO);
 
-    public List<CommentReadDto> getAllCommentsForAdvert(Long advertId);
+    List<CommentReadDto> findAllCommentsForAdvert(Long advertId);
 
-    public void deleteComment(Long commentId);
+    CommentReadDto findCommentById(Long commentId);
+
+    void deleteComment(Long commentId);
 
 
 }
