@@ -16,7 +16,7 @@ import quick.click.config.factory.AdvertFactory;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@DisplayName("AdvertCreateDtoToAdvertConverterTest")
+@DisplayName("AdvertCreateDtoToAdvertConverter")
 class AdvertCreateDtoToAdvertConverterTest {
     @Mock
     private UserRepository userRepository;
