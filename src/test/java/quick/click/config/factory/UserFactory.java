@@ -18,11 +18,11 @@ public class UserFactory {
 
     private static final String JOHNSON = "Johnson";
 
-    private static final String EMAIL =  "test@example.com";
+    private static final String EMAIL = "test@example.com";
 
     private static final String PASSWORD = "password";
 
-    private static final LocalDateTime CREATED_DATE = LocalDateTime.of(2024, 10, 24, 20, 24);
+    private static final LocalDateTime CREATED_DATE = LocalDateTime.of(2024, 3, 24, 20, 24);
 
     private UserFactory() {
     }
@@ -49,6 +49,7 @@ public class UserFactory {
         user.setRole(role);
         return user;
     }
+
     public static User createUserWithGoogle() {
         final User user = createUser(USER_ID, JOHN, JOHNSON, MALE, EMAIL, PASSWORD);
         user.setProvider(AuthProvider.GOOGLE);

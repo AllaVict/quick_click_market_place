@@ -4,24 +4,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import quick.click.core.converter.TypeConverter;
 import quick.click.core.domain.dto.AdvertReadDto;
-import quick.click.core.domain.dto.CommentReadDto;
 import quick.click.core.domain.dto.UserReadDto;
 import quick.click.core.domain.model.Advert;
-import quick.click.core.domain.model.Comment;
 import quick.click.core.domain.model.User;
-import quick.click.core.repository.ImageDataRepository;
 
 @Component
 public class AdvertToAdvertReadDtoConverter implements TypeConverter<Advert, AdvertReadDto> {
 
     private final TypeConverter<User, UserReadDto> typeConverterUserReadDto;
-    private final TypeConverter<Comment, CommentReadDto> typeConverterCommentReadDto;
 
     @Autowired
-    public AdvertToAdvertReadDtoConverter(final TypeConverter<User, UserReadDto> typeConverterUserReadDto,
-                                          final TypeConverter<Comment, CommentReadDto> typeConverterCommentReadDto) {
+    public AdvertToAdvertReadDtoConverter(final TypeConverter<User, UserReadDto> typeConverterUserReadDto) {
         this.typeConverterUserReadDto = typeConverterUserReadDto;
-        this.typeConverterCommentReadDto = typeConverterCommentReadDto;
     }
 
     @Override
@@ -49,10 +43,7 @@ public class AdvertToAdvertReadDtoConverter implements TypeConverter<Advert, Adv
         advertReadDto.setCurrency(advert.getCurrency());
         advertReadDto.setAddress(advert.getAddress());
         advertReadDto.setFavorite(advert.isFavorite());
-        advertReadDto.setComments(typeConverterCommentReadDto.convert(advert.getComments()));
-
         advertReadDto.setUser(typeConverterUserReadDto.convert(advert.getUser()));
         return advertReadDto;
     }
-
 }

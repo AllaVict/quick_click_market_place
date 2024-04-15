@@ -20,7 +20,6 @@ public class AdvertCreateDto {
 
     private String phone;
 
-
     private Double price;
 
     private Double firstPrice;
@@ -35,7 +34,7 @@ public class AdvertCreateDto {
 
     private Long userId;
 
-    private  LocalDateTime createdDate;
+    private LocalDateTime createdDate;
 
     public String getTitle() {
         return title;
