@@ -16,7 +16,7 @@ import quick.click.config.factory.UserFactory;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@DisplayName("AdvertToAdvertReadDtoConverterTest")
+@DisplayName("AdvertToAdvertReadDtoConverter")
 class AdvertToAdvertReadDtoConverterTest {
 
     @Mock
