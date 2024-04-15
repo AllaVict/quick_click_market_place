@@ -11,7 +11,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.core.converter.TypeConverter;
-import quick.click.core.domain.dto.AdvertReadDto;
 import quick.click.core.domain.dto.CommentCreatingDto;
 import quick.click.core.domain.dto.CommentEditingDto;
 import quick.click.core.domain.dto.CommentReadDto;

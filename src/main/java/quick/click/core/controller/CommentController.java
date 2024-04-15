@@ -6,9 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
+import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.core.domain.dto.CommentCreatingDto;
 import quick.click.core.domain.dto.CommentReadDto;
 import quick.click.core.service.CommentService;
+import quick.click.security.commons.model.AuthenticatedUser;
 
 import java.util.List;
 
@@ -31,44 +33,91 @@ public class CommentController {
     }
 
     /**
-     POST    http://localhost:8080/v1.0/comments/1
-     {
-     "message": "Das ist ein gutes Auto",
-     }
+     * POST    http://localhost:8080/v1.0/comments/1
+     * {
+     * "message": "Das ist ein gutes Auto",
+     * }
      */
     @PostMapping("/{advertId}")
-    public ResponseEntity<?> registerComment(@Valid @RequestBody CommentCreatingDto commentDTO,
-                                                @PathVariable("advertId") Long advertId) {
+    public ResponseEntity<?> registerComment(@PathVariable("advertId") final Long advertId,
+                                             @Valid @RequestBody final CommentCreatingDto commentDTO) {
+        try {
 
-        CommentReadDto commentReadDto = commentService.registerComment(advertId, commentDTO);
+            if (commentDTO == null || commentDTO.getMessage() == null)
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please fill all fields");
 
-        LOGGER.debug("In registerComment received POST comment register successfully with id {} ", commentReadDto.getId());
+            final CommentReadDto commentReadDto = commentService.registerComment(advertId, commentDTO);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(commentReadDto);
+            LOGGER.debug("In registerComment received POST comment register successfully with id {} ", commentReadDto.getId());
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(commentReadDto);
+
+        } catch (ResourceNotFoundException exception) {
+
+            LOGGER.error("Advert not found with id : '{}'", advertId, exception);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+
+        } catch (Exception exception) {
+
+            LOGGER.error("Unexpected error during a BaseFee creation: {}", exception.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
+
+        }
     }
+
     /**
-     GET    http://localhost:8080/v1.0/comments/1
+     * GET    http://localhost:8080/v1.0/comments/1
      */
+
     @GetMapping("/{advertId}")
-    public ResponseEntity<List<CommentReadDto>> getAllCommentsToAdvert(@PathVariable("advertId") Long advertId) {
+    public ResponseEntity<?> findAllCommentsToAdvert(@PathVariable("advertId") Long advertId) {
 
-        List<CommentReadDto> commentDTOList = commentService.getAllCommentsForAdvert(advertId);
+        try {
 
-        LOGGER.debug("In getAllCommentsToAdvert received GET get all comments successfully forAdvert with id {} ", advertId);
+            if (advertId == null)
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please insert advertId");
 
-        return ResponseEntity.status(HttpStatus.OK).body(commentDTOList);
+            List<CommentReadDto> commentDTOList = commentService.findAllCommentsForAdvert(advertId);
+
+            LOGGER.debug("In findAllCommentsToAdvert received GET get all comments successfully forAdvert with id {} ", advertId);
+
+            return ResponseEntity.status(HttpStatus.OK).body(commentDTOList);
+
+        } catch (Exception exception) {
+
+            LOGGER.error("Error finding all Comments : {} ", exception);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
+
+        }
     }
-    /**
-     Delete    http://localhost:8080/v1.0/comments/1
-     */
-    @DeleteMapping ("/{commentId}")
-    public ResponseEntity<?> deleteComment(@PathVariable("commentId") Long commentId) {
 
-        commentService.deleteComment(commentId);
 
-        LOGGER.debug("In deleteComment received DELETE Comment delete successfully with id {} ", commentId);
+        /**
+         * Delete    http://localhost:8080/v1.0/comments/1
+         */
+        @DeleteMapping("/{commentId}")
+        public ResponseEntity<?> deleteComment (@PathVariable("commentId") Long commentId){
 
-       return ResponseEntity.status(HttpStatus.OK).body("The Comment has deleted successfully");
+            try {
+                if (commentId == null)
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please insert commentId");
+
+                commentService.deleteComment(commentId);
+
+                LOGGER.debug("In deleteComment received DELETE Comment delete successfully with id {} ", commentId);
+
+                return ResponseEntity.status(HttpStatus.OK).body("The Comment has deleted successfully");
+            } catch (ResourceNotFoundException exception) {
+
+                LOGGER.error("Comment not found with id : '{}'", commentId, exception);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+
+            } catch (Exception exception) {
+
+                LOGGER.error("Unexpected error during deleting the comment with id {}", commentId, exception);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
+
+            }
+        }
+
     }
-
-}
