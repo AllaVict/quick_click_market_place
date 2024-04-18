@@ -14,14 +14,12 @@ import quick.click.commons.exeptions.RegistrationException;
 import quick.click.commons.exeptions.AuthorizationException;
 import quick.click.core.domain.dto.AdvertCreateDto;
 import quick.click.core.domain.dto.AdvertReadDto;
-import quick.click.core.domain.dto.CommentCreatingDto;
 import quick.click.core.service.AdvertRegistrationService;
 import quick.click.security.commons.model.AuthenticatedUser;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static quick.click.config.factory.AdvertDtoFactory.createAdvertCreateDto;

@@ -11,14 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import quick.click.commons.exeptions.AuthorizationException;
 import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.config.factory.WithMockAuthenticatedUser;
 import quick.click.core.controller.CommentController;
-import quick.click.core.domain.dto.AdvertCreateDto;
 import quick.click.core.domain.dto.CommentCreatingDto;
 import quick.click.core.domain.dto.CommentEditingDto;
 import quick.click.core.domain.dto.CommentReadDto;
@@ -40,7 +38,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static quick.click.commons.constants.ApiVersion.VERSION_1_0;
-import static quick.click.commons.constants.Constants.Endpoints.ADVERTS_URL;
 import static quick.click.commons.constants.Constants.Endpoints.COMMENTS_URL;
 import static quick.click.config.factory.CommentDtoFactory.*;
 import static quick.click.config.factory.CommentDtoFactory.createCommentCreatingDto;
@@ -94,7 +91,6 @@ class CommentControllerIntegrationTest {
         void testRegisterComment_ShouldReturnComment() throws Exception {
             given(commentService.registerComment(anyLong(), any(CommentCreatingDto.class), any(AuthenticatedUser.class)))
                     .willReturn(commentReadDto);
-            ;
 
             mockMvc.perform(post(VERSION_1_0 + COMMENTS_URL + "/" + ADVERT_ID)
                             .with(csrf())
