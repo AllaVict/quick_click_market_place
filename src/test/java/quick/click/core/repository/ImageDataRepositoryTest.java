@@ -22,12 +22,6 @@ class ImageDataRepositoryTest {
     @Autowired
     private ImageDataRepository imageDataRepository;
 
-//    @Test    void testFindAllByAdvertId() {    }
-//    @Test    void testFindByIdAndAdvertId() {    }
-//    @Test    void testSaveImage() {    }
-//    @Test    void testDeleteImage() {    }
-
-
     @Test
     void testFindAllByAdvertId() {
         // Setup data
