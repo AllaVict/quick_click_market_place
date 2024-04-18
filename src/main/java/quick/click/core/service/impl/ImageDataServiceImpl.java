@@ -66,7 +66,7 @@ public class ImageDataServiceImpl implements ImageDataService {
 
         LOGGER.info("In uploadImageToAdvert Uploading image to Advert with id: {}", advertId);
 
-        return imageRepository.save(imageData);
+        return imageRepository.saveAndFlush(imageData);
     }
 
     @Override
@@ -82,13 +82,13 @@ public class ImageDataServiceImpl implements ImageDataService {
     }
 
     @Override
-    public void deleteImageDataListToAdvert(Long advertId) {
-        List<ImageData> listToDelete = imageRepository.findAllByAdvertId(advertId);
-        if (!listToDelete.isEmpty()){
-            for (int i=0; i < listToDelete.size(); i++) {
-                imageRepository.deleteById(listToDelete.get(i).getId());
-            }
+    public ImageData findImageByIdAndByAdvertId(Long imageId, Long advertId) {
+
+        ImageData imageData = imageRepository.findByIdAndAdvertId(imageId, advertId).orElseThrow();
+        if (!ObjectUtils.isEmpty(imageData)) {
+            decompressImageData(imageData);
         }
+        return imageData;
     }
 
     @Override
@@ -99,6 +99,17 @@ public class ImageDataServiceImpl implements ImageDataService {
 
     }
 
+    //====================================================================
+
+    @Override
+    public void deleteImageDataListToAdvert(Long advertId) {
+        List<ImageData> listToDelete = imageRepository.findAllByAdvertId(advertId);
+        if (!listToDelete.isEmpty()){
+            for (int i=0; i < listToDelete.size(); i++) {
+                imageRepository.deleteById(listToDelete.get(i).getId());
+            }
+        }
+    }
     public String uploadImageToFileSystem(MultipartFile file, ImageData imageData) throws IOException {
         final String filePath;
         if(System.getProperty("os.name") == "WINDOWS"){
@@ -114,15 +125,6 @@ public class ImageDataServiceImpl implements ImageDataService {
         return null;
     }
 
-    @Override
-    public ImageData findImageToAdvert(Long advertId) {
-
-        ImageData imageData = imageRepository.findAllByAdvertId(advertId).stream().findFirst().orElseThrow();
-        if (!ObjectUtils.isEmpty(imageData)) {
-            decompressImageData(imageData);
-        }
-        return imageData;
-    }
 
     @Override
     public byte[] downloadImageFromFileSystem(Long advertId) throws IOException  {

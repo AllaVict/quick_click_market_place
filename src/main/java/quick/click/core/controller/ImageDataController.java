@@ -34,6 +34,7 @@ public class ImageDataController {
     /**
      POST    http://localhost:8080/v1.0/images/1
      save several images in database as byte and in a folder for the given advert id
+     зберегти кілька зображень у базі даних у вигляді байтів і в папці для вказаного ідентифікатора оголошення
      */
     @PostMapping("/{advertId}")
     public ResponseEntity<?> uploadImagesListToAdvert(@PathVariable("advertId") Long advertId,
@@ -61,7 +62,7 @@ public class ImageDataController {
      */
 
     @GetMapping("/{advertId}")
-    public ResponseEntity<?> getAllImagesToAdvert(@PathVariable("advertId") Long advertId){
+    public ResponseEntity<?> findAllImagesToAdvert(@PathVariable("advertId") Long advertId){
         List<byte[]> imagesList = imageDataService.findByteListToAdvert(advertId);
 
         LOGGER.debug("In getAllImagesToAdvert received GET all files for advert with id {} ", advertId);
@@ -70,74 +71,91 @@ public class ImageDataController {
     }
 
     /**
-     DELETE    http://localhost:8080/v1.0/images/1
-     delete all images for the given advert id and given image id
-     */
-    @DeleteMapping("/{advertId}")
-    public ResponseEntity<?> deleteAllImagesByAdvertId(@PathVariable("advertId") Long advertId){
-        imageDataService.deleteImageDataListToAdvert(advertId);
-
-        LOGGER.debug("In deleteAllImagesByAdvertId received DELETE all images for advert with id : {} ", advertId);
-
-        return ResponseEntity.status(HttpStatus.OK).body("All Images has been deleted successfully.");
-    }
-
-    /**
-     DELETE    http://localhost:8080/v1.0/images/1/2
-     delete an image for the given advert id and given image id
-     */
-    @DeleteMapping("/{imageId}")
-    public ResponseEntity<?> deleteImageByIdAndByAdvertId(@PathVariable("advertId") Long advertId,
-                                                          @PathVariable("imageId") Long imageId){
-
-        imageDataService.deleteImageByIdAndByAdvertId(advertId, imageId);
-
-        LOGGER.debug("In deleteImageById received DELETE image with id : {} ", imageId);
-
-        return ResponseEntity.status(HttpStatus.OK).body("Image has been deleted successfully.");
-    }
-
-    /**
-     POST    http://localhost:8080/v1.0/images/image/1
-     */
-    @PostMapping("/image/{advertId}")
-    public ResponseEntity<?>  uploadImageToAdvert(@PathVariable("advertId") Long advertId,
-                                                  @RequestParam("file") MultipartFile file) throws IOException {
-
-        imageDataService.uploadImageToAdvert(advertId, file);
-
-        LOGGER.debug("In uploadImagesListToAdvert received POST file is uploaded successfully with id {} ", advertId);
-
-        return ResponseEntity.status(HttpStatus.OK).body("File is uploaded successfully.");
-
-    }
-    /**
      GET http://localhost:8080/v1.0/images/image/1
-     get a image from database as byte[] for the given advert id
+     get a image from database as byte[] for the given imageId and advert id
      */
-    @GetMapping("/image/{advertId}")
-    public ResponseEntity<?>  getImageToAdvert(@PathVariable("advertId") Long advertId) throws IOException {
+    @GetMapping("/{advertId}/{imageId}")
+    public ResponseEntity<?>  findImageByIdAndByAdvertId(@PathVariable("advertId") Long advertId,
+                                               @PathVariable("imageId") Long imageId) throws IOException {
 
-        byte[] image = imageDataService.findImageToAdvert(advertId).getImageData();
+        byte[] image = imageDataService.findImageByIdAndByAdvertId(imageId, advertId).getImageData();
 
         LOGGER.debug("In uploadImagesListToAdvert received Get a file for advert with id {} ", advertId);
 
         return ResponseEntity.status(HttpStatus.OK).body(image);
 
     }
+
     /**
-     GET  http://localhost:8080/v1.0/images/file_system/1
-     get a image from a folder as byte[] for the given advert id
+     DELETE    http://localhost:8080/v1.0/images/1/2
+     delete an image for the given advert id and given image id
      */
+    @DeleteMapping("/{advertId}/{imageId}")
+    public ResponseEntity<?> deleteImageByIdAndByAdvertId(@PathVariable("imageId") Long imageId,
+                                                          @PathVariable("advertId") Long advertId){
 
-    @GetMapping("/file_system/{advertId}")
-    public ResponseEntity<?>  downloadImageFromFileSystem(@PathVariable("advertId") Long advertId) throws IOException {
+        imageDataService.deleteImageByIdAndByAdvertId(imageId,advertId);
 
-        byte[] image = imageDataService.downloadImageFromFileSystem(advertId);
+        LOGGER.debug("In deleteImageById received DELETE image with id : {} ", imageId);
 
-        LOGGER.debug("In uploadImagesListToAdvert received GET a file for advert with id {} ", advertId);
-
-        return ResponseEntity.status(HttpStatus.OK).body(image);
-
+        return ResponseEntity.status(HttpStatus.OK).body("Image has been deleted successfully.");
     }
+
+
+    //    /**
+//     DELETE    http://localhost:8080/v1.0/images/1/2
+//     delete all images for the given advert id and given image id
+//     */
+//    @DeleteMapping("/{advertId}")
+//    public ResponseEntity<?> deleteAllImagesByAdvertId(@PathVariable("advertId") Long advertId){
+//        imageDataService.deleteImageDataListToAdvert(advertId);
+//
+//        LOGGER.debug("In deleteAllImagesByAdvertId received DELETE all images for advert with id : {} ", advertId);
+//
+//        return ResponseEntity.status(HttpStatus.OK).body("All Images has been deleted successfully.");
+//    }
+//    /**
+//     POST    http://localhost:8080/v1.0/images/image/1
+//     */
+//    @PostMapping("/image/{advertId}")
+//    public ResponseEntity<?>  uploadImageToAdvert(@PathVariable("advertId") Long advertId,
+//                                                  @RequestParam("file") MultipartFile file) throws IOException {
+//
+//        imageDataService.uploadImageToAdvert(advertId, file);
+//
+//        LOGGER.debug("In uploadImagesListToAdvert received POST file is uploaded successfully with id {} ", advertId);
+//
+//        return ResponseEntity.status(HttpStatus.OK).body("File is uploaded successfully.");
+//
+//    }
+//    /**
+//     GET http://localhost:8080/v1.0/images/image/1
+//     get a image from database as byte[] for the given advert id
+//     */
+//    @GetMapping("/image/{advertId}")
+//    public ResponseEntity<?>  getImageToAdvert(@PathVariable("advertId") Long advertId) throws IOException {
+//
+//        byte[] image = imageDataService.findImageToAdvert(advertId).getImageData();
+//
+//        LOGGER.debug("In uploadImagesListToAdvert received Get a file for advert with id {} ", advertId);
+//
+//        return ResponseEntity.status(HttpStatus.OK).body(image);
+//
+//    }
+//    /**
+//     GET  http://localhost:8080/v1.0/images/file_system/1
+//     get a image from a folder as byte[] for the given advert id
+//     */
+//
+//    @GetMapping("/file_system/{advertId}")
+//    public ResponseEntity<?>  downloadImageFromFileSystem(@PathVariable("advertId") Long advertId) throws IOException {
+//
+//        byte[] image = imageDataService.downloadImageFromFileSystem(advertId);
+//
+//        LOGGER.debug("In uploadImagesListToAdvert received GET a file for advert with id {} ", advertId);
+//
+//        return ResponseEntity.status(HttpStatus.OK).body(image);
+//
+//    }
+
 }
