@@ -60,7 +60,7 @@ class AdvertRegistrationControllerIntegrationTest {
     @Autowired
     private WebApplicationContext context;
 
-    private AuthenticatedUser authenticatedUser  = mock(AuthenticatedUser.class);
+    private AuthenticatedUser authenticatedUser = mock(AuthenticatedUser.class);
 
     @BeforeEach
     public void setupMockMvc() {
@@ -82,7 +82,7 @@ class AdvertRegistrationControllerIntegrationTest {
 
         @Test
         void testRegisterAdvert_ShouldReturnAdvertReadDTO() throws Exception {
-            given(advertRegistrationService.registerAdvert(advertCreateDto,authenticatedUser))
+            given(advertRegistrationService.registerAdvert(any(AdvertCreateDto.class), any(AuthenticatedUser.class)))
                     .willReturn(advertReadDto);
 
             mockMvc.perform(post(VERSION_1_0 + ADVERTS_URL)
@@ -129,14 +129,14 @@ class AdvertRegistrationControllerIntegrationTest {
         }
 
         @Test
-        void  testRegisterAdvert_UnauthorizedUser() throws Exception {
+        void testRegisterAdvert_UnauthorizedUser() throws Exception {
             given(advertRegistrationService.registerAdvert(any(AdvertCreateDto.class), any(AuthenticatedUser.class)))
                     .willThrow(new AuthorizationException("Unauthorized access"));
 
             mockMvc.perform(post(VERSION_1_0 + ADVERTS_URL)
-                    .with(csrf())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(new ObjectMapper().writeValueAsString(advertCreateDto)))
+                            .with(csrf())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(new ObjectMapper().writeValueAsString(advertCreateDto)))
                     .andDo(print())
                     .andExpect(status().isForbidden());
         }

@@ -128,7 +128,7 @@ public class AdvertEditingControllerIntegrationTest {
 
         @Test
         void testEditAdvert_ShouldnReturn400Status_WhenInvalidRequested() throws Exception {
-            mockMvc.perform(put(VERSION_1_0 + ADVERTS_URL +"/" + ADVERT_ID+ "/invalid")
+            mockMvc.perform(put(VERSION_1_0 + ADVERTS_URL + "/" + ADVERT_ID + "/invalid")
                             .with(csrf())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(advertEditingDto)))
@@ -177,10 +177,10 @@ public class AdvertEditingControllerIntegrationTest {
         @Test
         void testEditAdvert_ShouldnReturn400Status_WhenInvalidRequested() throws Exception {
 
-            mockMvc.perform(put(VERSION_1_0 + ADVERTS_URL + "/archive/" + ADVERT_ID+ "/invalid")
+            mockMvc.perform(put(VERSION_1_0 + ADVERTS_URL + "/archive/" + ADVERT_ID + "/invalid")
                             .with(csrf())
                             .contentType(MediaType.APPLICATION_JSON))
-                        .andDo(print())
+                    .andDo(print())
                     .andExpect(status().isNotFound());
         }
 
@@ -240,7 +240,7 @@ public class AdvertEditingControllerIntegrationTest {
         @Test
         void testDeleteAdvert_UnauthorizedUser() throws Exception {
 
-           doThrow(new AuthorizationException("Unauthorized access"))
+            doThrow(new AuthorizationException("Unauthorized access"))
                     .when(advertEditingService).deleteAdvert(any(Long.class), any(AuthenticatedUser.class));
 
             mockMvc.perform(delete(VERSION_1_0 + ADVERTS_URL + "/" + ADVERT_ID)

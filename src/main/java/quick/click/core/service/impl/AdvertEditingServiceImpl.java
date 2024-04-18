@@ -49,12 +49,12 @@ public class AdvertEditingServiceImpl implements AdvertEditingService {
      * Edits an existing advert based on the provided editing details and the authenticated user's information.
      * Only the owner of the advert can edit it.
      *
-     * @param advertId The ID of the advert to edit.
-     * @param advertEditingDto The data transfer object containing the editing details.
+     * @param advertId          The ID of the advert to edit.
+     * @param advertEditingDto  The data transfer object containing the editing details.
      * @param authenticatedUser The currently authenticated user attempting to edit the advert.
      * @return An {@link AdvertReadDto} containing the updated advert details.
      * @throws ResourceNotFoundException If the advert to be edited is not found.
-     * @throws AuthorizationException If the authenticated user does not own the advert or is unauthorized.
+     * @throws AuthorizationException    If the authenticated user does not own the advert or is unauthorized.
      */
     @Override
     public AdvertReadDto editAdvert(final Long advertId,
@@ -82,11 +82,11 @@ public class AdvertEditingServiceImpl implements AdvertEditingService {
      * Archives an existing advert based on the authenticated user's information.
      * Only the owner of the advert can archive it.
      *
-     * @param advertId The ID of the advert to archive.
+     * @param advertId          The ID of the advert to archive.
      * @param authenticatedUser The currently authenticated user attempting to archive the advert.
      * @return An {@link AdvertReadDto} containing the archived advert details.
      * @throws ResourceNotFoundException If the advert to be archived is not found.
-     * @throws AuthorizationException If the authenticated user does not own the advert or is unauthorized.
+     * @throws AuthorizationException    If the authenticated user does not own the advert or is unauthorized.
      */
     @Override
     public AdvertReadDto archiveAdvert(final Long advertId,
@@ -110,10 +110,10 @@ public class AdvertEditingServiceImpl implements AdvertEditingService {
      * Deletes an existing advert based on the authenticated user's information.
      * Only the owner of the advert can delete it.
      *
-     * @param advertId The ID of the advert to delete.
+     * @param advertId          The ID of the advert to delete.
      * @param authenticatedUser The currently authenticated user attempting to delete the advert.
      * @throws ResourceNotFoundException If the advert to be deleted is not found.
-     * @throws AuthorizationException If the authenticated user does not own the advert or is unauthorized.
+     * @throws AuthorizationException    If the authenticated user does not own the advert or is unauthorized.
      */
     @Override
     public void deleteAdvert(final Long advertId,

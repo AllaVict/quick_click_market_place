@@ -131,7 +131,8 @@ class AdvertSearchServiceImplTest {
 
         @Test
         void testFindAllAdverts_DatabaseError() {
-            when(advertRepository.findAll()).thenThrow(new DataAccessException("Data access exception") {});
+            when(advertRepository.findAll()).thenThrow(new DataAccessException("Data access exception") {
+            });
 
             Exception exception = assertThrows(DataAccessException.class, advertSearchService::findAllAdverts);
 
@@ -180,7 +181,8 @@ class AdvertSearchServiceImplTest {
 
         @Test
         void testFindAllByOrderByCreatedDateDesc_DatabaseError() {
-            when(advertRepository.findAllByOrderByCreatedDateDesc()).thenThrow(new DataAccessException("Data access exception") {});
+            when(advertRepository.findAllByOrderByCreatedDateDesc()).thenThrow(new DataAccessException("Data access exception") {
+            });
 
             Exception exception = assertThrows(DataAccessException.class, advertSearchService::findAllByOrderByCreatedDateDesc);
 
@@ -204,6 +206,7 @@ class AdvertSearchServiceImplTest {
             assertTrue(result.isEmpty());
         }
     }
+
     @Nested
     @DisplayName("When find all adverts by user ")
     class FindAllAdvertsByUserTests {
@@ -246,7 +249,8 @@ class AdvertSearchServiceImplTest {
             when(authenticatedUser.getEmail()).thenReturn(EMAIL);
             when(userRepository.findUserByEmail(EMAIL)).thenReturn(Optional.of(user));
             when(advertRepository.findAllByUserOrderByCreatedDateDesc(any(User.class)))
-                    .thenThrow(new DataAccessException("Data access exception") {});
+                    .thenThrow(new DataAccessException("Data access exception") {
+                    });
 
             Exception exception = assertThrows(DataAccessException.class,
                     () -> advertSearchService.findAllAdvertsByUser(authenticatedUser));

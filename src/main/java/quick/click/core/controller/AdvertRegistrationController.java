@@ -9,9 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import quick.click.commons.exeptions.AdvertRegistrationException;
+import quick.click.commons.exeptions.RegistrationException;
 import quick.click.commons.exeptions.AuthorizationException;
-import org.springframework.web.bind.annotation.*;
 import quick.click.core.domain.dto.AdvertCreateDto;
 import quick.click.core.domain.dto.AdvertReadDto;
 import quick.click.core.service.AdvertRegistrationService;
@@ -49,7 +48,7 @@ public class AdvertRegistrationController {
      * @param authenticatedUser The currently authenticated user trying to create the advert.
      * @return A ResponseEntity containing the created AdvertReadDto or an error message.
      * @throws AuthorizationException      If the authenticated user does not have permission to create an advert.
-     * @throws AdvertRegistrationException If there are issues during the registration process.
+     * @throws RegistrationException If there are issues during the registration process.
      * @throws Exception                   For any other unexpected errors.
      */
     @PostMapping()
@@ -65,7 +64,7 @@ public class AdvertRegistrationController {
 
             final AdvertReadDto advertReadDto = advertRegistrationService.registerAdvert(advertCreateDto, authenticatedUser);
             LOGGER.debug("In registerAdvert received POST advert register successfully with id: {}, for user: {}",
-                    authenticatedUser.getEmail(), authenticatedUser.getEmail());
+                    advertReadDto.getId(), authenticatedUser.getEmail());
             return ResponseEntity.status(HttpStatus.CREATED).body(advertReadDto);
 
         } catch (AuthorizationException exception) {
@@ -73,7 +72,7 @@ public class AdvertRegistrationController {
             LOGGER.error("Unauthorized access attempt by user {}", authenticatedUser.getEmail(), exception);
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized access");
 
-        } catch (AdvertRegistrationException exception) {
+        } catch (RegistrationException exception) {
 
             LOGGER.error("Error during advert registration: {}", exception.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());

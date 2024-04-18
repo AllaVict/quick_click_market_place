@@ -11,15 +11,16 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.core.converter.TypeConverter;
-import quick.click.core.domain.dto.AdvertReadDto;
 import quick.click.core.domain.dto.CommentCreatingDto;
 import quick.click.core.domain.dto.CommentEditingDto;
 import quick.click.core.domain.dto.CommentReadDto;
 import quick.click.core.domain.model.Advert;
 import quick.click.core.domain.model.Comment;
+import quick.click.core.domain.model.User;
 import quick.click.core.repository.AdvertRepository;
 import quick.click.core.repository.CommentRepository;
 import quick.click.core.repository.UserRepository;
+import quick.click.security.commons.model.AuthenticatedUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,7 @@ import static quick.click.config.factory.AdvertFactory.createAdvertOne;
 import static quick.click.config.factory.CommentDtoFactory.*;
 import static quick.click.config.factory.CommentFactory.createCommentList;
 import static quick.click.config.factory.CommentFactory.createCommentOne;
+import static quick.click.config.factory.UserFactory.createUser;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("CommentServiceImpl")
@@ -56,10 +58,16 @@ class CommentServiceImplTest {
 
     private static final long ADVERT_ID = 101L;
 
+    private static final String EMAIL = "test@example.com";
+
     private List<Comment> commentList;
+
     private List<CommentReadDto> commentReadDtoList;
+
     private Comment comment;
+
     private CommentReadDto archiveCommentDTO;
+
     private CommentReadDto commentReadDto;
 
     private CommentCreatingDto commentCreatingDto;
@@ -67,6 +75,10 @@ class CommentServiceImplTest {
     private CommentEditingDto commentEditingDto;
 
     private Advert advert;
+
+    private AuthenticatedUser authenticatedUser = mock(AuthenticatedUser.class);
+
+    private User user;
 
     @BeforeEach
     public void setUp() {
@@ -80,6 +92,7 @@ class CommentServiceImplTest {
         commentEditingDto = createCommentEditingDto();
         commentCreatingDto = createCommentCreatingDto();
         advert = createAdvertOne();
+        user = createUser();
     }
 
     @Nested
@@ -151,12 +164,13 @@ class CommentServiceImplTest {
     class RegisterCommentTests {
         @Test
         void testRegisterComment_ShouldReturnComment() {
+            when(authenticatedUser.getEmail()).thenReturn(EMAIL);
+            when(userRepository.findUserByEmail(EMAIL)).thenReturn(Optional.of(user));
             when(commentCreatingDtoCommentTypeConverter.convert(commentCreatingDto)).thenReturn(comment);
             when(commentRepository.saveAndFlush(comment)).thenReturn(comment);
-            when(advertRepository.findById(ADVERT_ID)).thenReturn(Optional.ofNullable(advert));
             when(commentToCommentReadDtoTypeConverter.convert(comment)).thenReturn(commentReadDto);
 
-            CommentReadDto result = commentService.registerComment(ADVERT_ID,commentCreatingDto);
+            CommentReadDto result = commentService.registerComment(ADVERT_ID,commentCreatingDto,authenticatedUser);
 
             assertEquals(commentReadDto, result);
             assertThat(result.getMessage()).isEqualTo(commentReadDto.getMessage());
@@ -168,7 +182,7 @@ class CommentServiceImplTest {
         void testRegisterComment_shouldThrowException() {
             commentReadDto = null;
             assertThrows(Exception.class,
-                    () -> commentService.registerComment(ADVERT_ID,commentCreatingDto));
+                    () -> commentService.registerComment(ADVERT_ID,commentCreatingDto,authenticatedUser));
         }
     }
 
@@ -178,11 +192,13 @@ class CommentServiceImplTest {
     class EditCommentTests {
         @Test
         void testEditComment_shouldReturnCommentWithArchiveStatus() {
-            when(commentRepository.findById(COMMENT_ID)).thenReturn(Optional.ofNullable(comment));
-            when(commentRepository.saveAndFlush(comment)).thenReturn(comment);
+            when(authenticatedUser.getEmail()).thenReturn(EMAIL);
+            when(userRepository.findUserByEmail(EMAIL)).thenReturn(Optional.of(user));
+            when(commentRepository.findByIdAndUserId(anyLong(),anyLong())).thenReturn(Optional.ofNullable(comment));
+            when(commentRepository.saveAndFlush(any(Comment.class))).thenReturn(comment);
             when(commentToCommentReadDtoTypeConverter.convert(comment)).thenReturn(archiveCommentDTO);
 
-            CommentReadDto result = commentService.editComment(COMMENT_ID, commentEditingDto);
+            CommentReadDto result = commentService.editComment(COMMENT_ID, commentEditingDto,authenticatedUser);
 
             assertEquals(archiveCommentDTO, result);
             assertThat(result.getMessage()).isEqualTo(commentReadDto.getMessage());
@@ -193,8 +209,10 @@ class CommentServiceImplTest {
 
         @Test
         void testEditComment_shouldThrowException() {
+            when(authenticatedUser.getEmail()).thenReturn(EMAIL);
+            when(userRepository.findUserByEmail(EMAIL)).thenReturn(Optional.of(user));
             assertThrows(ResourceNotFoundException.class,
-                    () -> commentService.editComment(COMMENT_ID, commentEditingDto));
+                    () -> commentService.editComment(COMMENT_ID, commentEditingDto,authenticatedUser));
 
         }
 
@@ -204,18 +222,22 @@ class CommentServiceImplTest {
     @DisplayName("When Delete a Comment")
     class DeleteCommentTests {
         @Test
-        void testDeleteComment_shouldReturnBaseFee() {
-            when(commentRepository.findById(COMMENT_ID)).thenReturn(Optional.of(comment));
-            commentService.deleteComment(COMMENT_ID);
+        void testDeleteComment_shouldReturnComment() {
+            when(authenticatedUser.getEmail()).thenReturn(EMAIL);
+            when(userRepository.findUserByEmail(EMAIL)).thenReturn(Optional.of(user));
+            when(commentRepository.findByIdAndUserId(anyLong(),anyLong())).thenReturn(Optional.ofNullable(comment));
+
+            commentService.deleteComment(COMMENT_ID,authenticatedUser);
             verify(commentRepository, times(1)).delete(comment);
 
         }
 
         @Test
         void testDeleteComment_shouldThrowException() {
-
+            when(authenticatedUser.getEmail()).thenReturn(EMAIL);
+            when(userRepository.findUserByEmail(EMAIL)).thenReturn(Optional.of(user));
             assertThrows(ResourceNotFoundException.class,
-                    () -> commentService.deleteComment(COMMENT_ID));
+                    () -> commentService.deleteComment(COMMENT_ID,authenticatedUser));
             verify(commentRepository, times(0)).delete(comment);
 
         }

@@ -43,7 +43,7 @@ class AdvertSearchControllerTest {
     @Spy
     private List<AdvertReadDto> advertReadDtoList;
 
-    private AuthenticatedUser authenticatedUser  = mock(AuthenticatedUser.class);
+    private AuthenticatedUser authenticatedUser = mock(AuthenticatedUser.class);
 
     private static final String EMAIL = "test@example.com";
 
