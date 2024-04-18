@@ -71,7 +71,7 @@ public class ImageDataController {
     }
 
     /**
-     GET http://localhost:8080/v1.0/images/image/1
+     GET http://localhost:8080/v1.0/images/1/2
      get a image from database as byte[] for the given imageId and advert id
      */
     @GetMapping("/{advertId}/{imageId}")
