@@ -1,5 +1,7 @@
 package quick.click.core.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -21,8 +23,14 @@ import static quick.click.commons.constants.ApiVersion.VERSION_1_0;
 import static quick.click.commons.constants.Constants.Endpoints.COMMENTS_URL;
 import static quick.click.core.controller.CommentController.BASE_URL;
 
+/**
+ * Controller for managing comments on advertisements. Handles CRUD operations on comments.
+ *
+ * @author Alla Borodina
+ */
 @RestController
 @RequestMapping(BASE_URL)
+@Tag(name = "Comment Controller", description = "Comment API")
 public class CommentController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CommentController.class);
@@ -41,7 +49,16 @@ public class CommentController {
      * "message": "Das ist ein gutes Auto",
      * }
      */
+    /**
+     * Registers a new comment under an advertisement.
+     *
+     * @param advertId the identifier of the advertisement to which the comment is to be attached
+     * @param commentDTO the data transfer object containing the comment details
+     * @param authenticatedUser the currently authenticated user attempting to create a comment
+     * @return ResponseEntity containing the created comment or an error message
+     */
     @PostMapping("/{advertId}")
+    @Operation(summary = "Create a comment with a given request body")
     public ResponseEntity<?> registerComment(@PathVariable("advertId") final Long advertId,
                                              @Valid @RequestBody final CommentCreatingDto commentDTO,
                                              @AuthenticationPrincipal final AuthenticatedUser authenticatedUser) {
@@ -81,10 +98,13 @@ public class CommentController {
     }
 
     /**
-     * GET    http://localhost:8080/v1.0/comments/1
+     * Retrieves all comments associated with a given advertisement.
+     *
+     * @param advertId the identifier of the advertisement
+     * @return ResponseEntity containing a list of comments or an error message
      */
-
     @GetMapping("/{advertId}")
+    @Operation(summary = "Find all comments by authorized user")
     public ResponseEntity<?> findAllCommentsToAdvert(@PathVariable("advertId") Long advertId) {
 
         try {
@@ -108,9 +128,14 @@ public class CommentController {
 
 
     /**
-     * Delete    http://localhost:8080/v1.0/comments/1
+     * Deletes a comment based on its identifier.
+     *
+     * @param commentId the identifier of the comment to delete
+     * @param authenticatedUser the currently authenticated user attempting to delete the comment
+     * @return ResponseEntity containing the status of the deletion
      */
     @DeleteMapping("/{commentId}")
+    @Operation(summary = "Delete a comment by id")
     public ResponseEntity<?> deleteComment(@PathVariable("commentId") Long commentId,
                                            @AuthenticationPrincipal final AuthenticatedUser authenticatedUser) {
 

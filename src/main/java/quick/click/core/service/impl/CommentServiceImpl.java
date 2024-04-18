@@ -20,6 +20,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Service layer for managing comments on advertisements.
+ *
+ * @author Alla Borodina
+ */
 @Service
 public class CommentServiceImpl implements CommentService {
 
@@ -33,6 +38,15 @@ public class CommentServiceImpl implements CommentService {
 
     private final TypeConverter<Comment, CommentReadDto> typeConverterCommentReadDto;
 
+    /**
+     * Constructs a new CommentServiceImpl with required repositories and converters.
+     *
+     * @param commentRepository               Repository for comment data access
+     * @param advertRepository                Repository for advert data access
+     * @param userRepository                  Repository for user data access
+     * @param typeConverterCommentCreatingDto Converter from CommentCreatingDto to Comment
+     * @param typeConverterCommentReadDto     Converter from Comment to CommentReadDto
+     */
     public CommentServiceImpl(CommentRepository commentRepository,
                               AdvertRepository advertRepository,
                               UserRepository userRepository,
@@ -45,7 +59,15 @@ public class CommentServiceImpl implements CommentService {
         this.typeConverterCommentReadDto = typeConverterCommentReadDto;
     }
 
-
+    /**
+     * Registers a comment for a specified advertisement.
+     *
+     * @param advertId           ID of the advertisement to which the comment is to be added
+     * @param commentCreatingDto Data transfer object containing comment creation details
+     * @param authenticatedUser  Authenticated user performing the operation
+     * @return CommentReadDto object after successful registration
+     * @throws ResourceNotFoundException if no advertisement is found for the given ID
+     */
     @Override
     public CommentReadDto registerComment(final Long advertId,
                                           final CommentCreatingDto commentCreatingDto,
@@ -63,7 +85,15 @@ public class CommentServiceImpl implements CommentService {
         return commentReadDto;
     }
 
-
+    /**
+     * Edits an existing comment.
+     *
+     * @param commentId         ID of the comment to be updated
+     * @param commentEditingDto Data transfer object containing new comment details
+     * @param authenticatedUser Authenticated user performing the operation
+     * @return CommentReadDto object after successful update
+     * @throws ResourceNotFoundException if no comment is found for the given commentId and userId
+     */
     @Override
     public CommentReadDto editComment(final Long commentId,
                                       final CommentEditingDto commentEditingDto,
@@ -71,18 +101,24 @@ public class CommentServiceImpl implements CommentService {
         final Long userId = getUserIdByAuthenticatedUser(authenticatedUser);
         final Optional<Comment> commentForUpdate = commentRepository.findByIdAndUserId(commentId, userId);
 
-        if(commentForUpdate.isEmpty())
+        if (commentForUpdate.isEmpty())
             commentForUpdate.orElseThrow(() -> new ResourceNotFoundException("Comment", "id", commentId));
 
         LOGGER.debug("In editComment Updating success advert with id {}", commentId);
 
-        return  commentForUpdate
+        return commentForUpdate
                 .map(comment -> this.updateCommentData(comment, commentEditingDto))
                 .map(commentRepository::saveAndFlush)
                 .map(typeConverterCommentReadDto::convert)
                 .orElseThrow();
     }
 
+    /**
+     * Finds all comments associated with a specified advert.
+     *
+     * @param advertId ID of the advert
+     * @return List of CommentReadDto objects
+     */
     @Override
     public List<CommentReadDto> findAllCommentsForAdvert(final Long advertId) {
 
@@ -95,14 +131,29 @@ public class CommentServiceImpl implements CommentService {
         return comments;
     }
 
+    /**
+     * Finds a comment by its ID.
+     *
+     * @param commentId ID of the comment
+     * @return CommentReadDto if the comment is found
+     * @throws ResourceNotFoundException if the comment is not found
+     */
     @Override
     public CommentReadDto findCommentById(final Long commentId) {
-       final Comment foundComment = commentRepository.findById(commentId)
-               .orElseThrow(() -> new ResourceNotFoundException("Comment", "id", commentId));
+        final Comment foundComment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Comment", "id", commentId));
         LOGGER.debug("In deleteComment Deleting success Comment with id {}", commentId);
         return typeConverterCommentReadDto.convert(foundComment);
     }
 
+
+    /**
+     * Deletes a comment by its ID.
+     *
+     * @param commentId         ID of the comment to be deleted
+     * @param authenticatedUser Authenticated user performing the operation
+     * @throws ResourceNotFoundException if the comment is not found or if the user does not have permission to delete the comment
+     */
     @Override
     public void deleteComment(final Long commentId,
                               final AuthenticatedUser authenticatedUser) {
@@ -140,6 +191,7 @@ public class CommentServiceImpl implements CommentService {
                 .getId();
 
     }
+
     private Comment updateCommentData(final Comment comment, final CommentEditingDto commentEditingDto) {
         comment.setId(commentEditingDto.getId());
         comment.setMessage(commentEditingDto.getMessage());

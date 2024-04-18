@@ -41,8 +41,6 @@ public class AdvertEditingController {
         this.advertEditingService = advertEditingService;
     }
 
-
-
     /**
      * Handles the request to update an existing advert. Validates the provided advert details and permissions
      * before applying the changes.
