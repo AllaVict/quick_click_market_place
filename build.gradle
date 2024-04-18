@@ -23,6 +23,7 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.5'
+    implementation 'net.minidev:json-smart:2.1.0'
 
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.postgresql:postgresql'
