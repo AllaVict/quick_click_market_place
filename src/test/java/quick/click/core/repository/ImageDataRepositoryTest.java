@@ -6,11 +6,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ImageDataRepositoryTest {
 
+
     @Test
-    void findByName() {
+    void testFindAllByAdvertId() {
     }
 
     @Test
-    void findAllByAdvertId() {
+    void testFindByIdAndAdvertId() {
     }
+    @Test
+    void testSaveImage() {
+    }
+    @Test
+    void testDeleteImage() {
+    }
+
 }
