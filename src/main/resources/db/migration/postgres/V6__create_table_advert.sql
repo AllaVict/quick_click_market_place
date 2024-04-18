@@ -19,6 +19,6 @@ CREATE TABLE adverts (
 );
 
 ALTER TABLE adverts ADD CONSTRAINT users_fk FOREIGN KEY (user_id) REFERENCES users(id);
--- ALTER TABLE adverts ADD CONSTRAINT file_ref_ad FOREIGN KEY (image_id) REFERENCES file_references(id);
+
 
 

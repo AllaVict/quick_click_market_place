@@ -42,7 +42,7 @@ class UserRegistrationServiceImplTest {
 
     private static final long USER_ID = 101L;
 
-    private static final String EMAIL =  "test@example.com";
+    private static final String EMAIL = "test@example.com";
 
     private static final String PASSWORD = "password";
 
@@ -92,7 +92,7 @@ class UserRegistrationServiceImplTest {
         }
 
         @Test
-        void testFindById_shouldReturnsNoUserThrowsException () {
+        void testFindById_shouldReturnsNoUserThrowsException() {
             when(userRepository.findById(USER_ID)).thenReturn(Optional.empty());
 
             assertThrows(ResourceNotFoundException.class, () -> userService.findById(USER_ID));
@@ -115,6 +115,7 @@ class UserRegistrationServiceImplTest {
             assertTrue(result);
             assertEquals(expectedResult, result);
         }
+
         @Test
         void testExistsByEmail_shouldReturnsFalseIfNoUser() {
 

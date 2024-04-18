@@ -154,26 +154,26 @@ class LoginControllerIntegrationTest {
     @Nested
     @DisplayName("When user Logout")
     class LogoutTests {
-            @Test
-            @WithMockAuthenticatedUser
-            void testLogout_withResponseOk() throws Exception {
-                given(SecurityContextHolder.getContext().getAuthentication().getName())
-                        .willReturn(EMAIL);
-                mockMvc.perform(post(BASE_URL + LOGOUT_URL)
-                                .with(csrf()))
-                        .andExpect(status().isOk())
-                        .andExpect(content().string(containsString("User logout successfully with username test@example.com")));
-            }
-
-            @Test
-            @WithAnonymousUser
-            void testLogout_noLoginWithResponseOk() throws Exception {
-               given(SecurityContextHolder.getContext().getAuthentication().getName())
-                       .willReturn("anonymousUser");
-                   mockMvc.perform(post(BASE_URL + LOGOUT_URL)
-                                .with(anonymous())
-                                .with(csrf()))
-                        .andExpect(unauthenticated());
-            }
+        @Test
+        @WithMockAuthenticatedUser
+        void testLogout_withResponseOk() throws Exception {
+            given(SecurityContextHolder.getContext().getAuthentication().getName())
+                    .willReturn(EMAIL);
+            mockMvc.perform(post(BASE_URL + LOGOUT_URL)
+                            .with(csrf()))
+                    .andExpect(status().isOk())
+                    .andExpect(content().string(containsString("User logout successfully with username test@example.com")));
         }
- }
+
+        @Test
+        @WithAnonymousUser
+        void testLogout_noLoginWithResponseOk() throws Exception {
+            given(SecurityContextHolder.getContext().getAuthentication().getName())
+                    .willReturn("anonymousUser");
+            mockMvc.perform(post(BASE_URL + LOGOUT_URL)
+                            .with(anonymous())
+                            .with(csrf()))
+                    .andExpect(unauthenticated());
+        }
+    }
+}

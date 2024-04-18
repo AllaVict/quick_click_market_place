@@ -20,7 +20,9 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 import quick.click.commons.constants.Constants;
 import quick.click.security.commons.utils.*;
 import quick.click.security.core.service.UserLoginService;
+
 import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
+
 @Configuration
 @EnableMethodSecurity
 @EnableWebSecurity
@@ -32,7 +34,7 @@ public class SecurityConfiguration {
 
     @Autowired
     public SecurityConfiguration(final UserLoginService userLoginService,
-                                 final TokenProvider tokenProvider){
+                                 final TokenProvider tokenProvider) {
         this.userLoginService = userLoginService;
         this.tokenProvider = tokenProvider;
     }
@@ -54,6 +56,7 @@ public class SecurityConfiguration {
     public AuthenticationManager authenticationManager(final AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
+
     @Bean
     public TokenAuthenticationFilter tokenAuthenticationFilter() {
         return new TokenAuthenticationFilter(tokenProvider, userLoginService);
@@ -64,14 +67,13 @@ public class SecurityConfiguration {
         final MvcRequestMatcher.Builder matcher = new MvcRequestMatcher.Builder(introspector);
 
         http
-                //.csrf(csrf -> csrf.disable())
+                .httpBasic(httpBasic -> httpBasic.disable())
                 .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
                 .headers(httpSecurityHeadersConfigurer -> {
                     httpSecurityHeadersConfigurer.frameOptions(frameOptionsConfig -> {
                         frameOptionsConfig.disable();
                     });
                 })
-                .httpBasic(httpBasic -> httpBasic.disable())
                 .authenticationProvider(daoAuthenticationProvider())
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations(),
@@ -84,25 +86,21 @@ public class SecurityConfiguration {
                                 matcher.pattern("/*/*.jpg"),
                                 matcher.pattern("/*/*.html"),
                                 matcher.pattern("/*/*.css"),
-                                matcher.pattern("/*/*.js"),
-                        matcher.pattern("/h2-console"),
-                        matcher.pattern("/h2-console/*")
-                        )
+                                matcher.pattern("/*/*.js"))
                         .permitAll()
                         .requestMatchers(
-                                toH2Console(),
                                 matcher.pattern("/home"),
                                 matcher.pattern("/v1.0/auth/login"),
                                 matcher.pattern("/v1.0/auth/logout"),
                                 matcher.pattern("/v1.0/auth/signup"),
                                 matcher.pattern("/v1.0/adverts"),
                                 matcher.pattern("/v1.0/adverts/*"),
-                                matcher.pattern("/v1.0/comments"),
-                                matcher.pattern("/v1.0/comments/*"),
                                 matcher.pattern("/oauth2/*"),
-                                matcher.pattern("/swagger-ui/*")
+                                matcher.pattern("/swagger-ui/*"),
+                                matcher.pattern("/v3/api-docs/**")
                         ).permitAll()
-                            // .requestMatchers("/v1.0/**").hasAuthority("ADMIN")
+                        .requestMatchers(toH2Console()).permitAll()
+                        // .requestMatchers("/v1.0/**").hasAuthority("ADMIN")
                         .requestMatchers("/auth/admin").hasRole("ADMIN")
                         .requestMatchers("/auth/user").hasRole("USER")
                         .anyRequest().authenticated()

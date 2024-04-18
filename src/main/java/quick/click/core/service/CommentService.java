@@ -3,18 +3,21 @@ package quick.click.core.service;
 import quick.click.core.domain.dto.CommentCreatingDto;
 import quick.click.core.domain.dto.CommentEditingDto;
 import quick.click.core.domain.dto.CommentReadDto;
+import quick.click.security.commons.model.AuthenticatedUser;
 
 import java.util.List;
 
 public interface CommentService {
 
-    public CommentReadDto registerComment(Long advertId, CommentCreatingDto commentDTO);
+    CommentReadDto registerComment(Long advertId, CommentCreatingDto commentDTO, AuthenticatedUser authenticatedUser);
 
-    public CommentReadDto editComment(Long advertId, CommentEditingDto commentDTO);
+    CommentReadDto editComment(Long advertId, CommentEditingDto commentDTO, AuthenticatedUser authenticatedUser);
 
-    public List<CommentReadDto> getAllCommentsForAdvert(Long advertId);
+    List<CommentReadDto> findAllCommentsForAdvert(Long advertId);
 
-    public void deleteComment(Long commentId);
+    CommentReadDto findCommentById(Long commentId);
+
+    void deleteComment(Long commentId, AuthenticatedUser authenticatedUser);
 
 
 }

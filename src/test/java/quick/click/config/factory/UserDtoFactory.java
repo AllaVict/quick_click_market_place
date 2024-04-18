@@ -14,20 +14,22 @@ public class UserDtoFactory {
 
     private static final String JOHNSON = "Johnson";
 
-    private static final String EMAIL =  "test@example.com";
+    private static final String EMAIL = "test@example.com";
 
     private static final String PASSWORD = "password";
 
-    private static final LocalDateTime CREATED_DATE = LocalDateTime.of(2024, 10, 24, 20, 24);
+    private static final LocalDateTime CREATED_DATE = LocalDateTime.of(2024, 3, 24, 20, 24);
 
     private UserDtoFactory() {
     }
+
     public static UserLoginDto createUserLoginDto() {
         final UserLoginDto userLoginDto = new UserLoginDto();
         userLoginDto.setEmail(EMAIL);
         userLoginDto.setPassword(PASSWORD);
         return userLoginDto;
     }
+
     public static UserSignupDto createUserSignupDto() {
         final UserSignupDto userSignupDto = new UserSignupDto();
         userSignupDto.setName(JOHN);

@@ -1,74 +1,136 @@
 package quick.click.core.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+import quick.click.commons.exeptions.AuthorizationException;
+import quick.click.commons.exeptions.ResourceNotFoundException;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import quick.click.core.domain.dto.AdvertReadDto;
 import quick.click.core.service.AdvertSearchService;
+import quick.click.security.commons.model.AuthenticatedUser;
 
 import java.util.List;
-import java.util.Optional;
 
-import static quick.click.commons.config.ApiVersion.VERSION_1_0;
+import static quick.click.commons.constants.ApiVersion.VERSION_1_0;
 import static quick.click.commons.constants.Constants.Endpoints.ADVERTS_URL;
 import static quick.click.core.controller.AdvertSearchController.BASE_URL;
 
+/**
+ * Controller for handling API requests related to searching adverts.
+ *
+ * @author Alla Borodina
+ */
+@CrossOrigin
 @RestController
 @RequestMapping(BASE_URL)
+@Tag(name = "Advert Search Controller", description = "AdvertSearch API")
 public class AdvertSearchController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdvertSearchController.class);
 
     public static final String BASE_URL = VERSION_1_0 + ADVERTS_URL;
 
-    public  final AdvertSearchService advertSearchService;
+    public final AdvertSearchService advertSearchService;
 
     public AdvertSearchController(final AdvertSearchService advertSearchService) {
         this.advertSearchService = advertSearchService;
     }
 
     /**
-     * GET   http://localhost:8081/v1.0/adverts/1
-     @GetMapping("/adverts/{id}")
-     public AdvertReadDto findById(@PathVariable("id") Long id) {
+     * Finds an advert by its ID and returns it.
+     *
+     * @param advertId The ID of the advert to find.
+     * @return A ResponseEntity containing the found advert or an error message.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<AdvertReadDto> findAdvertById(@PathVariable("id") final Long advertId) {
+    @Operation(summary = "Find advert by id")
+    public ResponseEntity<?> findAdvertById(@PathVariable("id") final Long advertId) {
 
-          final AdvertReadDto advertReadDto = Optional.ofNullable(advertSearchService.findAdvertById(advertId))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        try {
 
-        LOGGER.debug("In findAdvertById received GET find the advert successfully with id {} ", advertReadDto.getId());
+            final AdvertReadDto advertReadDto = advertSearchService.findAdvertById(advertId);
 
-        return ResponseEntity.status(HttpStatus.OK).body(advertReadDto);
+            LOGGER.debug("In findAdvertById received GET find the advert successfully with id {} ", advertId);
+
+            return ResponseEntity.status(HttpStatus.OK).body(advertReadDto);
+
+        } catch (ResourceNotFoundException exception) {
+
+            LOGGER.error("Advert not found with id : '{}'", advertId, exception);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+
+        } catch (Exception exception) {
+
+            LOGGER.error("Unexpected error during finding the advert with id {}", advertId, exception);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
+
+        }
 
     }
 
     /**
-     GET    http://localhost:8081/v1.0/adverts
-     @GetMapping("/adverts")
-     public ResponseEntity<List<AdvertReadDto>> findAll(){
+     * Retrieves all adverts and returns them.
+     *
+     * @return A ResponseEntity containing a list of all adverts or an error message.
      */
     @GetMapping()
+    @Operation(summary = "Find all adverts")
     public ResponseEntity<?> findAllAdverts() {
 
-        final List<AdvertReadDto> advertReadDtoList =advertSearchService.findAllAdverts();
+        try {
+            final List<AdvertReadDto> advertReadDtoList = advertSearchService.findAllByOrderByCreatedDateDesc();
 
-        if (advertReadDtoList.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Empty list");
+            LOGGER.debug("In findAllAdvert received GET find all advert successfully ");
+
+            return ResponseEntity.status(HttpStatus.OK).body(advertReadDtoList);
+
+        } catch (Exception ex) {
+
+            LOGGER.error("Error finding all adverts", ex);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
+
         }
-        LOGGER.debug("In findAllAdvert received GET find all advert successfully ");
-
-        return ResponseEntity.status(HttpStatus.OK).body(advertReadDtoList);
-
     }
 
+    /**
+     * Retrieves all adverts created by the currently authenticated user.
+     *
+     * @param authenticatedUser The currently authenticated user.
+     * @return A ResponseEntity containing a list of all adverts created by the authenticated user or an error message.
+     */
+    @GetMapping("/user")
+    @Operation(summary = "Find all adverts by authorized user")
+    public ResponseEntity<?> findAllAdvertsByUser(@AuthenticationPrincipal final AuthenticatedUser authenticatedUser) {
+
+        try {
+
+            final List<AdvertReadDto> advertReadDtoList = advertSearchService.findAllAdvertsByUser(authenticatedUser);
+
+            final String userName = authenticatedUser.getEmail();
+
+            LOGGER.debug("In findAllAdvertsByUser find all adverts for the user with name: {}", userName);
+
+            return ResponseEntity.status(HttpStatus.OK).body(advertReadDtoList);
+
+        } catch (AuthorizationException exception) {
+
+            LOGGER.error("Unauthorized access attempt by user {}", authenticatedUser.getEmail(), exception);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized access");
+
+        } catch (Exception exception) {
+
+            LOGGER.error("Error finding adverts by user with name {}", authenticatedUser.getEmail(), exception);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
+
+        }
+    }
 }
 
 

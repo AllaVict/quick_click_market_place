@@ -11,6 +11,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Represents an authenticated user with their details, used for Spring Security.
+ */
 public class AuthenticatedUser implements UserDetails {
     private final Long id;
     private final String email;
@@ -42,11 +45,18 @@ public class AuthenticatedUser implements UserDetails {
         );
     }
 
+    /**
+     * Creates an {@code AuthenticatedUser} instance from a user entity.
+     *
+     * @param user the user entity from which to create the authenticated user.
+     * @return an {@code AuthenticatedUser} instance.
+     */
     public static AuthenticatedUser create(User user, Map<String, Object> attributes) {
         AuthenticatedUser authenticatedUser = AuthenticatedUser.create(user);
         authenticatedUser.setAttributes(attributes);
         return authenticatedUser;
     }
+
     public Long getId() {
         return id;
     }
@@ -89,6 +99,7 @@ public class AuthenticatedUser implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
     }
+
     public void setAttributes(Map<String, Object> attributes) {
         this.attributes = attributes;
     }
