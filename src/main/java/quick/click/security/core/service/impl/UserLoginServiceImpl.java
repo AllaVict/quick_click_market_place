@@ -12,6 +12,11 @@ import quick.click.core.repository.UserRepository;
 import quick.click.security.commons.model.AuthenticatedUser;
 import quick.click.security.core.service.UserLoginService;
 
+/**
+ * Service implementation for performing login operations an user.
+ *
+ * @author Alla Borodina
+ */
 @Service
 public class UserLoginServiceImpl implements UserLoginService {
 
@@ -24,6 +29,13 @@ public class UserLoginServiceImpl implements UserLoginService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Loads the user by username (email) for authentication purposes.
+     *
+     * @param email the email of the user to load.
+     * @return the UserDetails of the user.
+     * @throws UsernameNotFoundException if the username is not found in the database.
+     */
     @Override
     public UserDetails loadUserByUsername(final String email) throws UsernameNotFoundException {
 
@@ -35,6 +47,12 @@ public class UserLoginServiceImpl implements UserLoginService {
         return AuthenticatedUser.create(user);
     }
 
+    /**
+     * Loads the user by ID for authentication purposes.
+     *
+     * @param id the ID of the user to load.
+     * @return the UserDetails of the user.
+     */
     @Override
     public UserDetails loadUserById(final Long id) {
         LOGGER.debug("In loadUserById get UserDetails by email {}: ", id);

@@ -14,6 +14,6 @@ public enum Category {
     WORK,
     BEAUTY,
     RENT,
-    DELIVERY;
+    DELIVERY
 
 }

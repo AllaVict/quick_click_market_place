@@ -7,32 +7,23 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import quick.click.core.converter.TypeConverter;
 import quick.click.core.domain.dto.AdvertReadDto;
-import quick.click.core.domain.dto.CommentReadDto;
 import quick.click.core.domain.dto.UserReadDto;
 import quick.click.core.domain.model.Advert;
-import quick.click.core.domain.model.Comment;
 import quick.click.core.domain.model.User;
 import quick.click.config.factory.AdvertFactory;
 import quick.click.config.factory.UserFactory;
-import quick.click.core.repository.ImageDataRepository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@DisplayName("AdvertToAdvertReadDtoConverterTest")
+@DisplayName("AdvertToAdvertReadDtoConverter")
 class AdvertToAdvertReadDtoConverterTest {
 
     @Mock
     private TypeConverter<User, UserReadDto> userToUserReadDtoConverter;
 
-    @Mock
-    private TypeConverter<Comment, CommentReadDto> typeConverterCommentReadDto;
-
-    @Mock
-    private ImageDataRepository imageDataRepository;
-
     @InjectMocks
-    private TypeConverter<Advert, AdvertReadDto>  advertToAdvertReadDtoConverter;
+    private TypeConverter<Advert, AdvertReadDto> advertToAdvertReadDtoConverter;
 
     private Advert advert;
 
@@ -43,11 +34,9 @@ class AdvertToAdvertReadDtoConverterTest {
     @BeforeEach
     public void setUp() {
         user = UserFactory.createUser();
-        advert = AdvertFactory.createAdvert();
-        userToUserReadDtoConverter =new UserToUserReadDtoConverter();
-        typeConverterCommentReadDto =new CommentToCommentReadDtoConverter();
-        advertToAdvertReadDtoConverter = new AdvertToAdvertReadDtoConverter(
-                userToUserReadDtoConverter, typeConverterCommentReadDto,imageDataRepository);
+        advert = AdvertFactory.createAdvertOne();
+        userToUserReadDtoConverter = new UserToUserReadDtoConverter();
+        advertToAdvertReadDtoConverter = new AdvertToAdvertReadDtoConverter(userToUserReadDtoConverter);
     }
 
     @Test
