@@ -13,6 +13,8 @@ import quick.click.config.factory.AdvertFactory;
 import quick.click.config.factory.UserFactory;
 import quick.click.core.domain.model.Advert;
 import quick.click.core.domain.model.User;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,9 +27,6 @@ class AdvertRepositoryTest {
 
     @Autowired
     private AdvertRepository advertRepository;
-
-    @Autowired
-    private FileReferenceRepository fileReferenceRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -43,12 +42,12 @@ class AdvertRepositoryTest {
     @BeforeEach
     public void setUp() {
         user = userRepository.save(UserFactory.createUser());
-        expectedAdvertOne = AdvertFactory.createAdvert(user);
-        expectedAdvertTwo = AdvertFactory.createAdvert(user);
+        expectedAdvertOne = AdvertFactory.createAdvertOne(user);
+        expectedAdvertTwo = AdvertFactory.createAdvertTwo(user);
     }
 
     @Nested
-    @DisplayName("When Find Advert by Id")
+    @DisplayName("When find advert by id")
     class FindAdvertByIdTests {
 
         @Test
@@ -72,7 +71,101 @@ class AdvertRepositoryTest {
     }
 
     @Nested
-    @DisplayName("When Save a Advert")
+    @DisplayName("When find all adverts")
+    class FindAllAdvertsTests {
+        @Test
+        @Transactional
+        void testFindAllAdverts_shouldReturnAllAdverts() {
+            advertRepository.deleteAll();
+            Advert savedAdvertOne = advertRepository.save(expectedAdvertOne);
+            Advert savedAdvertTwo = advertRepository.save(expectedAdvertTwo);
+
+            List<Advert> result = advertRepository.findAll();
+
+            assertNotNull(result);
+            assertThat(result).isNotNull();
+            assertEquals(2, result.size());
+            assertThat(result).hasSize(2);
+            assertThat(result).containsExactlyInAnyOrder(savedAdvertOne, savedAdvertTwo);
+        }
+
+        @Test
+        void testFindAllAdverts_shouldReturnEmptyAdvertList() {
+            advertRepository.deleteAll();
+            List<Advert> result = advertRepository.findAll();
+
+            assertThrows(DataIntegrityViolationException.class, () -> advertRepository.save(new Advert()));
+            assertEquals(0, result.size());
+            assertThat(result).isEmpty();
+        }
+
+    }
+
+    @Nested
+    @DisplayName("When find all adverts by created date desc")
+    class FindAllByOrderByCreatedDateDescTests {
+
+        @Test
+        @Transactional
+        void testFindAllByOrderByCreatedDateDesc_shouldReturnAllAdverts() {
+            advertRepository.deleteAll();
+            expectedAdvertOne.setCreatedDate(LocalDateTime.now());
+            Advert savedAdvertOne = advertRepository.save(expectedAdvertOne);
+            Advert savedAdvertTwo = advertRepository.save(expectedAdvertTwo);
+
+            List<Advert> result = advertRepository.findAllByOrderByCreatedDateDesc();
+
+            assertNotNull(result);
+            assertThat(result).isNotNull();
+            assertEquals(2, result.size());
+            assertThat(result).hasSize(2);
+            assertThat(result).containsExactlyInAnyOrder(savedAdvertOne, savedAdvertTwo);
+        }
+
+        @Test
+        void testFindByOrderByCreatedDateDesc_shouldReturnEmptyAdvertList() {
+            advertRepository.deleteAll();
+            List<Advert> result = advertRepository.findAllByOrderByCreatedDateDesc();
+
+            assertThrows(DataIntegrityViolationException.class, () -> advertRepository.save(new Advert()));
+            assertEquals(0, result.size());
+            assertThat(result).isEmpty();
+        }
+
+    }
+    @Nested
+    @DisplayName("When find all adverts by user sorted by CreatedDateDesc")
+    class FindAllAdvertsByUserIdTests {
+        @Test
+        @Transactional
+        void testFindAllAdvertsByUserId_shouldReturnAllAdverts() {
+            advertRepository.deleteAll();
+            Advert savedAdvertOne = advertRepository.save(expectedAdvertOne);
+            Advert savedAdvertTwo = advertRepository.save(expectedAdvertTwo);
+
+            List<Advert> result = advertRepository.findAllByUserOrderByCreatedDateDesc(user);
+
+            assertThat(result).containsExactlyInAnyOrder(savedAdvertOne, savedAdvertTwo);
+            assertNotNull(result);
+            assertThat(result).isNotNull();
+            assertEquals(2, result.size());
+            assertThat(result).hasSize(2);
+        }
+
+        @Test
+        void testFindAllAdvertsByUserId_shouldReturnEmptyAdvertList() {
+            advertRepository.deleteAll();
+            List<Advert> result = advertRepository.findAllByUserOrderByCreatedDateDesc(user);
+
+            assertThrows(DataIntegrityViolationException.class, () -> advertRepository.save(new Advert()));
+            assertEquals(0, result.size());
+            assertThat(result).isEmpty();
+        }
+
+    }
+
+    @Nested
+    @DisplayName("When save a advert")
     class SaveAdvertTests {
 
         @Test
@@ -95,38 +188,7 @@ class AdvertRepositoryTest {
     }
 
     @Nested
-    @DisplayName("When findAll Adverts")
-    class FindAllAdvertsTests {
-        @Test
-        @Transactional
-        void testFindAllAdverts_shouldReturnAllAdverts() {
-            advertRepository.deleteAll();
-            advertRepository.save(expectedAdvertOne);
-            advertRepository.save(expectedAdvertTwo);
-
-            List<Advert> result = advertRepository.findAll();
-
-            assertThat(result).containsExactlyInAnyOrder(expectedAdvertOne, expectedAdvertTwo);
-            assertNotNull(result);
-            assertThat(result).isNotNull();
-            assertEquals(2, result.size());
-            assertThat(result).hasSize(2);
-        }
-
-        @Test
-        void testFindAllAdverts_shouldReturnEmptyAdvertList() {
-            advertRepository.deleteAll();
-            List<Advert> result = advertRepository.findAll();
-
-            assertThrows(DataIntegrityViolationException.class, () -> advertRepository.save(new Advert()));
-            assertEquals(0, result.size());
-            assertThat(result).hasSize(0);
-        }
-
-    }
-
-    @Nested
-    @DisplayName("When Delete Advert")
+    @DisplayName("When delete advert")
     class DeleteAdvertTests {
         @Test
         @Transactional

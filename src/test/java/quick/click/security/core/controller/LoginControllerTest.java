@@ -60,9 +60,9 @@ class LoginControllerTest {
     @Mock
     private UserRegistrationService userRegistrationService;
 
-    private static final String INVALID_PASSWORD ="invalid-password";
+    private static final String INVALID_PASSWORD = "invalid-password";
 
-    private static final String EMAIL =  "test@example.com";
+    private static final String EMAIL = "test@example.com";
 
     private UserLoginDto userLoginDto;
 
@@ -107,7 +107,7 @@ class LoginControllerTest {
             ResponseEntity<?> responseEntity = loginController.authenticateUser(userLoginDto);
 
             assertEquals(HttpStatus.UNAUTHORIZED, responseEntity.getStatusCode());
-            assertEquals("User has bad credentials and not "+UNAUTHORIZED, responseEntity.getBody());
+            assertEquals("User has bad credentials and not " + UNAUTHORIZED, responseEntity.getBody());
         }
 
     }
@@ -139,6 +139,7 @@ class LoginControllerTest {
         }
 
     }
+
     @Nested
     @DisplayName("When User Logout")
     class LogoutTests {
@@ -154,6 +155,7 @@ class LoginControllerTest {
             verify(request, Mockito.times(1)).logout();
             assertEquals("User logout successfully with username test@example.com", responseEntity.getBody());
         }
+
         @Test
         void testLogout_noLoginWithResponseBadRequest() throws ServletException {
             when(securityContext.getAuthentication()).thenReturn(authentication);
