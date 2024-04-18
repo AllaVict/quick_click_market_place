@@ -85,18 +85,18 @@ class CommentRepositoryTest {
             @Test
             void testFindByIdAndUserId_shouldReturnCommentListSuccessfully() {
                 Comment savedComment = commentRepository.save(comment);
-                Comment result = commentRepository.findByIdAndUserId(savedComment.getId(), user.getId());
+                Optional<Comment> result = commentRepository.findByIdAndUserId(savedComment.getId(), user.getId());
 
                 assertNotNull(result);
-                assertEquals("John Johnson", result.getUsername());
+                assertEquals("John Johnson", result.get().getUsername());
             }
 
             @Test
             void testFindByIdAndUserId_shouldReturnNoComment() {
                 commentRepository.deleteAll();
-                Comment result = commentRepository.findByIdAndUserId(COMMENT_ONE_ID, USER_ID);
+                Optional<Comment> result = commentRepository.findByIdAndUserId(COMMENT_ONE_ID, USER_ID);
 
-                assertNull(result);
+                assertFalse(result.isPresent());
             }
 
         }

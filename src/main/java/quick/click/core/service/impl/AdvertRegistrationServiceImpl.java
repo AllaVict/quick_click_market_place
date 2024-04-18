@@ -50,9 +50,9 @@ public class AdvertRegistrationServiceImpl implements AdvertRegistrationService 
      * This method handles setting up advert details, converting them to an Advert entity,
      * saving the advert, and then converting it back to an AdvertReadDto.
      *
-     * @param advertCreateDto       DTO containing advert creation data.
-     * @param authenticatedUser     The user attempting to create the advert.
-     * @return                      An AdvertReadDto containing the saved advert's details.
+     * @param advertCreateDto   DTO containing advert creation data.
+     * @param authenticatedUser The user attempting to create the advert.
+     * @return An AdvertReadDto containing the saved advert's details.
      * @throws AuthorizationException If the user is not authorized.
      */
     @Override
@@ -60,7 +60,7 @@ public class AdvertRegistrationServiceImpl implements AdvertRegistrationService 
                                         final AuthenticatedUser authenticatedUser) {
 
         AdvertReadDto advertReadDto = Optional.of(advertCreateDto)
-                .map(advertDto -> settingsForAdvertCreateDto(advertDto,authenticatedUser))
+                .map(advertDto -> settingsForAdvertCreateDto(advertDto, authenticatedUser))
                 .map(typeConverterCreateDto::convert)
                 .map(advertRepository::saveAndFlush)
                 .map(typeConverterReadDto::convert)
@@ -75,12 +75,11 @@ public class AdvertRegistrationServiceImpl implements AdvertRegistrationService 
                                                        final AuthenticatedUser authenticatedUser) {
         advertCreateDto.setCreatedDate(LocalDateTime.now());
         advertCreateDto.setStatus(PUBLISHED);
-        advertCreateDto.setUserId(getUserByAuthenticatedUser(authenticatedUser));
+        advertCreateDto.setUserId(getUserIdByAuthenticatedUser(authenticatedUser));
         return advertCreateDto;
     }
 
-
-    private Long getUserByAuthenticatedUser(final AuthenticatedUser authenticatedUser) {
+    private Long getUserIdByAuthenticatedUser(final AuthenticatedUser authenticatedUser) {
         String username = authenticatedUser.getEmail();
         return userRepository.findUserByEmail(username)
                 .orElseThrow(() -> new AuthorizationException("Unauthorized access"))

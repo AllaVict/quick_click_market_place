@@ -2,24 +2,24 @@ package quick.click.core.service.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import quick.click.commons.exeptions.AuthorizationException;
 import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.core.converter.TypeConverter;
 import quick.click.core.domain.dto.*;
 import quick.click.core.domain.model.Advert;
 import quick.click.core.domain.model.Comment;
-import quick.click.core.domain.model.User;
 import quick.click.core.repository.AdvertRepository;
 import quick.click.core.repository.CommentRepository;
 import quick.click.core.repository.UserRepository;
 import quick.click.core.service.CommentService;
+import quick.click.security.commons.model.AuthenticatedUser;
 
-import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 @Service
 public class CommentServiceImpl implements CommentService {
 
@@ -47,34 +47,35 @@ public class CommentServiceImpl implements CommentService {
 
 
     @Override
-    public CommentReadDto registerComment(Long advertId, CommentCreatingDto commentCreatingDto) {
-        commentCreatingDto.setCreatedDate(LocalDateTime.now());
-        commentCreatingDto.setAdvertId(advertId);
-        // User user = getUserByPrincipal(principal);
-        commentCreatingDto.setUserId(advertRepository.findById(advertId).orElseThrow().getUser().getId());
+    public CommentReadDto registerComment(final Long advertId,
+                                          final CommentCreatingDto commentCreatingDto,
+                                          final AuthenticatedUser authenticatedUser) {
 
-        CommentReadDto commentDto = Optional.of(commentCreatingDto)
-        .map(typeConverterCommentCreatingDto::convert)
+        CommentReadDto commentReadDto = Optional.of(commentCreatingDto)
+                .map(commentDto -> settingsForCommentCreateDto(advertId, commentDto, authenticatedUser))
+                .map(typeConverterCommentCreatingDto::convert)
                 .map(commentRepository::saveAndFlush)
                 .map(typeConverterCommentReadDto::convert)
                 .orElseThrow();
 
-        LOGGER.debug("In saveComment Saving comment for Advert with id: {}", advertId);
+        LOGGER.debug("In saveComment register a comment for a Advert with id: {}", advertId);
 
-        return commentDto;
+        return commentReadDto;
     }
 
 
     @Override
-    public CommentReadDto editComment(final Long commentId, final CommentEditingDto commentEditingDto) {
+    public CommentReadDto editComment(final Long commentId,
+                                      final CommentEditingDto commentEditingDto,
+                                      final AuthenticatedUser authenticatedUser) {
+        final Long userId = getUserIdByAuthenticatedUser(authenticatedUser);
+        final Optional<Comment> commentForUpdate = commentRepository.findByIdAndUserId(commentId, userId);
 
-        final Optional<Comment> commentForUpdate = commentRepository.findById(commentId);
         if(commentForUpdate.isEmpty())
             commentForUpdate.orElseThrow(() -> new ResourceNotFoundException("Comment", "id", commentId));
 
         LOGGER.debug("In editComment Updating success advert with id {}", commentId);
 
-        commentEditingDto.setUpdatedDate(LocalDateTime.now());
         return  commentForUpdate
                 .map(comment -> this.updateCommentData(comment, commentEditingDto))
                 .map(commentRepository::saveAndFlush)
@@ -83,9 +84,9 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<CommentReadDto> findAllCommentsForAdvert(Long advertId) {
+    public List<CommentReadDto> findAllCommentsForAdvert(final Long advertId) {
 
-        List<CommentReadDto> comments = commentRepository.findAllByAdvertId(advertId)
+        final List<CommentReadDto> comments = commentRepository.findAllByAdvertId(advertId)
                 .stream().map(typeConverterCommentReadDto::convert)
                 .collect(Collectors.toList());
 
@@ -95,30 +96,51 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentReadDto findCommentById(Long commentId) {
-       Comment foundComment = commentRepository.findById(commentId)
+    public CommentReadDto findCommentById(final Long commentId) {
+       final Comment foundComment = commentRepository.findById(commentId)
                .orElseThrow(() -> new ResourceNotFoundException("Comment", "id", commentId));
         LOGGER.debug("In deleteComment Deleting success Comment with id {}", commentId);
         return typeConverterCommentReadDto.convert(foundComment);
     }
 
     @Override
-    public void deleteComment(Long commentId) {
-        Optional<Comment> commentForDelete = commentRepository.findById(commentId);
-        if(commentForDelete.isEmpty())
-            commentForDelete.orElseThrow(() -> new ResourceNotFoundException("Comment", "id", commentId));
+    public void deleteComment(final Long commentId,
+                              final AuthenticatedUser authenticatedUser) {
 
-        commentRepository.delete(commentForDelete.orElseThrow());
+        final Long userId = getUserIdByAuthenticatedUser(authenticatedUser);
+        final Comment commentForDelete = commentRepository.findByIdAndUserId(commentId, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Comment", "id", commentId));
+
+        commentRepository.delete(commentForDelete);
+
         LOGGER.debug("In deleteComment Deleting success Comment with id {}", commentId);
     }
 
-    private User getUserByPrincipal(Principal principal) {
-        String username = principal.getName();
-        return userRepository.findUserByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Username not found with username " + username));
+    private CommentCreatingDto settingsForCommentCreateDto(final Long advertId,
+                                                           final CommentCreatingDto commentCreatingDto,
+                                                           final AuthenticatedUser authenticatedUser) {
+        commentCreatingDto.setCreatedDate(LocalDateTime.now());
+        commentCreatingDto.setAdvertId(advertId);
+        commentCreatingDto.setUserId(getUserByAuthenticatedUser(authenticatedUser));
+        return commentCreatingDto;
     }
 
-    protected Comment updateCommentData(final Comment comment, final CommentEditingDto commentEditingDto) {
+    private Long getUserIdByAuthenticatedUser(final AuthenticatedUser authenticatedUser) {
+        final String username = authenticatedUser.getEmail();
+        return userRepository.findUserByEmail(username)
+                .orElseThrow(() -> new AuthorizationException("Unauthorized access"))
+                .getId();
+
+    }
+
+    private Long getUserByAuthenticatedUser(final AuthenticatedUser authenticatedUser) {
+        String username = authenticatedUser.getEmail();
+        return userRepository.findUserByEmail(username)
+                .orElseThrow(() -> new AuthorizationException("Unauthorized access"))
+                .getId();
+
+    }
+    private Comment updateCommentData(final Comment comment, final CommentEditingDto commentEditingDto) {
         comment.setId(commentEditingDto.getId());
         comment.setMessage(commentEditingDto.getMessage());
         comment.setAdvert(getAdvert(commentEditingDto.getAdvertId()));
@@ -129,10 +151,9 @@ public class CommentServiceImpl implements CommentService {
         return comment;
     }
 
-    private Advert getAdvert(Long advertId) {
+    private Advert getAdvert(final Long advertId) {
         return Optional.ofNullable(advertId)
                 .flatMap(advertRepository::findById)
                 .orElse(null);
     }
-
 }

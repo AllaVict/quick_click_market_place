@@ -10,20 +10,23 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import quick.click.commons.exeptions.RegistrationException;
+import quick.click.commons.exeptions.AuthorizationException;
 import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.core.domain.dto.CommentCreatingDto;
 import quick.click.core.domain.dto.CommentEditingDto;
 import quick.click.core.domain.dto.CommentReadDto;
 import quick.click.core.domain.model.Comment;
 import quick.click.core.service.CommentService;
+import quick.click.security.commons.model.AuthenticatedUser;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static quick.click.config.factory.AdvertFactory.createAdvertOne;
 import static quick.click.config.factory.CommentDtoFactory.*;
 import static quick.click.config.factory.CommentFactory.createCommentList;
 import static quick.click.config.factory.CommentFactory.createCommentOne;
@@ -32,111 +35,145 @@ import static quick.click.config.factory.CommentFactory.createCommentOne;
 @DisplayName("CommentController")
 class CommentControllerTest {
 
-        @Mock
-        private CommentService commentService;
-        @InjectMocks
-        private CommentController commentController;
+    @Mock
+    private CommentService commentService;
+    @InjectMocks
+    private CommentController commentController;
 
-        private static final long COMMENT_ID = 101L;
+    private static final long COMMENT_ID = 101L;
 
-        private static final long ADVERT_ID = 101L;
+    private static final long ADVERT_ID = 101L;
 
-        private List<Comment> commentList;
-        private List<CommentReadDto> commentReadDtoList;
-        private Comment comment;
-        private CommentReadDto commentReadDto;
-
+    private List<Comment> commentList;
+    private List<CommentReadDto> commentReadDtoList;
+    private Comment comment;
+    private CommentReadDto commentReadDto;
 
     private CommentCreatingDto commentCreatingDto;
 
     private CommentEditingDto commentEditingDto;
 
-        @BeforeEach
-        public void setUp() {
-            commentController = new CommentController(commentService);
-            commentList = createCommentList();
-            comment = createCommentOne();
-            commentReadDto = createCommentReadDtoOne();
-            commentReadDtoList = createCommentReadDtoList();
-            commentEditingDto = createCommentEditingDto();
-            commentCreatingDto = createCommentCreatingDto();
+    private AuthenticatedUser authenticatedUser = mock(AuthenticatedUser.class);
+
+    @BeforeEach
+    public void setUp() {
+        commentController = new CommentController(commentService);
+        commentList = createCommentList();
+        comment = createCommentOne();
+        commentReadDto = createCommentReadDtoOne();
+        commentReadDtoList = createCommentReadDtoList();
+        commentEditingDto = createCommentEditingDto();
+        commentCreatingDto = createCommentCreatingDto();
+    }
+
+    @Nested
+    @DisplayName("When register a comment")
+    class RegisterCommentTests {
+        @Test
+        void testRegisterComment_ShouldReturnComment() {
+            when(commentService.registerComment(ADVERT_ID, commentCreatingDto, authenticatedUser)).thenReturn(commentReadDto);
+
+            ResponseEntity<?> responseEntity = commentController.registerComment(ADVERT_ID, commentCreatingDto, authenticatedUser);
+
+            assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+            assertEquals(commentReadDto, responseEntity.getBody());
         }
 
-        @Nested
-        @DisplayName("When Create a Comment")
-        class CreateCommentTests {
-            @Test
-            void testCreateComment_ShouldReturnComment() {
-                when(commentService.registerComment(ADVERT_ID, commentCreatingDto)).thenReturn(commentReadDto);
+        @Test
+        void testRegisterComment_ShouldReturn400Status_WhenInvalidRequest() {
+            comment = new Comment();
+            commentCreatingDto = new CommentCreatingDto();
+            ResponseEntity<?> responseEntity = commentController.registerComment(ADVERT_ID, commentCreatingDto, authenticatedUser);
 
-                ResponseEntity<?> responseEntity = commentController.registerComment(ADVERT_ID, commentCreatingDto);
-
-                assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
-                assertEquals(commentReadDto, responseEntity.getBody());
-            }
-
-            @Test
-            void testCreateComment_ShouldReturn400Status_WhenInvalidRequest() {
-                comment = new Comment();
-                commentCreatingDto = new CommentCreatingDto();
-                ResponseEntity<?> responseEntity = commentController.registerComment(ADVERT_ID, commentCreatingDto);
-
-                assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-            }
-
+            assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
         }
 
-        @Nested
-        @DisplayName("When Find All Comments")
-        class FindAllCommentsTests {
+        @Test
+        void testRegisterComment_ShouldReturn400Status_WhenThrowsException() {
+            when(commentService.registerComment(anyLong(), any(CommentCreatingDto.class), any(AuthenticatedUser.class)))
+                    .thenThrow(new RegistrationException("Registration failed due to XYZ"));
 
-            @Test
-            void testFindAllComments_ShouldReturnAllComments() {
-                when(commentService.findAllCommentsForAdvert(ADVERT_ID)).thenReturn(commentReadDtoList);
+            ResponseEntity<?> responseEntity = commentController.registerComment(ADVERT_ID, commentCreatingDto, authenticatedUser);
 
-                ResponseEntity<?> responseEntity = commentController.findAllCommentsToAdvert(ADVERT_ID);
-
-                assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-                assertEquals(commentReadDtoList, responseEntity.getBody());
-
-            }
-
-            @Test
-            void testFindAllComments_ShouldReturn200Status_WhenReturnEmptyList() {
-                commentReadDtoList = new ArrayList<>();
-                when(commentService.findAllCommentsForAdvert(ADVERT_ID)).thenReturn(commentReadDtoList);
-
-                ResponseEntity<?> responseEntity = commentController.findAllCommentsToAdvert(ADVERT_ID);
-
-                assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-                assertEquals(commentReadDtoList, responseEntity.getBody());
-            }
-
+            assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+            assertTrue(responseEntity.getBody().toString().contains("Registration failed due to XYZ"));
         }
 
-        @Nested
-        @DisplayName("When Delete a Comment")
-        class DeleteCommentTests {
-            @Test
-            void testDeleteComment_ShouldReturnComment() {
-                doNothing().when(commentService).deleteComment(any(Long.class));
+        @Test
+        void testRegisterComment_UnauthorizedUser() {
+            when(commentService.registerComment(anyLong(), any(CommentCreatingDto.class), any(AuthenticatedUser.class)))
+                    .thenThrow(new AuthorizationException("Unauthorized access"));
 
-                ResponseEntity<?> responseEntity = commentController.deleteComment(COMMENT_ID);
+            ResponseEntity<?> responseEntity = commentController.registerComment(ADVERT_ID, commentCreatingDto, authenticatedUser);
 
-                assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-                assertEquals("The Comment has deleted successfully", responseEntity.getBody());
-            }
-
-            @Test
-            void testDeleteComment_ShouldnReturn404Status_WhenCommentDoesNotExist() {
-                doThrow(new ResourceNotFoundException("Comment", "id", COMMENT_ID))
-                        .when(commentService).deleteComment(any(Long.class));
-
-                ResponseEntity<?> responseEntity = commentController.deleteComment(COMMENT_ID);
-
-                assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
-            }
+            assertEquals(HttpStatus.FORBIDDEN, responseEntity.getStatusCode());
 
         }
 
     }
+
+    @Nested
+    @DisplayName("When Find All Comments")
+    class FindAllCommentsTests {
+
+        @Test
+        void testFindAllComments_ShouldReturnAllComments() {
+            when(commentService.findAllCommentsForAdvert(ADVERT_ID)).thenReturn(commentReadDtoList);
+
+            ResponseEntity<?> responseEntity = commentController.findAllCommentsToAdvert(ADVERT_ID);
+
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+            assertEquals(commentReadDtoList, responseEntity.getBody());
+
+        }
+
+        @Test
+        void testFindAllComments_ShouldReturn200Status_WhenReturnEmptyList() {
+            commentReadDtoList = new ArrayList<>();
+            when(commentService.findAllCommentsForAdvert(ADVERT_ID)).thenReturn(commentReadDtoList);
+
+            ResponseEntity<?> responseEntity = commentController.findAllCommentsToAdvert(ADVERT_ID);
+
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+            assertEquals(commentReadDtoList, responseEntity.getBody());
+        }
+
+    }
+
+    @Nested
+    @DisplayName("When Delete a Comment")
+    class DeleteCommentTests {
+        @Test
+        void testDeleteComment_ShouldReturnComment() {
+            doNothing().when(commentService).deleteComment(any(Long.class), any(AuthenticatedUser.class));
+
+            ResponseEntity<?> responseEntity = commentController.deleteComment(COMMENT_ID, authenticatedUser);
+
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+            assertEquals("The Comment has deleted successfully", responseEntity.getBody());
+        }
+
+        @Test
+        void testDeleteComment_ShouldnReturn404Status_WhenCommentDoesNotExist() {
+            doThrow(new ResourceNotFoundException("Comment", "id", COMMENT_ID))
+                    .when(commentService).deleteComment(any(Long.class), any(AuthenticatedUser.class));
+
+            ResponseEntity<?> responseEntity = commentController.deleteComment(COMMENT_ID, authenticatedUser);
+
+            assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        }
+
+        @Test
+        void testDeleteAdvert_UnauthorizedUser() {
+            doThrow(new AuthorizationException("Unauthorized access"))
+                    .when(commentService).deleteComment(any(Long.class), any(AuthenticatedUser.class));
+
+            ResponseEntity<?> responseEntity = commentController.deleteComment(COMMENT_ID, authenticatedUser);
+
+            assertEquals(HttpStatus.FORBIDDEN, responseEntity.getStatusCode());
+
+        }
+
+    }
+
+}

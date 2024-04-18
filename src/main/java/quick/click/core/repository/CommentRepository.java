@@ -5,12 +5,15 @@ import org.springframework.stereotype.Repository;
 import quick.click.core.domain.model.Comment;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     List<Comment> findAllByAdvertId(Long advertId);
 
-    Comment findByIdAndUserId(Long commentId, Long userId);
+    Optional<Comment> findById(Long commentId);
+
+    Optional<Comment>  findByIdAndUserId(Long commentId, Long userId);
 
 }
