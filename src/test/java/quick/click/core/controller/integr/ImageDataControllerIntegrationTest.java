@@ -91,7 +91,6 @@ class ImageDataControllerIntegrationTest {
                     .andExpect(content().string("Files are uploaded successfully."));
         }
 
-
     }
 
     @Nested
