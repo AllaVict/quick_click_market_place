@@ -50,7 +50,7 @@ public class Advert extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Currency currency;
 
-    @Size(max = 100)
+    @Size(max = 300)
     @Column(name = "address")
     private String address;
 
@@ -63,6 +63,9 @@ public class Advert extends BaseEntity {
 
     @OneToMany(mappedBy = "advert", cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "advert", cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, orphanRemoval = true)
+    private List<ImageData> images;
 
     public Advert() {
        //Empty

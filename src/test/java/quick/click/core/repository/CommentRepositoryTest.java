@@ -150,7 +150,7 @@ class CommentRepositoryTest {
 
         @Nested
         @DisplayName("When Save Comment")
-        class SaveExtraFeeTests {
+        class SaveImageTests {
 
             @Test
             void testSaveComment_shouldSaveCommentSuccessfully() {
