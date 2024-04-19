@@ -6,7 +6,7 @@ import quick.click.core.domain.model.ImageData;
 import java.io.IOException;
 import java.util.List;
 
-public interface ImageDataService  {
+public interface ImageDataService {
 
     ImageData uploadImageToAdvert(Long advertId, MultipartFile file) throws IOException;
 

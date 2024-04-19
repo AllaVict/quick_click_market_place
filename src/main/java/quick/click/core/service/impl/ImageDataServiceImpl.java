@@ -56,7 +56,8 @@ public class ImageDataServiceImpl implements ImageDataService {
         String uuidFile = UUID.randomUUID().toString();
         String resultFilename = uuidFile + "." + FilenameUtils.getExtension(file.getOriginalFilename());
         ImageData imageData = new ImageData();
-        imageData.setAdvert(advertRepository.findAdvertById(advertId).orElseThrow());
+        imageData.setAdvert(advertRepository.findAdvertById(advertId)
+                .orElseThrow(() -> new ResourceNotFoundException("Advert", "id", advertId)));
         imageData.setUserId(user.getId());
         imageData.setType(file.getContentType());
         imageData.setImageData(compressImage(file.getBytes()));
@@ -112,7 +113,7 @@ public class ImageDataServiceImpl implements ImageDataService {
     }
     public String uploadImageToFileSystem(MultipartFile file, ImageData imageData) throws IOException {
         final String filePath;
-        if(System.getProperty("os.name") == "WINDOWS"){
+        if(System.getProperty("os.name").equals("WINDOWS")){
             filePath=System.getProperty("user.dir")+WINDOWS_PATH+imageData.getName();
         } else {
             filePath=System.getProperty("user.dir")+LINUX_PATH+imageData.getName();
@@ -131,15 +132,14 @@ public class ImageDataServiceImpl implements ImageDataService {
 
         ImageData imageData = imageRepository.findAllByAdvertId(advertId).stream().findFirst().orElseThrow();
         final String filePath;
-        if(System.getProperty("os.name") == "WINDOWS"){
+        if(System.getProperty("os.name").equals("WINDOWS")){
             filePath=System.getProperty("user.dir")+WINDOWS_PATH+imageData.getName();
         } else {
             filePath=System.getProperty("user.dir")+LINUX_PATH+imageData.getName();
         }
-        byte[] image = Files.readAllBytes(new File(filePath).toPath());
-        return image;
+        return Files.readAllBytes(new File(filePath).toPath());
     }
-    private ImageData decompressImageData(ImageData imageData){
+    protected ImageData decompressImageData(ImageData imageData){
         ImageData decompressedImageData = new ImageData();
         imageData.setAdvert(imageData.getAdvert());
         imageData.setUserId(imageData.getUserId());
