@@ -146,7 +146,7 @@ public class ImageDataController {
 
             LOGGER.debug("In deleteImageById received DELETE image with id : {} ", imageId);
 
-            return ResponseEntity.status(HttpStatus.OK).body("Image has been deleted successfully.");
+            return ResponseEntity.status(HttpStatus.OK).body("The image has been deleted successfully.");
 
         } catch (AuthorizationException exception) {
 
