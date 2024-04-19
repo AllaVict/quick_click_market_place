@@ -9,7 +9,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.web.multipart.MultipartFile;
 import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.core.domain.model.Advert;
 import quick.click.core.domain.model.ImageData;
@@ -17,6 +16,7 @@ import quick.click.core.domain.model.User;
 import quick.click.core.repository.AdvertRepository;
 import quick.click.core.repository.ImageDataRepository;
 import quick.click.core.repository.UserRepository;
+import quick.click.security.commons.model.AuthenticatedUser;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -46,11 +46,15 @@ class ImageDataServiceImplTest {
 
     private static final long IMAGE_ID = 101L;
 
+    private static final String EMAIL = "test@example.com";
+
     private Advert advert;
 
     private User user;
 
     private ImageData imageData;
+
+    private AuthenticatedUser authenticatedUser = mock(AuthenticatedUser.class);
 
     @BeforeEach
     public void setUp() {
@@ -68,12 +72,14 @@ class ImageDataServiceImplTest {
     class UploadImageToAdvertTests {
         @Test
         void testUploadImageToAdvert() throws IOException {
+            when(authenticatedUser.getEmail()).thenReturn(EMAIL);
+            when(userRepository.findUserByEmail(EMAIL)).thenReturn(Optional.of(user));
             MockMultipartFile file = new MockMultipartFile("file", "hello.png", "image/png", "Hello, World!".getBytes());
             when(advertRepository.findAdvertById(anyLong())).thenReturn(Optional.of(advert));
             when(userRepository.findUserById(anyLong())).thenReturn(Optional.ofNullable(user));
             when(imageRepository.saveAndFlush(any(ImageData.class))).thenReturn(imageData);
 
-            ImageData result = imageDataService.uploadImageToAdvert(ADVERT_ID, file);
+            ImageData result = imageDataService.uploadImageToAdvert(ADVERT_ID, file, authenticatedUser);
 
             verify(imageRepository).saveAndFlush(any(ImageData.class));
             assertNotNull(result);
@@ -81,13 +87,15 @@ class ImageDataServiceImplTest {
 
         @Test
         void testUploadImageToAdvert_AdvertNotFound() {
+            when(authenticatedUser.getEmail()).thenReturn(EMAIL);
+            when(userRepository.findUserByEmail(EMAIL)).thenReturn(Optional.of(user));
             MockMultipartFile file = new MockMultipartFile("file", "hello.png", "image/png", "Hello, World!".getBytes());
             when(userRepository.findUserById(anyLong())).thenReturn(Optional.ofNullable(user));
             when(advertRepository.findAdvertById(ADVERT_ID))
                     .thenThrow(new ResourceNotFoundException("Advert", "id", ADVERT_ID));
 
             assertThrows(ResourceNotFoundException.class, () -> {
-                imageDataService.uploadImageToAdvert(ADVERT_ID, file);
+                imageDataService.uploadImageToAdvert(ADVERT_ID, file,authenticatedUser);
             });
         }
     }
@@ -140,19 +148,23 @@ class ImageDataServiceImplTest {
     class DeleteImageByIdTests {
         @Test
         void testDeleteImageByIdAndByAdvertId_ShouldDeleteImageData() {
+            when(authenticatedUser.getEmail()).thenReturn(EMAIL);
+            when(userRepository.findUserByEmail(EMAIL)).thenReturn(Optional.of(user));
             when(imageRepository.findByIdAndAdvertId(anyLong(), anyLong())).thenReturn(Optional.of(imageData));
 
-            imageDataService.deleteImageByIdAndByAdvertId(IMAGE_ID, ADVERT_ID);
+            imageDataService.deleteImageByIdAndByAdvertId(IMAGE_ID, ADVERT_ID, authenticatedUser);
 
             verify(imageRepository).delete(imageData);
         }
 
         @Test
         void testDeleteImageByIdAndByAdvertId_NotFound() {
+            when(authenticatedUser.getEmail()).thenReturn(EMAIL);
+            when(userRepository.findUserByEmail(EMAIL)).thenReturn(Optional.of(user));
             when(imageRepository.findByIdAndAdvertId(IMAGE_ID, ADVERT_ID)).thenReturn(Optional.empty());
 
             assertThrows(ResourceNotFoundException.class, () -> {
-                imageDataService.deleteImageByIdAndByAdvertId(IMAGE_ID, ADVERT_ID);
+                imageDataService.deleteImageByIdAndByAdvertId(IMAGE_ID, ADVERT_ID, authenticatedUser);
             });
         }
     }
