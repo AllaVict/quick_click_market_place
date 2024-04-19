@@ -1,5 +1,8 @@
 package quick.click.core.service.impl;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -7,6 +10,7 @@ import org.mockito.Mock;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.multipart.MultipartFile;
+import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.core.domain.model.Advert;
 import quick.click.core.domain.model.ImageData;
 import quick.click.core.domain.model.User;
@@ -15,6 +19,7 @@ import quick.click.core.repository.ImageDataRepository;
 import quick.click.core.repository.UserRepository;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +27,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
+import static quick.click.config.factory.AdvertFactory.createAdvertOne;
+import static quick.click.config.factory.UserFactory.createUser;
 
 @ExtendWith(SpringExtension.class)
 class ImageDataServiceImplTest {
@@ -34,68 +41,120 @@ class ImageDataServiceImplTest {
 
     @InjectMocks
     private ImageDataServiceImpl imageDataService;
-    @Test    void findByteListToAdvert() {    }
-    @Test    void findImageByIdAndByAdvertId() {    }
-    @Test    void deleteImageByIdAndByAdvertId() {    }
 
-    @Test
-    void testUploadImageToAdvert() throws IOException {
-        MockMultipartFile file = new MockMultipartFile("file", "hello.png", "image/png", "Hello, World!".getBytes());
-        Advert advert = new Advert();
-        advert.setId(1L);
-        User user = new User();
-        user.setId(1L);
+    private static final long ADVERT_ID = 101L;
 
-        when(advertRepository.findAdvertById(anyLong())).thenReturn(Optional.of(advert));
-     //   when(userRepository.currentUser()).thenReturn(user);
-        doNothing().when(imageDataService)
-                .uploadImageToFileSystem(any(MultipartFile.class), any(ImageData.class));
+    private static final long IMAGE_ID = 101L;
 
-        ImageData result = imageDataService.uploadImageToAdvert(1L, file);
+    private Advert advert;
 
-        assertNotNull(result);
-        verify(imageRepository).saveAndFlush(any(ImageData.class));
+    private User user;
+
+    private ImageData imageData;
+
+    @BeforeEach
+    public void setUp() {
+        user = createUser();
+        advert = createAdvertOne(user);
+        imageData = new ImageData();
+        imageData.setName("Test Image");
+        imageData.setType("image/png");
+        imageData.setImageData(new byte[] {1, 2, 3});
+        imageData.setAdvert(advert);
     }
 
-    @Test
-    void testFindByteListToAdvert() {
-        List<ImageData> images = List.of(new ImageData()); // Set up test data
-        when(imageRepository.findAllByAdvertId(anyLong())).thenReturn(images);
-        doReturn(new byte[0]).when(imageDataService).decompressImageData(any());
+    @Nested
+    @DisplayName("When upload an image to an advert")
+    class UploadImageToAdvertTests {
+        @Test
+        void testUploadImageToAdvert() throws IOException {
+            MockMultipartFile file = new MockMultipartFile("file", "hello.png", "image/png", "Hello, World!".getBytes());
+            when(advertRepository.findAdvertById(anyLong())).thenReturn(Optional.of(advert));
+            when(userRepository.findUserById(anyLong())).thenReturn(Optional.ofNullable(user));
+            when(imageRepository.saveAndFlush(any(ImageData.class))).thenReturn(imageData);
 
-        List<byte[]> result = imageDataService.findByteListToAdvert(1L);
+            ImageData result = imageDataService.uploadImageToAdvert(ADVERT_ID, file);
 
-        assertNotNull(result);
-        assertEquals(1, result.size());
+            verify(imageRepository).saveAndFlush(any(ImageData.class));
+            assertNotNull(result);
+        }
+
+        @Test
+        void testUploadImageToAdvert_AdvertNotFound() {
+            MockMultipartFile file = new MockMultipartFile("file", "hello.png", "image/png", "Hello, World!".getBytes());
+            when(userRepository.findUserById(anyLong())).thenReturn(Optional.ofNullable(user));
+            when(advertRepository.findAdvertById(ADVERT_ID))
+                    .thenThrow(new ResourceNotFoundException("Advert", "id", ADVERT_ID));
+
+            assertThrows(ResourceNotFoundException.class, () -> {
+                imageDataService.uploadImageToAdvert(ADVERT_ID, file);
+            });
+        }
     }
+    @Nested
+    @DisplayName("When Find all images by AdvertId")
+    class FindAllImageByAdvertIdTests {
+        @Test
+        void testFindByteListToAdvert() {
+            List<ImageData> images = List.of(imageData);
+            when(imageRepository.findAllByAdvertId(anyLong())).thenReturn(images);
 
-    @Test
-    void testFindImageByIdAndByAdvertId() {
-        ImageData imageData = new ImageData();
-        when(imageRepository.findByIdAndAdvertId(anyLong(), anyLong())).thenReturn(Optional.of(imageData));
-        doNothing().when(imageDataService).decompressImageData(any(ImageData.class));
+            List<byte[]> result = imageDataService.findByteListToAdvert(ADVERT_ID);
 
-        ImageData found = imageDataService.findImageByIdAndByAdvertId(1L, 1L);
+            assertNotNull(result);
+            assertEquals(1, result.size());
+        }
 
-        assertNotNull(found);
+        @Test
+        void testFindByteListToAdvert_NoImagesFound() {
+            when(imageRepository.findAllByAdvertId(ADVERT_ID)).thenReturn(Collections.emptyList());
+
+            List<byte[]> result = imageDataService.findByteListToAdvert(ADVERT_ID);
+            assertTrue(result.isEmpty(), "Expected no byte arrays to be returned for an advert with no images");
+        }
     }
-    @Test
-    void testDeleteImageByIdAndByAdvertId() {
-        ImageData imageData = new ImageData();
-        when(imageRepository.findByIdAndAdvertId(anyLong(), anyLong())).thenReturn(Optional.of(imageData));
+    @Nested
+    @DisplayName("When Find a image by id and by advertId")
+    class FindImageByIdAndAdvertIdTests {
+        @Test
+        void testFindImageByIdAndByAdvertId() {
+            when(imageRepository.findByIdAndAdvertId(anyLong(), anyLong())).thenReturn(Optional.of(imageData));
 
-        imageDataService.deleteImageByIdAndByAdvertId(1L, 1L);
+            ImageData found = imageDataService.findImageByIdAndByAdvertId(IMAGE_ID, ADVERT_ID);
 
-        verify(imageRepository).delete(imageData);
+            assertNotNull(found);
+            assertEquals(found.getName(), imageData.getName());
+        }
+
+        @Test
+        void testFindImageByIdAndByAdvertId_NotFound() {
+            when(imageRepository.findByIdAndAdvertId(IMAGE_ID, ADVERT_ID))
+                    .thenThrow(new ResourceNotFoundException("Image", "id", IMAGE_ID));
+            assertThrows(ResourceNotFoundException.class, () -> {
+                imageDataService.findImageByIdAndByAdvertId(IMAGE_ID, ADVERT_ID);
+            });
+        }
     }
+    @Nested
+    @DisplayName("When Delete a image By Id")
+    class DeleteImageByIdTests {
+        @Test
+        void testDeleteImageByIdAndByAdvertId() {
+            when(imageRepository.findByIdAndAdvertId(anyLong(), anyLong())).thenReturn(Optional.of(imageData));
 
-    @Test
-    void testCompressAndDecompressImage() throws IOException {
-        byte[] originalData = "TestData".getBytes();
-//        byte[] compressedData = imageDataService.compressImage(originalData);
-//        byte[] decompressedData = imageDataService.decompressImage(compressedData);
-//
-//        assertArrayEquals(originalData, decompressedData);
+            imageDataService.deleteImageByIdAndByAdvertId(IMAGE_ID, ADVERT_ID);
+
+            verify(imageRepository).delete(imageData);
+        }
+
+        @Test
+        void testDeleteImageByIdAndByAdvertId_NotFound() {
+            when(imageRepository.findByIdAndAdvertId(IMAGE_ID, ADVERT_ID)).thenReturn(Optional.empty());
+
+            assertThrows(ResourceNotFoundException.class, () -> {
+                imageDataService.deleteImageByIdAndByAdvertId(IMAGE_ID, ADVERT_ID);
+            });
+        }
     }
 
 }
