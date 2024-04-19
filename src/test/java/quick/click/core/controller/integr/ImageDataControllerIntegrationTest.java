@@ -76,40 +76,51 @@ class ImageDataControllerIntegrationTest {
         imageData.setAdvert(advert);
     }
 
-  //  @Test    void testUploadImagesListToAdvert() {    }
-  //  @Test    void findAllImagesToAdvert() {    }
-  //  @Test    void findImageByIdAndByAdvertId() {    }
+    @Nested
+    @DisplayName("When find all images to an advert")
+    class UploadImagesListToAdvertTests {
+        @Test
+        void uploadImagesListToAdvert() throws Exception {
+
+            mockMvc.perform(MockMvcRequestBuilders.multipart(BASE_URL + "/" + ADVERT_ID)
+                            .file("file", "test data".getBytes())
+                            .with(csrf())
+                            .contentType(MediaType.MULTIPART_FORM_DATA))
+                    .andExpect(status().isOk())
+                    .andExpect(content().string("Files are uploaded successfully."));
+        }
 
 
-    @Test
-    void uploadImagesListToAdvert() throws Exception {
-
-        mockMvc.perform(MockMvcRequestBuilders.multipart(BASE_URL + "/" + ADVERT_ID)
-                        .file("file", "test data".getBytes())
-                        .with(csrf())
-                        .contentType(MediaType.MULTIPART_FORM_DATA))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Files are uploaded successfully."));
     }
 
-    @Test
-    void findAllImagesToAdvert() throws Exception {
-        when(imageDataService.findByteListToAdvert(ADVERT_ID)).thenReturn(Collections.singletonList(new byte[10]));
+    @Nested
+    @DisplayName("When find all images to an advert")
+    class FindAllImagesToAdvertTests {
+        @Test
+        void findAllImagesToAdvert() throws Exception {
+            when(imageDataService.findByteListToAdvert(ADVERT_ID)).thenReturn(Collections.singletonList(new byte[10]));
 
-        mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/" + ADVERT_ID)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)));
+            mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/" + ADVERT_ID)
+                            .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$", hasSize(1)));
+        }
+
     }
 
-    @Test
-    void findImageByIdAndByAdvertId() throws Exception {
-        when(imageDataService.findImageByIdAndByAdvertId(IMAGE_ID, ADVERT_ID)).thenReturn(imageData);
+    @Nested
+    @DisplayName("When find an image by id and by advertId")
+    class FindImageByIdAndByAdvertIdTests {
+        @Test
+        void findImageByIdAndByAdvertId() throws Exception {
+            when(imageDataService.findImageByIdAndByAdvertId(IMAGE_ID, ADVERT_ID)).thenReturn(imageData);
 
-        mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/" + ADVERT_ID + "/" + IMAGE_ID)
-                        .accept(MediaType.APPLICATION_OCTET_STREAM))
-                .andExpect(status().isOk())
-                .andExpect(content().bytes(imageData.getImageData()));
+            mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/" + ADVERT_ID + "/" + IMAGE_ID)
+                            .accept(MediaType.APPLICATION_OCTET_STREAM))
+                    .andExpect(status().isOk())
+                    .andExpect(content().bytes(imageData.getImageData()));
+        }
+
     }
 
     @Nested

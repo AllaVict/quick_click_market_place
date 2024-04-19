@@ -59,9 +59,29 @@ class ImageDataControllerTest {
         imageData.setAdvert(advert);
     }
 
-//    @Test    void testUploadImagesListToAdvert() {    }
-//    @Test    void findAllImagesToAdvert() {    }
-//    @Test    void findImageByIdAndByAdvertId() {    }
+    @Nested
+    @DisplayName("When find all images to an advert")
+    class UploadImagesListToAdvertTests {
+        @Test
+        void testUploadImagesListToAdvert() {        }
+
+    }
+
+    @Nested
+    @DisplayName("When find all images to an advert")
+    class FindAllImagesToAdvertTests {
+        @Test
+        void findAllImagesToAdvert() {        }
+
+    }
+
+    @Nested
+    @DisplayName("When find an image by id and by advertId")
+    class FindImageByIdAndByAdvertIdTests {
+        @Test
+        void findImageByIdAndByAdvertId() {        }
+
+    }
 
     @Nested
     @DisplayName("When Delete an image by id and by advertId")
