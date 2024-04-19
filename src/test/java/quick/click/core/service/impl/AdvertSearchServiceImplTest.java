@@ -51,6 +51,7 @@ class AdvertSearchServiceImplTest {
     private Advert advertTwo;
 
     private AdvertReadDto advertReadDtoOne;
+
     private AdvertReadDto advertReadDtoTwo;
 
     private List<AdvertReadDto> advertReadDtoList;

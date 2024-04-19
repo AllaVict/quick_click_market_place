@@ -176,6 +176,13 @@ public class Advert extends BaseEntity {
         this.comments = comments;
     }
 
+    public List<ImageData> getImages() {
+        return images;
+    }
+
+    public void setImages(List<ImageData> images) {
+        this.images = images;
+    }
 
     public User getUser() {
         return user;
