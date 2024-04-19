@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
+import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.core.domain.model.ImageData;
 import quick.click.core.domain.model.User;
 import quick.click.core.repository.AdvertRepository;
@@ -64,7 +65,7 @@ public class ImageDataServiceImpl implements ImageDataService {
 
         LOGGER.info("In uploadImageToAdvert Uploading image to Advert with id: {}", advertId);
 
-        return imageRepository.save(imageData);
+        return imageRepository.saveAndFlush(imageData);
     }
 
     @Override
@@ -79,16 +80,35 @@ public class ImageDataServiceImpl implements ImageDataService {
         return byteList;
     }
 
- @Override
- public void deleteImageDataListToAdvert(Long advertId) {
-    List<ImageData> listToDelete = imageRepository.findAllByAdvertId(advertId);
-    if (!listToDelete.isEmpty()){
-        for (int i=0; i < listToDelete.size(); i++) {
-                  imageRepository.deleteById(listToDelete.get(i).getId());
+    @Override
+    public ImageData findImageByIdAndByAdvertId(Long imageId, Long advertId) {
+
+        ImageData imageData = imageRepository.findByIdAndAdvertId(imageId, advertId).orElseThrow();
+        if (!ObjectUtils.isEmpty(imageData)) {
+            decompressImageData(imageData);
+        }
+        return imageData;
+    }
+
+    @Override
+    public void deleteImageByIdAndByAdvertId(Long imageId,Long advertId) {
+        ImageData imageToDelete = imageRepository.findByIdAndAdvertId(imageId,advertId)
+                .orElseThrow(() -> new ResourceNotFoundException("Image", "id", imageId));
+        imageRepository.delete(imageToDelete);
+
+    }
+
+    //====================================================================
+
+    @Override
+    public void deleteImageDataListToAdvert(Long advertId) {
+        List<ImageData> listToDelete = imageRepository.findAllByAdvertId(advertId);
+        if (!listToDelete.isEmpty()){
+            for (int i=0; i < listToDelete.size(); i++) {
+                imageRepository.deleteById(listToDelete.get(i).getId());
             }
         }
     }
-
     public String uploadImageToFileSystem(MultipartFile file, ImageData imageData) throws IOException {
         final String filePath;
         if(System.getProperty("os.name") == "WINDOWS"){
@@ -104,15 +124,6 @@ public class ImageDataServiceImpl implements ImageDataService {
         return null;
     }
 
-    @Override
-    public ImageData findImageToAdvert(Long advertId) {
-
-        ImageData imageData = imageRepository.findAllByAdvertId(advertId).stream().findFirst().orElseThrow();
-        if (!ObjectUtils.isEmpty(imageData)) {
-            decompressImageData(imageData);
-        }
-        return imageData;
-    }
 
     @Override
     public byte[] downloadImageFromFileSystem(Long advertId) throws IOException  {
@@ -127,7 +138,7 @@ public class ImageDataServiceImpl implements ImageDataService {
         byte[] image = Files.readAllBytes(new File(filePath).toPath());
         return image;
     }
-    private ImageData decompressImageData(ImageData imageData){
+    protected ImageData decompressImageData(ImageData imageData){
         ImageData decompressedImageData = new ImageData();
         imageData.setAdvert(imageData.getAdvert());
         imageData.setUserId(imageData.getUserId());

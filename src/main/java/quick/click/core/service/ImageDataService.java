@@ -6,13 +6,15 @@ import quick.click.core.domain.model.ImageData;
 import java.io.IOException;
 import java.util.List;
 
-public interface ImageDataService  {
+public interface ImageDataService {
 
     ImageData uploadImageToAdvert(Long advertId, MultipartFile file) throws IOException;
 
-    public ImageData findImageToAdvert(Long advertId);
+    public ImageData findImageByIdAndByAdvertId(Long imageById, Long advertId);
 
     List<byte[]> findByteListToAdvert(Long advertId);
+
+    void deleteImageByIdAndByAdvertId(Long imageById,Long advertId);
 
     void deleteImageDataListToAdvert(Long advertId);
 
