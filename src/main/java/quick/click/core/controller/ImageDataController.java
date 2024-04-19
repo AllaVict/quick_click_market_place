@@ -75,8 +75,8 @@ public class ImageDataController {
      get a image from database as byte[] for the given imageId and advert id
      */
     @GetMapping("/{advertId}/{imageId}")
-    public ResponseEntity<?>  findImageByIdAndByAdvertId(@PathVariable("advertId") Long advertId,
-                                               @PathVariable("imageId") Long imageId) throws IOException {
+    public ResponseEntity<?>  findImageByIdAndByAdvertId( @PathVariable("imageId") Long imageId,
+                                                          @PathVariable("advertId") Long advertId) throws IOException {
 
         byte[] image = imageDataService.findImageByIdAndByAdvertId(imageId, advertId).getImageData();
 
