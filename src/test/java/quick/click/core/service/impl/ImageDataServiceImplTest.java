@@ -95,7 +95,7 @@ class ImageDataServiceImplTest {
     @DisplayName("When Find all images by AdvertId")
     class FindAllImageByAdvertIdTests {
         @Test
-        void testFindByteListToAdvert() {
+        void testFindByteListToAdvert_ShouldReturnByteList() {
             List<ImageData> images = List.of(imageData);
             when(imageRepository.findAllByAdvertId(anyLong())).thenReturn(images);
 
@@ -117,7 +117,7 @@ class ImageDataServiceImplTest {
     @DisplayName("When Find a image by id and by advertId")
     class FindImageByIdAndAdvertIdTests {
         @Test
-        void testFindImageByIdAndByAdvertId() {
+        void testFindImageByIdAndByAdvertId_ShouldReturnImageData() {
             when(imageRepository.findByIdAndAdvertId(anyLong(), anyLong())).thenReturn(Optional.of(imageData));
 
             ImageData found = imageDataService.findImageByIdAndByAdvertId(IMAGE_ID, ADVERT_ID);
@@ -139,7 +139,7 @@ class ImageDataServiceImplTest {
     @DisplayName("When Delete a image By Id")
     class DeleteImageByIdTests {
         @Test
-        void testDeleteImageByIdAndByAdvertId() {
+        void testDeleteImageByIdAndByAdvertId_ShouldDeleteImageData() {
             when(imageRepository.findByIdAndAdvertId(anyLong(), anyLong())).thenReturn(Optional.of(imageData));
 
             imageDataService.deleteImageByIdAndByAdvertId(IMAGE_ID, ADVERT_ID);
