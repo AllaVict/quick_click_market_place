@@ -13,6 +13,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import quick.click.commons.exeptions.AuthorizationException;
+import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.config.factory.WithMockAuthenticatedUser;
 import quick.click.core.controller.ImageDataController;
 import quick.click.core.domain.model.Advert;
@@ -27,11 +29,10 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static quick.click.commons.constants.ApiVersion.VERSION_1_0;
-import static quick.click.commons.constants.Constants.Endpoints.COMMENTS_URL;
+import static quick.click.commons.constants.Constants.Endpoints.IMAGES_URL;
 import static quick.click.config.factory.AdvertFactory.createAdvertOne;
 import static quick.click.config.factory.UserFactory.createUser;
 import static quick.click.core.controller.ImageDataController.BASE_URL;
@@ -127,14 +128,46 @@ class ImageDataControllerIntegrationTest {
     @DisplayName("When Delete an image by id and by advertId")
     class DeleteImageByIdAndByAdvertIdTests {
         @Test
-        void deleteImageByIdAndByAdvertId() throws Exception {
+        void deleteImageByIdAndByAdvertId_ShouldnReturn200Status_WhenDeleteImage() throws Exception {
             doNothing().when(imageDataService).deleteImageByIdAndByAdvertId(IMAGE_ID, ADVERT_ID, authenticatedUser);
 
-            mockMvc.perform(delete(BASE_URL + "/" + ADVERT_ID + "/" + IMAGE_ID)
+            mockMvc.perform(delete(VERSION_1_0 + IMAGES_URL + "/"+ADVERT_ID +"/" + IMAGE_ID)
                             .with(csrf()))
                     .andDo(print())
                     .andExpect(status().isOk())
-                    .andExpect(content().string("Image has been deleted successfully."));
+                    .andExpect(content().string("The image has been deleted successfully."));
+
+        }
+
+        @Test
+        void testDeleteComment_ShouldnReturn404Status_WhenImageDoesNotExist() throws Exception {
+            doThrow(new ResourceNotFoundException("Image", "id", IMAGE_ID))
+                    .when(imageDataService).deleteImageByIdAndByAdvertId(anyLong(),anyLong(), any(AuthenticatedUser.class));
+
+            mockMvc.perform(delete(VERSION_1_0 + IMAGES_URL + "/"+ADVERT_ID +"/" + IMAGE_ID)
+                            .with(csrf()))
+                    .andDo(print())
+                    .andExpect(status().isNotFound());
+        }
+
+        @Test
+        void testDeleteComment_ShouldnReturn404Status_WhenInvalidRequested() throws Exception {
+            mockMvc.perform(delete(VERSION_1_0 + IMAGES_URL + "/"+ADVERT_ID +"/" + "/invalid")
+                            .with(csrf()))
+                    .andDo(print())
+                    .andExpect(status().is4xxClientError());
+
+        }
+
+        @Test
+        void testDeleteComment_UnauthorizedUser() throws Exception {
+            doThrow(new AuthorizationException("Unauthorized access"))
+                    .when(imageDataService).deleteImageByIdAndByAdvertId(anyLong(),anyLong(), any(AuthenticatedUser.class));
+
+            mockMvc.perform(delete(VERSION_1_0 + IMAGES_URL + "/"+ADVERT_ID +"/" + IMAGE_ID)
+                           .with(csrf()))
+                    .andDo(print())
+                    .andExpect(status().isForbidden());
 
         }
 

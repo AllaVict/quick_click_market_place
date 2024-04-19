@@ -89,7 +89,7 @@ public class ImageDataServiceImpl implements ImageDataService {
     public void deleteImageByIdAndByAdvertId(final Long imageId,
                                              final Long advertId,
                                              final AuthenticatedUser authenticatedUser) {
-
+        getUserIdByAuthenticatedUser(authenticatedUser);
         final ImageData imageToDelete = imageRepository.findByIdAndAdvertId(imageId,advertId)
                 .orElseThrow(() -> new ResourceNotFoundException("Image", "id", imageId));
 
