@@ -1,6 +1,7 @@
 package quick.click.core.domain.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import net.minidev.json.annotate.JsonIgnore;
 import quick.click.core.domain.BaseEntity;
 
@@ -19,6 +20,7 @@ public class ImageData extends BaseEntity {
     private String type;
     @Lob
     @Column(name = "image_data")
+    @NotEmpty
     private byte[] imageData;
     @JsonIgnore
     @Column
