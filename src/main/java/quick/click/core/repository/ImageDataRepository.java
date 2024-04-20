@@ -14,5 +14,4 @@ public interface ImageDataRepository extends JpaRepository<ImageData, Long> {
 
     Optional<ImageData> findByIdAndAdvertId(Long imageId, Long advertId);
 
-
 }

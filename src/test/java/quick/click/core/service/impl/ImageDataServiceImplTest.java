@@ -71,7 +71,7 @@ class ImageDataServiceImplTest {
     @DisplayName("When upload an image to an advert")
     class UploadImageToAdvertTests {
         @Test
-        void testUploadImageToAdvert() throws IOException {
+        void testUploadImageToAdvert_ShouldUpload() throws IOException {
             when(authenticatedUser.getEmail()).thenReturn(EMAIL);
             when(userRepository.findUserByEmail(EMAIL)).thenReturn(Optional.of(user));
             MockMultipartFile file = new MockMultipartFile("file", "hello.png", "image/png", "Hello, World!".getBytes());

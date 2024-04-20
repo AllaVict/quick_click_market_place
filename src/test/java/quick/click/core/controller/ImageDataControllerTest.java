@@ -10,11 +10,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import quick.click.commons.exeptions.AuthorizationException;
 import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.core.domain.model.Advert;
 import quick.click.core.domain.model.ImageData;
 import quick.click.core.domain.model.User;
+import quick.click.core.repository.AdvertRepository;
+import quick.click.core.repository.UserRepository;
 import quick.click.core.service.ImageDataService;
 import quick.click.security.commons.model.AuthenticatedUser;
 
@@ -64,10 +67,31 @@ class ImageDataControllerTest {
     }
 
     @Nested
-    @DisplayName("When find all images to an advert")
+    @DisplayName("When upload images list to an advert")
     class UploadImagesListToAdvertTests {
         @Test
-        void testUploadImagesListToAdvert() {
+        void testUploadImagesListToAdvert_ShouldUpload() {
+            MockMultipartFile file = new MockMultipartFile("file", "hello.png", "image/png", "Hello, World!".getBytes());
+            MockMultipartFile[] images = {file};
+
+            ResponseEntity<?> responseEntity = imageDataController.uploadImagesListToAdvert(ADVERT_ID, images, authenticatedUser);
+
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+            assertEquals("Files are uploaded successfully.", responseEntity.getBody());
+
+        }
+
+        @Test
+        void testUploadImagesListToAdvert_AdvertNotFound() throws IOException {
+            MockMultipartFile file = new MockMultipartFile("file", "hello.png", "image/png", "Hello, World!".getBytes());
+            MockMultipartFile[] images = {file};
+            when(imageDataService.uploadImageToAdvert(ADVERT_ID, file, authenticatedUser))
+                    .thenThrow(new ResourceNotFoundException("Advert", "id", ADVERT_ID));
+
+            ResponseEntity<?> responseEntity = imageDataController.uploadImagesListToAdvert(ADVERT_ID, images, authenticatedUser);
+
+            assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+            assertEquals("Advert not found with id : "+"'"+ADVERT_ID+"'", responseEntity.getBody());
         }
 
     }

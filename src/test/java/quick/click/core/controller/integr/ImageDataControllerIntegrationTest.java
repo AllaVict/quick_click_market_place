@@ -13,7 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.multipart.MultipartFile;
 import quick.click.commons.exeptions.AuthorizationException;
 import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.config.factory.WithMockAuthenticatedUser;
@@ -30,15 +30,13 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static quick.click.commons.constants.ApiVersion.VERSION_1_0;
 import static quick.click.commons.constants.Constants.Endpoints.*;
 import static quick.click.config.factory.AdvertFactory.createAdvertOne;
 import static quick.click.config.factory.UserFactory.createUser;
-import static quick.click.core.controller.ImageDataController.BASE_URL;
 
 @WithMockAuthenticatedUser
 @ExtendWith(SpringExtension.class)
@@ -87,9 +85,9 @@ class ImageDataControllerIntegrationTest {
     @DisplayName("When find all images to an advert")
     class UploadImagesListToAdvertTests {
         @Test
-        void uploadImagesListToAdvert() throws Exception {
+        void testUploadImagesListToAdvert_ShouldUpload() throws Exception {
 
-            mockMvc.perform(MockMvcRequestBuilders.multipart(BASE_URL + "/" + ADVERT_ID)
+            mockMvc.perform(multipart(VERSION_1_0 + IMAGES_URL + "/" + ADVERT_ID)
                             .file("file", "test data".getBytes())
                             .with(csrf())
                             .contentType(MediaType.MULTIPART_FORM_DATA))
@@ -97,6 +95,19 @@ class ImageDataControllerIntegrationTest {
                     .andExpect(content().string("Files are uploaded successfully."));
         }
 
+        @Test
+        void testUploadImagesListToAdvert_AdvertNotFound() throws Exception {
+             when(imageDataService.uploadImageToAdvert(anyLong(), any(MultipartFile.class), any(AuthenticatedUser.class)))
+                    .thenThrow(new ResourceNotFoundException("Advert", "id", ADVERT_ID));
+
+            mockMvc.perform(multipart(VERSION_1_0 + IMAGES_URL + "/" + ADVERT_ID)
+                            .file("file", "test data".getBytes())
+                            .with(csrf())
+                            .contentType(MediaType.MULTIPART_FORM_DATA))
+                    .andExpect(status().isNotFound())
+                    .andExpect(content().string("Advert not found with id : " + "'" + ADVERT_ID + "'"));
+
+        }
     }
 
     @Nested
