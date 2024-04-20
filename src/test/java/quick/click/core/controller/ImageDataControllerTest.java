@@ -18,6 +18,11 @@ import quick.click.core.domain.model.User;
 import quick.click.core.service.ImageDataService;
 import quick.click.security.commons.model.AuthenticatedUser;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -70,16 +75,54 @@ class ImageDataControllerTest {
     @Nested
     @DisplayName("When find all images to an advert")
     class FindAllImagesToAdvertTests {
+
         @Test
-        void findAllImagesToAdvert() {        }
+        void testFindAllImagesToAdvert_ShouldReturnAllImages() {
+            List<byte[]> images = List.of(imageData.getImageData());
+            when(imageDataService.findByteListToAdvert(ADVERT_ID)).thenReturn(images);
+
+            ResponseEntity<?> responseEntity = imageDataController.findAllImagesToAdvert(ADVERT_ID);
+
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+            assertEquals(images, responseEntity.getBody());
+
+        }
+
+        @Test
+        void testFindAllImagesToAdvert_ShouldReturn200Status_WhenReturnEmptyList() {
+            when(imageDataService.findByteListToAdvert(ADVERT_ID)).thenReturn(Collections.emptyList());
+
+            ResponseEntity<?> responseEntity = imageDataController.findAllImagesToAdvert(ADVERT_ID);
+
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+            assertEquals(Collections.emptyList(), responseEntity.getBody());
+        }
 
     }
 
     @Nested
     @DisplayName("When find an image by id and by advertId")
     class FindImageByIdAndByAdvertIdTests {
+
         @Test
-        void findImageByIdAndByAdvertId() {        }
+        void testFindImageByIdAndByAdvertId_ShouldReturnAImage() throws IOException {
+            when(imageDataService.findImageByIdAndByAdvertId(IMAGE_ID,ADVERT_ID)).thenReturn(imageData);
+
+            ResponseEntity<?> responseEntity = imageDataController.findImageByIdAndByAdvertId(IMAGE_ID,ADVERT_ID);
+
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+            assertEquals(imageData.getImageData(), responseEntity.getBody());
+        }
+
+        @Test
+        void testFindImageByIdAndByAdvertId_ShouldReturn404Status_WhenImageDoesNotExist() throws IOException {
+            when(imageDataService.findImageByIdAndByAdvertId(IMAGE_ID,ADVERT_ID))
+                .thenThrow(new ResourceNotFoundException("Image", "id", IMAGE_ID));
+
+            ResponseEntity<?> responseEntity = imageDataController.findImageByIdAndByAdvertId(IMAGE_ID,ADVERT_ID);
+
+            assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        }
 
     }
 
