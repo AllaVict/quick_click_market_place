@@ -62,7 +62,7 @@ public class ImageDataServiceImpl implements ImageDataService {
     }
 
     @Override
-    public List<byte[]> findByteListToAdvert(final Long advertId) {
+    public List<byte[]> findAllImagesAsByteListByAdvertId(final Long advertId) {
         final List<ImageData> listToDecompress = imageRepository.findAllByAdvertId(advertId);
         final List<byte[]> byteList = new ArrayList<>();
         for (ImageData imageData : listToDecompress) {

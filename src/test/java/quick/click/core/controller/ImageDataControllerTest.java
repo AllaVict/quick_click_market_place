@@ -19,7 +19,6 @@ import quick.click.core.service.ImageDataService;
 import quick.click.security.commons.model.AuthenticatedUser;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -80,7 +79,7 @@ class ImageDataControllerTest {
         @Test
         void testFindAllImagesToAdvert_ShouldReturnAllImages() {
             List<byte[]> images = List.of(imageData.getImageData());
-            when(imageDataService.findByteListToAdvert(ADVERT_ID)).thenReturn(images);
+            when(imageDataService.findAllImagesAsByteListByAdvertId(ADVERT_ID)).thenReturn(images);
 
             ResponseEntity<?> responseEntity = imageDataController.findAllImagesToAdvert(ADVERT_ID);
 
@@ -91,7 +90,7 @@ class ImageDataControllerTest {
 
         @Test
         void testFindAllImagesToAdvert_ShouldReturn200Status_WhenReturnEmptyList() {
-            when(imageDataService.findByteListToAdvert(ADVERT_ID)).thenReturn(Collections.emptyList());
+            when(imageDataService.findAllImagesAsByteListByAdvertId(ADVERT_ID)).thenReturn(Collections.emptyList());
 
             ResponseEntity<?> responseEntity = imageDataController.findAllImagesToAdvert(ADVERT_ID);
 

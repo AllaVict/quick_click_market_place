@@ -13,7 +13,7 @@ public interface ImageDataService {
 
     public ImageData findImageByIdAndByAdvertId(Long imageById, Long advertId);
 
-    List<byte[]> findByteListToAdvert(Long advertId);
+    List<byte[]> findAllImagesAsByteListByAdvertId(Long advertId);
 
     void deleteImageByIdAndByAdvertId(Long imageById,Long advertId, AuthenticatedUser authenticatedUser);
 

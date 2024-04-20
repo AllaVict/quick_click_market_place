@@ -24,9 +24,7 @@ import quick.click.core.domain.model.User;
 import quick.click.core.service.ImageDataService;
 import quick.click.security.commons.model.AuthenticatedUser;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.BDDMockito.given;
@@ -38,7 +36,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static quick.click.commons.constants.ApiVersion.VERSION_1_0;
 import static quick.click.commons.constants.Constants.Endpoints.*;
-import static quick.click.commons.constants.Constants.Endpoints.ADVERTS_URL;
 import static quick.click.config.factory.AdvertFactory.createAdvertOne;
 import static quick.click.config.factory.UserFactory.createUser;
 import static quick.click.core.controller.ImageDataController.BASE_URL;
@@ -107,7 +104,7 @@ class ImageDataControllerIntegrationTest {
     class FindAllImagesToAdvertTests {
         @Test
         void testFindAllImagesToAdvert_ShouldReturnAllImages() throws Exception {
-            when(imageDataService.findByteListToAdvert(ADVERT_ID)).thenReturn(Collections.singletonList(new byte[10]));
+            when(imageDataService.findAllImagesAsByteListByAdvertId(ADVERT_ID)).thenReturn(Collections.singletonList(new byte[10]));
 
             mockMvc.perform(get(VERSION_1_0 + IMAGES_URL + "/" + ADVERT_ID)
                             .accept(MediaType.APPLICATION_JSON))
@@ -117,7 +114,7 @@ class ImageDataControllerIntegrationTest {
 
         @Test
         void testFindAllImagesToAdvert_ShouldReturn200Status_WhenReturnEmptyList() throws Exception {
-            given(imageDataService.findByteListToAdvert(ADVERT_ID)).willReturn(Collections.emptyList());
+            given(imageDataService.findAllImagesAsByteListByAdvertId(ADVERT_ID)).willReturn(Collections.emptyList());
 
             mockMvc.perform(get(VERSION_1_0 + IMAGES_URL + "/" + ADVERT_ID)
                             .with(csrf())

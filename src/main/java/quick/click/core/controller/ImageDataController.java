@@ -85,7 +85,7 @@ public class ImageDataController {
     public ResponseEntity<?> findAllImagesToAdvert(@PathVariable("advertId") final Long advertId) {
 
         try {
-            final List<byte[]> imagesList = imageDataService.findByteListToAdvert(advertId);
+            final List<byte[]> imagesList = imageDataService.findAllImagesAsByteListByAdvertId(advertId);
 
             LOGGER.debug("In getAllImagesToAdvert received GET all files for advert with id {} ", advertId);
 

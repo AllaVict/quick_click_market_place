@@ -100,24 +100,24 @@ class ImageDataServiceImplTest {
         }
     }
     @Nested
-    @DisplayName("When Find all images by AdvertId")
-    class FindAllImageByAdvertIdTests {
+    @DisplayName("When Find all images  by AdvertId")
+    class FindAllImagesAsByteListByAdvertIdTests {
         @Test
-        void testFindByteListToAdvert_ShouldReturnByteList() {
+        void testFindAllImagesAsByteListByAdvertId_ShouldReturnByteList() {
             List<ImageData> images = List.of(imageData);
             when(imageRepository.findAllByAdvertId(anyLong())).thenReturn(images);
 
-            List<byte[]> result = imageDataService.findByteListToAdvert(ADVERT_ID);
+            List<byte[]> result = imageDataService.findAllImagesAsByteListByAdvertId(ADVERT_ID);
 
             assertNotNull(result);
             assertEquals(1, result.size());
         }
 
         @Test
-        void testFindByteListToAdvert_NoImagesFound() {
+        void testFindAllImagesAsByteListByAdvertId_NoImagesFound() {
             when(imageRepository.findAllByAdvertId(ADVERT_ID)).thenReturn(Collections.emptyList());
 
-            List<byte[]> result = imageDataService.findByteListToAdvert(ADVERT_ID);
+            List<byte[]> result = imageDataService.findAllImagesAsByteListByAdvertId(ADVERT_ID);
             assertTrue(result.isEmpty(), "Expected no byte arrays to be returned for an advert with no images");
         }
     }
