@@ -68,7 +68,8 @@ class ImageDataControllerTest {
     @DisplayName("When find all images to an advert")
     class UploadImagesListToAdvertTests {
         @Test
-        void testUploadImagesListToAdvert() {        }
+        void testUploadImagesListToAdvert() {
+        }
 
     }
 
@@ -106,9 +107,9 @@ class ImageDataControllerTest {
 
         @Test
         void testFindImageByIdAndByAdvertId_ShouldReturnAImage() throws IOException {
-            when(imageDataService.findImageByIdAndByAdvertId(IMAGE_ID,ADVERT_ID)).thenReturn(imageData);
+            when(imageDataService.findImageByIdAndByAdvertId(IMAGE_ID, ADVERT_ID)).thenReturn(imageData);
 
-            ResponseEntity<?> responseEntity = imageDataController.findImageByIdAndByAdvertId(IMAGE_ID,ADVERT_ID);
+            ResponseEntity<?> responseEntity = imageDataController.findImageByIdAndByAdvertId(IMAGE_ID, ADVERT_ID);
 
             assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
             assertEquals(imageData.getImageData(), responseEntity.getBody());
@@ -116,10 +117,10 @@ class ImageDataControllerTest {
 
         @Test
         void testFindImageByIdAndByAdvertId_ShouldReturn404Status_WhenImageDoesNotExist() throws IOException {
-            when(imageDataService.findImageByIdAndByAdvertId(IMAGE_ID,ADVERT_ID))
-                .thenThrow(new ResourceNotFoundException("Image", "id", IMAGE_ID));
+            when(imageDataService.findImageByIdAndByAdvertId(IMAGE_ID, ADVERT_ID))
+                    .thenThrow(new ResourceNotFoundException("Image", "id", IMAGE_ID));
 
-            ResponseEntity<?> responseEntity = imageDataController.findImageByIdAndByAdvertId(IMAGE_ID,ADVERT_ID);
+            ResponseEntity<?> responseEntity = imageDataController.findImageByIdAndByAdvertId(IMAGE_ID, ADVERT_ID);
 
             assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
         }

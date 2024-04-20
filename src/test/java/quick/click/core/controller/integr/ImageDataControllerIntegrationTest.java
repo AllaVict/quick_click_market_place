@@ -109,7 +109,7 @@ class ImageDataControllerIntegrationTest {
         void testFindAllImagesToAdvert_ShouldReturnAllImages() throws Exception {
             when(imageDataService.findByteListToAdvert(ADVERT_ID)).thenReturn(Collections.singletonList(new byte[10]));
 
-            mockMvc.perform(get(VERSION_1_0 + IMAGES_URL + "/"+ADVERT_ID)
+            mockMvc.perform(get(VERSION_1_0 + IMAGES_URL + "/" + ADVERT_ID)
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", hasSize(1)));
@@ -119,7 +119,7 @@ class ImageDataControllerIntegrationTest {
         void testFindAllImagesToAdvert_ShouldReturn200Status_WhenReturnEmptyList() throws Exception {
             given(imageDataService.findByteListToAdvert(ADVERT_ID)).willReturn(Collections.emptyList());
 
-            mockMvc.perform(get(VERSION_1_0 + IMAGES_URL + "/"+ADVERT_ID)
+            mockMvc.perform(get(VERSION_1_0 + IMAGES_URL + "/" + ADVERT_ID)
                             .with(csrf())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(Collections.emptyList())))
@@ -131,7 +131,7 @@ class ImageDataControllerIntegrationTest {
         @Test
         void testFindAllImagesToAdvert_ShouldReturn404Status_WhenInvalidRequested() throws Exception {
 
-            mockMvc.perform(get(VERSION_1_0 + IMAGES_URL +"/invalid")
+            mockMvc.perform(get(VERSION_1_0 + IMAGES_URL + "/invalid")
                             .with(csrf())
                             .contentType(MediaType.APPLICATION_JSON))
                     .andDo(print())
@@ -169,7 +169,7 @@ class ImageDataControllerIntegrationTest {
             given(imageDataService.findImageByIdAndByAdvertId(IMAGE_ID, ADVERT_ID)).willReturn(null);
 
             mockMvc.perform(get(VERSION_1_0 + IMAGES_URL + "/" + ADVERT_ID + "/invalid")
-                                    .accept(MediaType.APPLICATION_OCTET_STREAM))
+                            .accept(MediaType.APPLICATION_OCTET_STREAM))
                     .andDo(print())
                     .andExpect(status().isBadRequest());
         }
@@ -183,7 +183,7 @@ class ImageDataControllerIntegrationTest {
         void deleteImageByIdAndByAdvertId_ShouldnReturn200Status_WhenDeleteImage() throws Exception {
             doNothing().when(imageDataService).deleteImageByIdAndByAdvertId(IMAGE_ID, ADVERT_ID, authenticatedUser);
 
-            mockMvc.perform(delete(VERSION_1_0 + IMAGES_URL + "/"+ADVERT_ID +"/" + IMAGE_ID)
+            mockMvc.perform(delete(VERSION_1_0 + IMAGES_URL + "/" + ADVERT_ID + "/" + IMAGE_ID)
                             .with(csrf()))
                     .andDo(print())
                     .andExpect(status().isOk())
@@ -194,9 +194,9 @@ class ImageDataControllerIntegrationTest {
         @Test
         void testDeleteComment_ShouldnReturn404Status_WhenImageDoesNotExist() throws Exception {
             doThrow(new ResourceNotFoundException("Image", "id", IMAGE_ID))
-                    .when(imageDataService).deleteImageByIdAndByAdvertId(anyLong(),anyLong(), any(AuthenticatedUser.class));
+                    .when(imageDataService).deleteImageByIdAndByAdvertId(anyLong(), anyLong(), any(AuthenticatedUser.class));
 
-            mockMvc.perform(delete(VERSION_1_0 + IMAGES_URL + "/"+ADVERT_ID +"/" + IMAGE_ID)
+            mockMvc.perform(delete(VERSION_1_0 + IMAGES_URL + "/" + ADVERT_ID + "/" + IMAGE_ID)
                             .with(csrf()))
                     .andDo(print())
                     .andExpect(status().isNotFound());
@@ -204,7 +204,7 @@ class ImageDataControllerIntegrationTest {
 
         @Test
         void testDeleteComment_ShouldnReturn404Status_WhenInvalidRequested() throws Exception {
-            mockMvc.perform(delete(VERSION_1_0 + IMAGES_URL + "/"+ADVERT_ID +"/" + "/invalid")
+            mockMvc.perform(delete(VERSION_1_0 + IMAGES_URL + "/" + ADVERT_ID + "/" + "/invalid")
                             .with(csrf()))
                     .andDo(print())
                     .andExpect(status().is4xxClientError());
@@ -214,10 +214,10 @@ class ImageDataControllerIntegrationTest {
         @Test
         void testDeleteComment_UnauthorizedUser() throws Exception {
             doThrow(new AuthorizationException("Unauthorized access"))
-                    .when(imageDataService).deleteImageByIdAndByAdvertId(anyLong(),anyLong(), any(AuthenticatedUser.class));
+                    .when(imageDataService).deleteImageByIdAndByAdvertId(anyLong(), anyLong(), any(AuthenticatedUser.class));
 
-            mockMvc.perform(delete(VERSION_1_0 + IMAGES_URL + "/"+ADVERT_ID +"/" + IMAGE_ID)
-                           .with(csrf()))
+            mockMvc.perform(delete(VERSION_1_0 + IMAGES_URL + "/" + ADVERT_ID + "/" + IMAGE_ID)
+                            .with(csrf()))
                     .andDo(print())
                     .andExpect(status().isForbidden());
 
