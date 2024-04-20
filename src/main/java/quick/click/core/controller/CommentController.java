@@ -44,12 +44,6 @@ public class CommentController {
     }
 
     /**
-     * POST    http://localhost:8080/v1.0/comments/1
-     * {
-     * "message": "Das ist ein gutes Auto",
-     * }
-     */
-    /**
      * Registers a new comment under an advertisement.
      *
      * @param advertId the identifier of the advertisement to which the comment is to be attached

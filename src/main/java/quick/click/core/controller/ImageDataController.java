@@ -1,5 +1,7 @@
 package quick.click.core.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -23,6 +25,7 @@ import static quick.click.core.controller.ImageDataController.BASE_URL;
 @CrossOrigin
 @RestController
 @RequestMapping(BASE_URL)
+@Tag(name = "ImageData Controller", description = "ImageData API")
 public class ImageDataController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ImageDataController.class);
@@ -35,11 +38,17 @@ public class ImageDataController {
         this.imageDataService = imageDataService;
     }
 
+
     /**
-     * POST    http://localhost:8080/v1.0/images/1
-     * save several images in database as byte and in a folder for the given advert id
+     * Endpoint for uploading one or more images associated with an advert.
+     *
+     * @param advertId          The ID of the advert to which images will be uploaded.
+     * @param files             An array of MultipartFile objects representing the images to upload.
+     * @param authenticatedUser The user performing the upload.
+     * @return A ResponseEntity indicating the outcome of the upload process.
      */
     @PostMapping("/{advertId}")
+    @Operation(summary = "upload images to an advert with a given request body")
     public ResponseEntity<?> uploadImagesListToAdvert(@PathVariable("advertId") final Long advertId,
                                                       @RequestParam("file") final MultipartFile[] files,
                                                       @AuthenticationPrincipal final AuthenticatedUser authenticatedUser) {
@@ -77,11 +86,13 @@ public class ImageDataController {
     }
 
     /**
-     * GET    http://localhost:8080/v1.0/images/1
-     * get several images as list of byte[] for the given advert id
+     * Endpoint for retrieving all images associated with an advert as a list of byte arrays.
+     *
+     * @param advertId The ID of the advert for which images are retrieved.
+     * @return A ResponseEntity containing a list of byte arrays, each representing an image's data.
      */
-
     @GetMapping("/{advertId}")
+    @Operation(summary = "get several images as list of byte[] for the given advert id")
     public ResponseEntity<?> findAllImagesToAdvert(@PathVariable("advertId") final Long advertId) {
 
         try {
@@ -105,10 +116,17 @@ public class ImageDataController {
     }
 
     /**
-     * GET http://localhost:8080/v1.0/images/1/2
-     * get a image from database as byte[] for the given imageId and advert id
+     * Retrieves an image as a byte array from the database based on the specified image ID and advert ID.
+     *
+     * @param imageId  The unique identifier for the image.
+     * @param advertId The unique identifier of the advert associated with the image.
+     * @return A ResponseEntity containing the image data as a byte array if found, along with an appropriate HTTP status code.
+     * @throws IOException               If any I/O error occurs during image retrieval.
+     * @throws ResourceNotFoundException If no image or advert with the provided IDs is found.
+     * @throws Exception                 If an unexpected error occurs.
      */
     @GetMapping("/{advertId}/{imageId}")
+    @Operation(summary = "get a image from database as byte[] for the given imageId and advert id")
     public ResponseEntity<?> findImageByIdAndByAdvertId(@PathVariable("imageId") final Long imageId,
                                                         @PathVariable("advertId") final Long advertId) throws IOException {
 
@@ -134,10 +152,18 @@ public class ImageDataController {
     }
 
     /**
-     * DELETE    http://localhost:8080/v1.0/images/1/2
-     * delete an image for the given advert id and given image id
+     * Deletes an image associated with a given advert id and image id, validated against the authenticated user.
+     *
+     * @param imageId           The unique identifier for the image to be deleted.
+     * @param advertId          The unique identifier of the advert associated with the image.
+     * @param authenticatedUser The user credentials used to authenticate the request.
+     * @return A ResponseEntity indicating the outcome of the delete operation.
+     * @throws AuthorizationException    If the authenticated user does not have permission to delete the image.
+     * @throws ResourceNotFoundException If no image or advert with the provided IDs is found.
+     * @throws Exception                 If an unexpected error occurs during the delete operation.
      */
     @DeleteMapping("/{advertId}/{imageId}")
+    @Operation(summary = "delete an image for the given advert id and given image id")
     public ResponseEntity<?> deleteImageByIdAndByAdvertId(@PathVariable("imageId") final Long imageId,
                                                           @PathVariable("advertId") final Long advertId,
                                                           @AuthenticationPrincipal final AuthenticatedUser authenticatedUser) {

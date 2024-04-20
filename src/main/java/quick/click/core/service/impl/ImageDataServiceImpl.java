@@ -48,6 +48,16 @@ public class ImageDataServiceImpl implements ImageDataService {
         this.advertRepository = advertRepository;
     }
 
+    /**
+     * Uploads an image associated with a specific advert, handling file storage
+     * and database persistence.
+     *
+     * @param advertId The ID of the advert to which the image is being uploaded.
+     * @param file The multipart file that will be uploaded.
+     * @param authenticatedUser The user performing the upload.
+     * @return The ImageData entity after being saved and flushed.
+     * @throws IOException If there is an error during file upload.
+     */
     @Override
     public ImageData uploadImageToAdvert(final Long advertId,
                                          final MultipartFile file,
@@ -61,6 +71,12 @@ public class ImageDataServiceImpl implements ImageDataService {
         return imageRepository.saveAndFlush(imageData);
     }
 
+    /**
+     * Retrieves all images associated with an advert as a list of byte arrays.
+     *
+     * @param advertId The ID of the advert for which images are to be retrieved.
+     * @return A list of byte arrays each representing an image's data.
+     */
     @Override
     public List<byte[]> findAllImagesAsByteListByAdvertId(final Long advertId) {
         final List<ImageData> listToDecompress = imageRepository.findAllByAdvertId(advertId);
@@ -73,6 +89,14 @@ public class ImageDataServiceImpl implements ImageDataService {
         return byteList;
     }
 
+    /**
+     * Finds a specific image by its ID and the associated advert's ID.
+     *
+     * @param imageId The ID of the image.
+     * @param advertId The ID of the advert associated with the image.
+     * @return The ImageData entity if found.
+     * @throws ResourceNotFoundException If no image is found for the provided IDs.
+     */
     @Override
     public ImageData findImageByIdAndByAdvertId(final Long imageId,
                                                 final Long advertId) {
@@ -85,6 +109,14 @@ public class ImageDataServiceImpl implements ImageDataService {
         return imageData;
     }
 
+    /**
+     * Deletes an image by its ID and the associated advert's ID.
+     *
+     * @param imageId The ID of the image to be deleted.
+     * @param advertId The ID of the advert associated with the image.
+     * @param authenticatedUser The user who is authorized to delete the image.
+     * @throws ResourceNotFoundException If no image is found for the provided IDs.
+     */
     @Override
     public void deleteImageByIdAndByAdvertId(final Long imageId,
                                              final Long advertId,
