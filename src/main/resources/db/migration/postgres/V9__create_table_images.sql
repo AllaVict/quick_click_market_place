@@ -1,8 +1,8 @@
 CREATE TABLE IF NOT EXISTS images(
-   id   BIGSERIAL NOT NULL ,
+   id   BIGSERIAL NOT NULL,
    name  VARCHAR(100),
    type  VARCHAR(50),
-   image_data BYTEA,
+   image_data  BYTEA,
    user_id   BIGINT,
    advert_id   BIGINT,
    created_date TIMESTAMP,

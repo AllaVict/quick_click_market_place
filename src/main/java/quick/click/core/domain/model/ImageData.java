@@ -3,6 +3,8 @@ package quick.click.core.domain.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import net.minidev.json.annotate.JsonIgnore;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.type.descriptor.jdbc.VarbinaryJdbcType;
 import quick.click.core.domain.BaseEntity;
 
 import java.util.Arrays;
@@ -18,7 +20,8 @@ public class ImageData extends BaseEntity {
     private String name;
     @Column
     private String type;
-    @Lob
+
+    @JdbcType(VarbinaryJdbcType.class)
     @Column(name = "image_data")
     @NotEmpty
     private byte[] imageData;
