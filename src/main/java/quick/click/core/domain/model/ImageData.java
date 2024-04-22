@@ -22,7 +22,7 @@ public class ImageData extends BaseEntity {
     private String type;
 
     @JdbcType(VarbinaryJdbcType.class)
-    @Column(name = "image_data")
+    @Column(name = "image_data", columnDefinition="BLOB")
     @NotEmpty
     private byte[] imageData;
     @JsonIgnore

@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS images(
    id   BIGINT AUTO_INCREMENT,
    name  VARCHAR(100),
    type  VARCHAR(50),
-   image_data BLOB(4000K),
+   image_data BLOB,
    user_id   BIGINT,
    advert_id   BIGINT,
    created_date TIMESTAMP,
