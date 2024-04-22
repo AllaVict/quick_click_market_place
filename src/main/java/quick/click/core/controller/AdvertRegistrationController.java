@@ -52,7 +52,7 @@ public class AdvertRegistrationController {
      * @throws Exception                   For any other unexpected errors.
      */
     @PostMapping()
-    @PreAuthorize("hasRole('USER')")
+   // @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Create an advert with a given request body")
     public ResponseEntity<?> registerAdvert(@RequestBody final AdvertCreateDto advertCreateDto,
                                             @AuthenticationPrincipal final AuthenticatedUser authenticatedUser) {
