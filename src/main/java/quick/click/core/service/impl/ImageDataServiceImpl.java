@@ -18,6 +18,7 @@ import quick.click.security.commons.model.AuthenticatedUser;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +29,8 @@ import static quick.click.core.utils.ImageUtils.decompressImage;
 
 @Service
 public class ImageDataServiceImpl implements ImageDataService {
-    public static final Logger LOGGER = LoggerFactory.getLogger(ImageDataServiceImpl.class);
 
+    public static final Logger LOGGER = LoggerFactory.getLogger(ImageDataServiceImpl.class);
     private final ImageDataRepository imageRepository;
     private final UserRepository userRepository;
     private final AdvertRepository advertRepository;
@@ -190,7 +191,7 @@ public class ImageDataServiceImpl implements ImageDataService {
 //    }
 //
 //
-//    @Override
+
 //    public byte[] downloadImageFromFileSystem(Long advertId) throws IOException  {
 //
 //        ImageData imageData = imageRepository.findAllByAdvertId(advertId).stream().findFirst().orElseThrow();
