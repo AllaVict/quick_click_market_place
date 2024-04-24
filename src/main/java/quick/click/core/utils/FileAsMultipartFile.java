@@ -1,15 +1,11 @@
 package quick.click.core.utils;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 
-
 public class FileAsMultipartFile implements MultipartFile {
-
 
     private final File file;
     private final String contentType;

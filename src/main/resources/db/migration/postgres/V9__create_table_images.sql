@@ -12,3 +12,5 @@ CREATE TABLE IF NOT EXISTS images(
 
 ALTER TABLE images ADD CONSTRAINT advertimages_fk FOREIGN KEY (advert_id) REFERENCES adverts(id);
 ALTER TABLE adverts ALTER COLUMN address VARCHAR(400);
+ALTER TABLE images ALTER COLUMN updated_date DROP NOT NULL;
+

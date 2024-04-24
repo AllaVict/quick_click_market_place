@@ -47,11 +47,11 @@ public class CommentServiceImpl implements CommentService {
      * @param typeConverterCommentCreatingDto Converter from CommentCreatingDto to Comment
      * @param typeConverterCommentReadDto     Converter from Comment to CommentReadDto
      */
-    public CommentServiceImpl(CommentRepository commentRepository,
-                              AdvertRepository advertRepository,
-                              UserRepository userRepository,
-                              TypeConverter<CommentCreatingDto, Comment> typeConverterCommentCreatingDto,
-                              TypeConverter<Comment, CommentReadDto> typeConverterCommentReadDto) {
+    public CommentServiceImpl(final CommentRepository commentRepository,
+                              final AdvertRepository advertRepository,
+                              final UserRepository userRepository,
+                              final TypeConverter<CommentCreatingDto, Comment> typeConverterCommentCreatingDto,
+                              final TypeConverter<Comment, CommentReadDto> typeConverterCommentReadDto) {
         this.commentRepository = commentRepository;
         this.advertRepository = advertRepository;
         this.userRepository = userRepository;
@@ -73,7 +73,7 @@ public class CommentServiceImpl implements CommentService {
                                           final CommentCreatingDto commentCreatingDto,
                                           final AuthenticatedUser authenticatedUser) {
 
-        CommentReadDto commentReadDto = Optional.of(commentCreatingDto)
+       final CommentReadDto commentReadDto = Optional.of(commentCreatingDto)
                 .map(commentDto -> settingsForCommentCreateDto(advertId, commentDto, authenticatedUser))
                 .map(typeConverterCommentCreatingDto::convert)
                 .map(commentRepository::saveAndFlush)
@@ -104,7 +104,7 @@ public class CommentServiceImpl implements CommentService {
         if (commentForUpdate.isEmpty())
             commentForUpdate.orElseThrow(() -> new ResourceNotFoundException("Comment", "id", commentId));
 
-        LOGGER.debug("In editComment Updating success advert with id {}", commentId);
+        LOGGER.debug("In editComment Updating success advert with id: {}", commentId);
 
         return commentForUpdate
                 .map(comment -> this.updateCommentData(comment, commentEditingDto))
@@ -142,10 +142,9 @@ public class CommentServiceImpl implements CommentService {
     public CommentReadDto findCommentById(final Long commentId) {
         final Comment foundComment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Comment", "id", commentId));
-        LOGGER.debug("In deleteComment Deleting success Comment with id {}", commentId);
+        LOGGER.debug("In deleteComment Deleting success Comment with id: {}", commentId);
         return typeConverterCommentReadDto.convert(foundComment);
     }
-
 
     /**
      * Deletes a comment by its ID.
@@ -164,7 +163,7 @@ public class CommentServiceImpl implements CommentService {
 
         commentRepository.delete(commentForDelete);
 
-        LOGGER.debug("In deleteComment Deleting success Comment with id {}", commentId);
+        LOGGER.debug("In deleteComment Deleting success Comment with id: {}", commentId);
     }
 
     private CommentCreatingDto settingsForCommentCreateDto(final Long advertId,
@@ -185,7 +184,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     private Long getUserByAuthenticatedUser(final AuthenticatedUser authenticatedUser) {
-        String username = authenticatedUser.getEmail();
+        final String username = authenticatedUser.getEmail();
         return userRepository.findUserByEmail(username)
                 .orElseThrow(() -> new AuthorizationException("Unauthorized access"))
                 .getId();

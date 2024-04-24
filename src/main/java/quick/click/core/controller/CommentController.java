@@ -70,7 +70,7 @@ public class CommentController {
 
         } catch (AuthorizationException exception) {
 
-            LOGGER.error("Unauthorized access attempt by user {}", authenticatedUser.getEmail(), exception);
+            LOGGER.error("Unauthorized access attempt by user: {}", authenticatedUser.getEmail(), exception);
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized access");
 
         } catch (ResourceNotFoundException exception) {
@@ -145,7 +145,7 @@ public class CommentController {
 
         } catch (AuthorizationException exception) {
 
-            LOGGER.error("Unauthorized access attempt by user {}", authenticatedUser.getEmail(), exception);
+            LOGGER.error("Unauthorized access attempt by user: {}", authenticatedUser.getEmail(), exception);
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized access");
 
         } catch (ResourceNotFoundException exception) {
@@ -155,7 +155,7 @@ public class CommentController {
 
         } catch (Exception exception) {
 
-            LOGGER.error("Unexpected error during deleting the comment with id {}", commentId, exception);
+            LOGGER.error("Unexpected error during deleting the comment with id: {}", commentId, exception);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
 
         }

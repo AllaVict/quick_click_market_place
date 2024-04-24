@@ -99,15 +99,13 @@ public class ImageDataServiceImpl implements ImageDataService {
      * @throws ResourceNotFoundException If no image is found for the provided IDs.
      */
     @Override
-    public ImageData findImageByIdAndByAdvertId(final Long imageId,
-                                                final Long advertId) {
+    public byte[] findImageByIdAndByAdvertId(final Long imageId,
+                                             final Long advertId) {
 
         final ImageData imageData = imageRepository.findByIdAndAdvertId(imageId, advertId)
                 .orElseThrow(() -> new ResourceNotFoundException("Image", "id", imageId));
-        if (!ObjectUtils.isEmpty(imageData))
-            decompressImageData(imageData);
 
-        return imageData;
+        return decompressImage(imageData.getImageData());
     }
 
     /**

@@ -55,6 +55,8 @@ class ImageDataControllerTest {
 
     private AuthenticatedUser authenticatedUser = mock(AuthenticatedUser.class);
 
+    byte[]image;
+
     @BeforeEach
     public void setUp() {
         user = createUser();
@@ -62,8 +64,10 @@ class ImageDataControllerTest {
         imageData = new ImageData();
         imageData.setName("Test Image");
         imageData.setType("image/png");
-        imageData.setImageData(new byte[]{1, 2, 3});
+        image = new byte[]{1, 2, 3};
+        imageData.setImageData(image);
         imageData.setAdvert(advert);
+
     }
 
     @Nested
@@ -130,7 +134,7 @@ class ImageDataControllerTest {
 
         @Test
         void testFindImageByIdAndByAdvertId_ShouldReturnAImage() throws IOException {
-            when(imageDataService.findImageByIdAndByAdvertId(IMAGE_ID, ADVERT_ID)).thenReturn(imageData);
+            when(imageDataService.findImageByIdAndByAdvertId(IMAGE_ID, ADVERT_ID)).thenReturn(image);
 
             ResponseEntity<?> responseEntity = imageDataController.findImageByIdAndByAdvertId(IMAGE_ID, ADVERT_ID);
 

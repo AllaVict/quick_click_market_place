@@ -57,18 +57,18 @@ public class AdvertSearchController {
 
             final AdvertReadDto advertReadDto = advertSearchService.findAdvertById(advertId);
 
-            LOGGER.debug("In findAdvertById received GET find the advert successfully with id {} ", advertId);
+            LOGGER.debug("In findAdvertById received GET find the advert successfully with id: {} ", advertId);
 
             return ResponseEntity.status(HttpStatus.OK).body(advertReadDto);
 
         } catch (ResourceNotFoundException exception) {
 
-            LOGGER.error("Advert not found with id : '{}'", advertId, exception);
+            LOGGER.error("Advert not found with id : {}", advertId, exception);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
 
         } catch (Exception exception) {
 
-            LOGGER.error("Unexpected error during finding the advert with id {}", advertId, exception);
+            LOGGER.error("Unexpected error during finding the advert with id: {}", advertId, exception);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
 
         }
@@ -87,7 +87,7 @@ public class AdvertSearchController {
         try {
             final List<AdvertReadDto> advertReadDtoList = advertSearchService.findAllByOrderByCreatedDateDesc();
 
-            LOGGER.debug("In findAllAdvert received GET find all advert successfully ");
+            LOGGER.debug("In findAllAdvert received GET find all advert successfully");
 
             return ResponseEntity.status(HttpStatus.OK).body(advertReadDtoList);
 
@@ -121,12 +121,12 @@ public class AdvertSearchController {
 
         } catch (AuthorizationException exception) {
 
-            LOGGER.error("Unauthorized access attempt by user {}", authenticatedUser.getEmail(), exception);
+            LOGGER.error("Unauthorized access attempt by user: {}", authenticatedUser.getEmail(), exception);
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized access");
 
         } catch (Exception exception) {
 
-            LOGGER.error("Error finding adverts by user with name {}", authenticatedUser.getEmail(), exception);
+            LOGGER.error("Error finding adverts by user with name: {}", authenticatedUser.getEmail(), exception);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
 
         }

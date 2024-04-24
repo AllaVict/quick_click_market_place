@@ -67,7 +67,7 @@ class ImageDataControllerIntegrationTest {
     private User user;
 
     private ImageData imageData;
-
+    byte[]image;
     private AuthenticatedUser authenticatedUser = mock(AuthenticatedUser.class);
 
     @BeforeEach
@@ -77,7 +77,8 @@ class ImageDataControllerIntegrationTest {
         imageData = new ImageData();
         imageData.setName("Test Image");
         imageData.setType("image/png");
-        imageData.setImageData(new byte[]{1, 2, 3});
+        image = new byte[]{1, 2, 3};
+        imageData.setImageData(image);
         imageData.setAdvert(advert);
     }
 
@@ -153,7 +154,7 @@ class ImageDataControllerIntegrationTest {
     class FindImageByIdAndByAdvertIdTests {
         @Test
         void testFindImageByIdAndByAdvertId_ShouldReturnImage() throws Exception {
-            given(imageDataService.findImageByIdAndByAdvertId(IMAGE_ID, ADVERT_ID)).willReturn(imageData);
+            given(imageDataService.findImageByIdAndByAdvertId(IMAGE_ID, ADVERT_ID)).willReturn(image);
 
             mockMvc.perform(get(VERSION_1_0 + IMAGES_URL + "/" + ADVERT_ID + "/" + IMAGE_ID)
                             .accept(MediaType.APPLICATION_OCTET_STREAM))

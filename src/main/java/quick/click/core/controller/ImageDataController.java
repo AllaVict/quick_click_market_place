@@ -58,12 +58,12 @@ public class ImageDataController {
                         try {
                             imageDataService.uploadImageToAdvert(advertId, file, authenticatedUser);
                         } catch (IOException e) {
-                            LOGGER.debug("In uploadImagesListToAdvert exception with message {} ", e.getMessage());
+                            LOGGER.debug("In uploadImagesListToAdvert exception with message: {} ", e.getMessage());
                             throw new RuntimeException(e);
                         }
                     });
 
-            LOGGER.debug("In uploadImagesListToAdvert received POST files are uploaded successfully with id {} ", advertId);
+            LOGGER.debug("In uploadImagesListToAdvert received POST files are uploaded successfully with id: {} ", advertId);
 
             return ResponseEntity.status(HttpStatus.OK).body("Files are uploaded successfully.");
 
@@ -74,7 +74,7 @@ public class ImageDataController {
 
         } catch (ResourceNotFoundException exception) {
 
-            LOGGER.error("Advert not found with id : '{}'", advertId, exception);
+            LOGGER.error("Advert not found with id: {}", advertId, exception);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
 
         } catch (Exception exception) {
@@ -98,13 +98,13 @@ public class ImageDataController {
         try {
             final List<byte[]> imagesList = imageDataService.findAllImagesAsByteListByAdvertId(advertId);
 
-            LOGGER.debug("In getAllImagesToAdvert received GET all files for advert with id {} ", advertId);
+            LOGGER.debug("In getAllImagesToAdvert received GET all files for advert with id: {} ", advertId);
 
             return ResponseEntity.status(HttpStatus.OK).body(imagesList);
 
         } catch (ResourceNotFoundException exception) {
 
-            LOGGER.error("Advert not found with id : '{}'", advertId, exception);
+            LOGGER.error("Advert not found with id : {}", advertId, exception);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
 
         } catch (Exception exception) {
@@ -131,15 +131,15 @@ public class ImageDataController {
                                                         @PathVariable("advertId") final Long advertId) throws IOException {
 
         try {
-            final byte[] image = imageDataService.findImageByIdAndByAdvertId(imageId, advertId).getImageData();
+            final byte[] image = imageDataService.findImageByIdAndByAdvertId(imageId, advertId);
 
-            LOGGER.debug("In uploadImagesListToAdvert received Get a file for advert with id {} ", advertId);
+            LOGGER.debug("In findImageByIdAndByAdvertId received Get an image with id: {} ", imageId);
 
             return ResponseEntity.status(HttpStatus.OK).body(image);
 
         } catch (ResourceNotFoundException exception) {
 
-            LOGGER.error("Image not found with id : '{}'", imageId, exception);
+            LOGGER.error("Image not found with id : {}", imageId, exception);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
 
         } catch (Exception exception) {

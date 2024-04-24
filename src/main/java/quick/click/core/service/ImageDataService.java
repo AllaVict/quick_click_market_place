@@ -11,7 +11,7 @@ public interface ImageDataService {
 
     ImageData uploadImageToAdvert(Long advertId, MultipartFile file, AuthenticatedUser authenticatedUser) throws IOException;
 
-    public ImageData findImageByIdAndByAdvertId(Long imageById, Long advertId);
+    byte[] findImageByIdAndByAdvertId(Long imageById, Long advertId);
 
     List<byte[]> findAllImagesAsByteListByAdvertId(Long advertId);
 
