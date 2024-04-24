@@ -1,5 +1,4 @@
-CREATE TABLE IF NOT EXISTS images
-(
+CREATE TABLE IF NOT EXISTS images(
     id           BIGINT AUTO_INCREMENT,
     name         VARCHAR(100),
     type         VARCHAR(50),
