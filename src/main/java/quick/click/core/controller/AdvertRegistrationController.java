@@ -50,6 +50,18 @@ public class AdvertRegistrationController {
      * @throws AuthorizationException      If the authenticated user does not have permission to create an advert.
      * @throws RegistrationException If there are issues during the registration process.
      * @throws Exception                   For any other unexpected errors.
+     *
+     *  POST  http://localhost:8080/v1.0/adverts
+     *  {
+     *      "title": "Big dog",
+     *      "description": "description a toy Big dog",
+     *      "category": "TOYS",
+     *      "phone": "+380507778855",
+     *      "price": "100.00",
+     *      "firstPriceDisplayed": "true",
+     *      "currency": "EUR",
+     *      "address": "Dania"
+     *   }
      */
     @PostMapping()
    // @PreAuthorize("hasRole('USER')")

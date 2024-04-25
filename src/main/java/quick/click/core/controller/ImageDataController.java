@@ -46,6 +46,8 @@ public class ImageDataController {
      * @param files             An array of MultipartFile objects representing the images to upload.
      * @param authenticatedUser The user performing the upload.
      * @return A ResponseEntity indicating the outcome of the upload process.
+     *
+     * POST http://localhost:8080/v1.0/images/1
      */
     @PostMapping("/{advertId}")
     @Operation(summary = "upload images to an advert with a given request body")
@@ -90,6 +92,8 @@ public class ImageDataController {
      *
      * @param advertId The ID of the advert for which images are retrieved.
      * @return A ResponseEntity containing a list of byte arrays, each representing an image's data.
+     *
+     * GET http://localhost:8080/v1.0/images/1
      */
     @GetMapping("/{advertId}")
     @Operation(summary = "get several images as list of byte[] for the given advert id")
@@ -124,6 +128,8 @@ public class ImageDataController {
      * @throws IOException               If any I/O error occurs during image retrieval.
      * @throws ResourceNotFoundException If no image or advert with the provided IDs is found.
      * @throws Exception                 If an unexpected error occurs.
+     *
+     * GET http://localhost:8080/v1.0/images/1/2
      */
     @GetMapping("/{advertId}/{imageId}")
     @Operation(summary = "get a image from database as byte[] for the given imageId and advert id")
@@ -161,6 +167,8 @@ public class ImageDataController {
      * @throws AuthorizationException    If the authenticated user does not have permission to delete the image.
      * @throws ResourceNotFoundException If no image or advert with the provided IDs is found.
      * @throws Exception                 If an unexpected error occurs during the delete operation.
+     *
+     * DELETE    http://localhost:8080/v1.0/images/1/2
      */
     @DeleteMapping("/{advertId}/{imageId}")
     @Operation(summary = "delete an image for the given advert id and given image id")

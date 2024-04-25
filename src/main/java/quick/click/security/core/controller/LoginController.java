@@ -58,6 +58,12 @@ public class LoginController {
      *
      * @param userLoginDto the data transfer object containing the user's login credentials.
      * @return a ResponseEntity containing the authentication token if authentication is successful.
+     *
+     *  POST http://localhost:8080/auth/login
+     *    {
+     *    "email":"admin@gmail.com",
+     *    "password":"123456789A!"
+     *    }
      */
     @PostMapping(LOGIN_URL)
     public ResponseEntity<?> authenticateUser
@@ -93,6 +99,13 @@ public class LoginController {
      *
      * @param userSignUpDto the data transfer object containing the user's signup information.
      * @return a ResponseEntity containing a message of success or failure.
+     *
+     * POST  http://localhost:8080/v1.0/auth/signup
+     *  {
+     *   "name":"adminnew@gmail.com",
+     *   "email":"adminnew@gmail.com",
+     *   "password":"123456789A!"
+     *  }
      */
     @PostMapping(SIGNUP_URL)
     public ResponseEntity<ApiResponse> registerUser(@Valid @RequestBody UserSignupDto userSignUpDto) {

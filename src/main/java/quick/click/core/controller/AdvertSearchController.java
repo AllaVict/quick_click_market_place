@@ -48,6 +48,8 @@ public class AdvertSearchController {
      *
      * @param advertId The ID of the advert to find.
      * @return A ResponseEntity containing the found advert or an error message.
+     *
+     *  GET   http://localhost:8080/v1.0/adverts/1
      */
     @GetMapping("/{id}")
     @Operation(summary = "Find advert by id")
@@ -79,6 +81,8 @@ public class AdvertSearchController {
      * Retrieves all adverts and returns them.
      *
      * @return A ResponseEntity containing a list of all adverts or an error message.
+     *
+     *  GET   http://localhost:8080/v1.0/adverts
      */
     @GetMapping()
     @Operation(summary = "Find all adverts")
@@ -103,7 +107,11 @@ public class AdvertSearchController {
      * Retrieves all adverts created by the currently authenticated user.
      *
      * @param authenticatedUser The currently authenticated user.
-     * @return A ResponseEntity containing a list of all adverts created by the authenticated user or an error message.
+     * @return A ResponseEntity containing a list of all adverts created by the authenticated user
+     * or an error message.
+     *
+     *  GET   http://localhost:8080/v1.0/adverts/user
+     *  Find all adverts by authorized user
      */
     @GetMapping("/user")
     @Operation(summary = "Find all adverts by authorized user")
