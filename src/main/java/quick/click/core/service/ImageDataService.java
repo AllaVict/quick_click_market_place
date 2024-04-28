@@ -15,6 +15,8 @@ public interface ImageDataService {
 
     List<byte[]> findAllImagesAsByteListByAdvertId(Long advertId);
 
+    List<Long> findAllImageDatasIdsByAdvertId(Long advertId);
+
     void deleteImageByIdAndByAdvertId(Long imageById,Long advertId, AuthenticatedUser authenticatedUser);
 
 }

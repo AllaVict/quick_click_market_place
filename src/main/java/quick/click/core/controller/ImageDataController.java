@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import quick.click.commons.exeptions.AuthorizationException;
 import quick.click.commons.exeptions.ResourceNotFoundException;
+import quick.click.core.domain.model.ImageData;
 import quick.click.core.service.ImageDataService;
 import quick.click.security.commons.model.AuthenticatedUser;
 
@@ -120,6 +121,38 @@ public class ImageDataController {
     }
 
     /**
+     * Endpoint for retrieving all Imagedatas associated with an advert.
+     *
+     * @param advertId The ID of the advert for which images are retrieved.
+     * @return A ResponseEntity containing a list of Imagedatas, each representing an image's data.
+     *
+     * GET http://localhost:8080/v1.0/images/id/1
+     */
+    @GetMapping("/id/{advertId}")
+    @Operation(summary = "get all ImageData ids for the given advert id")
+    public ResponseEntity<?> findAllImageDatasIdsByAdvertId(@PathVariable("advertId") final Long advertId) {
+
+        try {
+            final List<Long> imageDataList = imageDataService.findAllImageDatasIdsByAdvertId(advertId);
+
+            LOGGER.debug("In findAllImageDatasToAdvert received GET all Imagedatas for advert with id: {} ", advertId);
+
+            return ResponseEntity.status(HttpStatus.OK).body(imageDataList);
+
+        } catch (ResourceNotFoundException exception) {
+
+            LOGGER.error("Advert not found with id : {}", advertId, exception);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+
+        } catch (Exception exception) {
+
+            LOGGER.error("Unexpected error during finding all images to an advert: {}", exception.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
+
+        }
+    }
+
+    /**
      * Retrieves an image as a byte array from the database based on the specified image ID and advert ID.
      *
      * @param imageId  The unique identifier for the image.
@@ -214,20 +247,7 @@ public class ImageDataController {
 //
 //        return ResponseEntity.status(HttpStatus.OK).body("All Images has been deleted successfully.");
 //    }
-//    /**
-//     POST    http://localhost:8080/v1.0/images/image/1
-//     */
-//    @PostMapping("/image/{advertId}")
-//    public ResponseEntity<?>  uploadImageToAdvert(@PathVariable("advertId") Long advertId,
-//                                                  @RequestParam("file") MultipartFile file) throws IOException {
-//
-//        imageDataService.uploadImageToAdvert(advertId, file);
-//
-//        LOGGER.debug("In uploadImagesListToAdvert received POST file is uploaded successfully with id {} ", advertId);
-//
-//        return ResponseEntity.status(HttpStatus.OK).body("File is uploaded successfully.");
-//
-//    }
+
 //    /**
 //     GET http://localhost:8080/v1.0/images/image/1
 //     get a image from database as byte[] for the given advert id

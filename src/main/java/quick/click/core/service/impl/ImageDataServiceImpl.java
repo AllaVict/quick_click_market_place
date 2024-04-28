@@ -53,8 +53,8 @@ public class ImageDataServiceImpl implements ImageDataService {
      * Uploads an image associated with a specific advert, handling file storage
      * and database persistence.
      *
-     * @param advertId The ID of the advert to which the image is being uploaded.
-     * @param file The multipart file that will be uploaded.
+     * @param advertId          The ID of the advert to which the image is being uploaded.
+     * @param file              The multipart file that will be uploaded.
      * @param authenticatedUser The user performing the upload.
      * @return The ImageData entity after being saved and flushed.
      * @throws IOException If there is an error during file upload.
@@ -91,9 +91,26 @@ public class ImageDataServiceImpl implements ImageDataService {
     }
 
     /**
+     * Retrieves all Imagedatas associated with an advert.
+     *
+     * @param advertId The ID of the advert for which Imagedatas are to be retrieved.
+     * @return A list of arrays each representing an image's data.
+     */
+    @Override
+    public List<Long> findAllImageDatasIdsByAdvertId(final Long advertId) {
+        final List<ImageData> imageDataList = imageRepository.findAllByAdvertId(advertId);
+        List<Long> ids = new ArrayList<>();
+        if (!imageDataList.isEmpty()) {
+            for (ImageData imageData : imageDataList) {
+                ids.add(imageData.getId()); // Assuming getId() method exists
+            }
+        }
+        return ids;
+    }
+    /**
      * Finds a specific image by its ID and the associated advert's ID.
      *
-     * @param imageId The ID of the image.
+     * @param imageId  The ID of the image.
      * @param advertId The ID of the advert associated with the image.
      * @return The ImageData entity if found.
      * @throws ResourceNotFoundException If no image is found for the provided IDs.
@@ -111,8 +128,8 @@ public class ImageDataServiceImpl implements ImageDataService {
     /**
      * Deletes an image by its ID and the associated advert's ID.
      *
-     * @param imageId The ID of the image to be deleted.
-     * @param advertId The ID of the advert associated with the image.
+     * @param imageId           The ID of the image to be deleted.
+     * @param advertId          The ID of the advert associated with the image.
      * @param authenticatedUser The user who is authorized to delete the image.
      * @throws ResourceNotFoundException If no image is found for the provided IDs.
      */
@@ -121,7 +138,7 @@ public class ImageDataServiceImpl implements ImageDataService {
                                              final Long advertId,
                                              final AuthenticatedUser authenticatedUser) {
         getUserIdByAuthenticatedUser(authenticatedUser);
-        final ImageData imageToDelete = imageRepository.findByIdAndAdvertId(imageId,advertId)
+        final ImageData imageToDelete = imageRepository.findByIdAndAdvertId(imageId, advertId)
                 .orElseThrow(() -> new ResourceNotFoundException("Image", "id", imageId));
 
         imageRepository.delete(imageToDelete);
@@ -151,7 +168,7 @@ public class ImageDataServiceImpl implements ImageDataService {
                 .getId();
     }
 
-    protected ImageData decompressImageData(final ImageData imageData){
+    protected ImageData decompressImageData(final ImageData imageData) {
         ImageData decompressedImageData = new ImageData();
         imageData.setAdvert(imageData.getAdvert());
         imageData.setUserId(imageData.getUserId());
@@ -161,12 +178,12 @@ public class ImageDataServiceImpl implements ImageDataService {
         return decompressedImageData;
     }
 
-     private String uploadImageToFileSystem(MultipartFile file, ImageData imageData) throws IOException {
+    private String uploadImageToFileSystem(MultipartFile file, ImageData imageData) throws IOException {
         final String filePath;
-        if(System.getProperty("os.name").equals("WINDOWS")){
-            filePath=System.getProperty("user.dir")+WINDOWS_PATH+imageData.getName();
+        if (System.getProperty("os.name").equals("WINDOWS")) {
+            filePath = System.getProperty("user.dir") + WINDOWS_PATH + imageData.getName();
         } else {
-            filePath=System.getProperty("user.dir")+LINUX_PATH+imageData.getName();
+            filePath = System.getProperty("user.dir") + LINUX_PATH + imageData.getName();
         }
 
         file.transferTo(new File(filePath));
