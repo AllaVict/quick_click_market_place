@@ -126,9 +126,9 @@ public class ImageDataController {
      * @param advertId The ID of the advert for which images are retrieved.
      * @return A ResponseEntity containing a list of Imagedatas, each representing an image's data.
      *
-     * GET http://localhost:8080/v1.0/images/id/1
+     * GET http://localhost:8080/v1.0/images/ids/1
      */
-    @GetMapping("/id/{advertId}")
+    @GetMapping("/ids/{advertId}")
     @Operation(summary = "get all ImageData ids for the given advert id")
     public ResponseEntity<?> findAllImageDatasIdsByAdvertId(@PathVariable("advertId") final Long advertId) {
 
