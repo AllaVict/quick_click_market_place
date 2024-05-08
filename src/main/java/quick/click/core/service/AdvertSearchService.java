@@ -2,6 +2,7 @@ package quick.click.core.service;
 
 import quick.click.core.domain.dto.AdvertReadDto;
 import quick.click.core.domain.model.Advert;
+import quick.click.core.enums.Category;
 import quick.click.security.commons.model.AuthenticatedUser;
 
 import java.util.List;
@@ -20,5 +21,7 @@ public interface AdvertSearchService {
     List<AdvertReadDto> findAllAdvertsByUser(AuthenticatedUser authenticatedUser);
 
     List<AdvertReadDto> findAllByOrderByCreatedDateDesc();
+
+    List<AdvertReadDto> findByCategory(String category);
 
 }

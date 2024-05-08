@@ -9,6 +9,7 @@ import quick.click.core.converter.TypeConverter;
 import quick.click.core.domain.dto.AdvertReadDto;
 import quick.click.core.domain.model.Advert;
 import quick.click.core.domain.model.User;
+import quick.click.core.enums.Category;
 import quick.click.core.repository.AdvertRepository;
 import quick.click.core.repository.UserRepository;
 import quick.click.core.service.AdvertSearchService;
@@ -117,11 +118,39 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
         return advertReadDtoList;
     }
 
+    /**
+     * Retrieves all adverts with certain category.
+     *
+     * @param category The category by which all ads related to it are to be found.
+     * @return A list of AdvertReadDto containing details of all adverts with certain category.
+     * @throws IllegalArgumentException If the input category is out of the related enum range.
+     */
+    @Override
+    public List<AdvertReadDto> findByCategory(final String category) throws IllegalArgumentException {
+        Category categoryToSearch = findCategoryByString(category);
+        final List<AdvertReadDto> advertReadDtoList = advertRepository.findByCategory(categoryToSearch)
+                .stream()
+                .map(typeConverterReadDto::convert)
+                .toList();
+        LOGGER.debug("In findByCategory find all adverts with category {}", category);
+
+        return advertReadDtoList;
+    }
+
     private User getUserByAuthenticatedUser(final AuthenticatedUser authenticatedUser) {
         String username = authenticatedUser.getEmail();
         return userRepository.findUserByEmail(username)
                 .orElseThrow(() -> new AuthorizationException("Unauthorized access"));
 
+    }
+
+    private Category findCategoryByString(String category) {
+        for (Category value : Category.values()) {
+            if (value.name().equals(category.toUpperCase())) {
+                return value;
+            }
+        }
+        throw new IllegalArgumentException("There is no such category: " + category);
     }
 
 }

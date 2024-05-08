@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import quick.click.core.domain.model.Advert;
 import quick.click.core.domain.model.User;
+import quick.click.core.enums.Category;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,5 +24,6 @@ public interface AdvertRepository extends JpaRepository<Advert, Long> {
     List<Advert> findAllByUserOrderByCreatedDateDesc(User user);
 
     List<Advert> findAllByOrderByCreatedDateDesc();
+    List<Advert> findByCategory(Category category);
 
 }
