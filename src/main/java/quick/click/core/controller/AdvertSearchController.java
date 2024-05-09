@@ -170,7 +170,7 @@ public class AdvertSearchController {
 
             return ResponseEntity.status(HttpStatus.OK).body(advertReadDtoList);
 
-        } catch (IllegalArgumentException ex) {
+        } catch (Exception ex) {
 
             LOGGER.error("Error finding adverts with discounted price", ex);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
