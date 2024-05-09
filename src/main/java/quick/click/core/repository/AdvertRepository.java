@@ -1,6 +1,7 @@
 package quick.click.core.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import quick.click.core.domain.model.Advert;
 import quick.click.core.domain.model.User;
@@ -24,6 +25,10 @@ public interface AdvertRepository extends JpaRepository<Advert, Long> {
     List<Advert> findAllByUserOrderByCreatedDateDesc(User user);
 
     List<Advert> findAllByOrderByCreatedDateDesc();
+
     List<Advert> findByCategory(Category category);
+
+    @Query("SELECT a FROM Advert a WHERE a.price < a.firstPrice")
+    List<Advert> findDiscounted();
 
 }

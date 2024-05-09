@@ -24,4 +24,6 @@ public interface AdvertSearchService {
 
     List<AdvertReadDto> findByCategory(String category);
 
+    List<AdvertReadDto> findDiscounted();
+
 }

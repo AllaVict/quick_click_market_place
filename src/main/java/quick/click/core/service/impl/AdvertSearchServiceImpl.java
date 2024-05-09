@@ -137,6 +137,23 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
         return advertReadDtoList;
     }
 
+    /**
+     * Retrieves all adverts with discounted price.
+     *
+     * @return A list of AdvertReadDto containing details of all adverts with discounted price.
+     */
+    @Override
+    public List<AdvertReadDto> findDiscounted() {
+        final List<AdvertReadDto> advertReadDtoList = advertRepository.findDiscounted()
+                .stream()
+                .map(typeConverterReadDto::convert)
+                .toList();
+        LOGGER.debug("In findDiscounted find all adverts with discounted price");
+
+        return advertReadDtoList;
+    }
+
+
     private User getUserByAuthenticatedUser(final AuthenticatedUser authenticatedUser) {
         String username = authenticatedUser.getEmail();
         return userRepository.findUserByEmail(username)

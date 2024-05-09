@@ -137,7 +137,7 @@ public class AdvertSearchController {
      *
      * @return A ResponseEntity containing a list of all adverts with certain category or an error message.
      */
-    @GetMapping()
+    @GetMapping("/")
     @Operation(summary = "Find all adverts with certain category")
     public ResponseEntity<?> findAdvertsByCategory(@RequestParam("category") String category) {
         try {
@@ -155,6 +155,28 @@ public class AdvertSearchController {
         }
     }
 
+    /**
+     * Retrieves all adverts with discounted price and returns them.
+     *
+     * @return A ResponseEntity containing a list of all adverts with discounted price or an error message.
+     */
+    @GetMapping("/discounts")
+    @Operation(summary = "Find all adverts with discounted price")
+    public ResponseEntity<?> findDiscountedAdverts() {
+        try {
+            final List<AdvertReadDto> advertReadDtoList = advertSearchService.findDiscounted();
+
+            LOGGER.debug("In findDiscountedAdverts received GET find all advert successfully.");
+
+            return ResponseEntity.status(HttpStatus.OK).body(advertReadDtoList);
+
+        } catch (IllegalArgumentException ex) {
+
+            LOGGER.error("Error finding adverts with discounted price", ex);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
+
+        }
+    }
 
 
 }
