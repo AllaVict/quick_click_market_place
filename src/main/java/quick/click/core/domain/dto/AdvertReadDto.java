@@ -34,6 +34,8 @@ public class AdvertReadDto {
 
     private boolean favorite;
 
+    private int viewingQuantity;
+
     protected List<CommentReadDto> comments = new ArrayList<>();
 
     protected  List<byte[]> images = new ArrayList<>();
@@ -135,6 +137,10 @@ public class AdvertReadDto {
     public void setFavorite(boolean favorite) {
         this.favorite = favorite;
     }
+
+    public int getViewingQuantity() {return viewingQuantity;}
+
+    public void setViewingQuantity(int viewingQuantity) {this.viewingQuantity = viewingQuantity;}
 
     public List<CommentReadDto> getComments() {
         return comments;

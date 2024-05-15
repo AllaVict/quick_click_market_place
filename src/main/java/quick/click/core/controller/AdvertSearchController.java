@@ -13,6 +13,8 @@ import quick.click.commons.exeptions.ResourceNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import quick.click.core.domain.dto.AdvertReadDto;
+import quick.click.core.domain.model.Advert;
+import quick.click.core.repository.AdvertRepository;
 import quick.click.core.service.AdvertSearchService;
 import quick.click.security.commons.model.AuthenticatedUser;
 
@@ -39,8 +41,11 @@ public class AdvertSearchController {
 
     public final AdvertSearchService advertSearchService;
 
-    public AdvertSearchController(final AdvertSearchService advertSearchService) {
+    private final AdvertRepository advertRepository;
+
+    public AdvertSearchController(final AdvertSearchService advertSearchService, final AdvertRepository advertRepository) {
         this.advertSearchService = advertSearchService;
+        this.advertRepository = advertRepository;
     }
 
     /**
@@ -54,6 +59,11 @@ public class AdvertSearchController {
     public ResponseEntity<?> findAdvertById(@PathVariable("id") final Long advertId) {
 
         try {
+
+            Advert fromDb = advertRepository.findAdvertById(advertId).orElseThrow(
+                    () -> new ResourceNotFoundException("Advert not found with id " + advertId));
+            );
+
 
             final AdvertReadDto advertReadDto = advertSearchService.findAdvertById(advertId);
 
