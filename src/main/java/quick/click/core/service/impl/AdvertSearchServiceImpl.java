@@ -153,6 +153,22 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
         return advertReadDtoList;
     }
 
+    /**
+     * Retrieves 10 adverts with max viewing quantity.
+     *
+     * @return A list of AdvertReadDto containing details of 10 adverts with max viewing quantity.
+     */
+    @Override
+    public List<AdvertReadDto> find10MaxViewed() {
+        final List<AdvertReadDto> advertReadDtoList = advertRepository.find10MaxViewed()
+                .stream()
+                .map(typeConverterReadDto::convert)
+                .toList();
+        LOGGER.debug("In find10MaxViewed find 10 adverts with max viewing quantity");
+
+        return advertReadDtoList;
+    }
+
 
     private User getUserByAuthenticatedUser(final AuthenticatedUser authenticatedUser) {
         String username = authenticatedUser.getEmail();

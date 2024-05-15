@@ -31,4 +31,7 @@ public interface AdvertRepository extends JpaRepository<Advert, Long> {
     @Query("SELECT a FROM Advert a WHERE a.price < a.firstPrice")
     List<Advert> findDiscounted();
 
+    @Query(value = "SELECT * FROM adverts ORDER BY viewing_quantity DESC LIMIT 10", nativeQuery = true)
+    List<Advert> find10MaxViewed();
+
 }

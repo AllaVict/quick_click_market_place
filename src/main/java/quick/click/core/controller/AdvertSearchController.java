@@ -201,6 +201,29 @@ public class AdvertSearchController {
         }
     }
 
+    /**
+     * Retrieves 10 adverts with max viewing quantity.
+     *
+     * @return A ResponseEntity containing a list of 10 (or less) adverts with max viewing quantity or an error message.
+     */
+    @GetMapping("/max_viewed")
+    @Operation(summary = "Find 10 adverts with max viewing quantity")
+    public ResponseEntity<?> find10MaxViewedAdverts() {
+        try {
+            final List<AdvertReadDto> advertReadDtoList = advertSearchService.find10MaxViewed();
+
+            LOGGER.debug("In find10MaxViewedAdverts received GET find all advert successfully.");
+
+            return ResponseEntity.status(HttpStatus.OK).body(advertReadDtoList);
+
+        } catch (Exception ex) {
+
+            LOGGER.error("Error finding adverts with max viewing quantity", ex);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
+
+        }
+    }
+
 
 }
 

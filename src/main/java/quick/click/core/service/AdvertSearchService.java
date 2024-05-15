@@ -26,4 +26,6 @@ public interface AdvertSearchService {
 
     List<AdvertReadDto> findDiscounted();
 
+    List<AdvertReadDto> find10MaxViewed();
+
 }
