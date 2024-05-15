@@ -57,6 +57,9 @@ public class Advert extends BaseEntity {
     @Column(name = "favorite")
     private boolean favorite;
 
+    @Column(name = "viewing_quantity")
+    private int viewingQuantity;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
@@ -70,7 +73,6 @@ public class Advert extends BaseEntity {
     public Advert() {
        //Empty
     }
-
 
     public Long getId() {
         return id;
@@ -167,6 +169,10 @@ public class Advert extends BaseEntity {
     public void setFavorite(boolean favorite) {
         this.favorite = favorite;
     }
+
+    public int getViewingQuantity() {return viewingQuantity;}
+
+    public void setViewingQuantity(int viewingQuantity) {this.viewingQuantity = viewingQuantity;}
 
     public List<Comment> getComments() {
         return comments;

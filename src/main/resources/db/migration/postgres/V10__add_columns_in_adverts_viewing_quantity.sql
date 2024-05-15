@@ -1,0 +1,1 @@
+ALTER TABLE adverts ADD viewing_quantity INT;
