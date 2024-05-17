@@ -28,4 +28,6 @@ public interface AdvertSearchService {
 
     List<AdvertReadDto> find10MaxViewed();
 
+    List<AdvertReadDto> findPromoted();
+
 }

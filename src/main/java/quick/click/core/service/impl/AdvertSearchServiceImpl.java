@@ -169,6 +169,21 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
         return advertReadDtoList;
     }
 
+    /**
+     * Retrieves all adverts which are promoted (i.e. participated in some promotion).
+     *
+     * @return A list of AdvertReadDto containing details of all adverts which are promoted.
+     */
+    @Override
+    public List<AdvertReadDto> findPromoted() {
+        final List<AdvertReadDto> advertReadDtoList = advertRepository.findPromoted()
+                .stream()
+                .map(typeConverterReadDto::convert)
+                .toList();
+        LOGGER.debug("In findPromoted find all adverts which are promoted");
+
+        return advertReadDtoList;
+    }
 
     private User getUserByAuthenticatedUser(final AuthenticatedUser authenticatedUser) {
         String username = authenticatedUser.getEmail();

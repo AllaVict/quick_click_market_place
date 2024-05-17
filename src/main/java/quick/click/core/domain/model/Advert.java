@@ -60,6 +60,9 @@ public class Advert extends BaseEntity {
     @Column(name = "viewing_quantity")
     private int viewingQuantity;
 
+    @Column(name = "promoted")
+    private boolean promoted;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
@@ -173,6 +176,14 @@ public class Advert extends BaseEntity {
     public int getViewingQuantity() {return viewingQuantity;}
 
     public void setViewingQuantity(int viewingQuantity) {this.viewingQuantity = viewingQuantity;}
+
+    public boolean isPromoted() {
+        return promoted;
+    }
+
+    public void setPromoted(boolean promoted) {
+        this.promoted = promoted;
+    }
 
     public List<Comment> getComments() {
         return comments;

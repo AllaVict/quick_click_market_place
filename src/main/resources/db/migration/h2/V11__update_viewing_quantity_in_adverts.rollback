@@ -1,1 +1,0 @@
-UPDATE adverts SET viewing_quantity = NULL;

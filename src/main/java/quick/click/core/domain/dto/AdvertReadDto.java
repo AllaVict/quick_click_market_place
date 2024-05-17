@@ -1,5 +1,6 @@
 package quick.click.core.domain.dto;
 
+import jakarta.persistence.Column;
 import quick.click.core.enums.AdvertStatus;
 import quick.click.core.enums.Category;
 import quick.click.core.enums.Currency;
@@ -35,6 +36,8 @@ public class AdvertReadDto {
     private boolean favorite;
 
     private int viewingQuantity;
+
+    private boolean promoted;
 
     protected List<CommentReadDto> comments = new ArrayList<>();
 
@@ -142,6 +145,13 @@ public class AdvertReadDto {
 
     public void setViewingQuantity(int viewingQuantity) {this.viewingQuantity = viewingQuantity;}
 
+    public boolean isPromoted() {
+        return promoted;
+    }
+
+    public void setPromoted(boolean promoted) {
+        this.promoted = promoted;
+    }
     public List<CommentReadDto> getComments() {
         return comments;
     }
