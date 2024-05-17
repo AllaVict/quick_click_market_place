@@ -224,6 +224,23 @@ public class AdvertSearchController {
         }
     }
 
+    @GetMapping("/promotions")
+    @Operation(summary = "Find all adverts which are promoted")
+    public ResponseEntity<?> findPromotedAdverts() {
+        try {
+            final List<AdvertReadDto> advertReadDtoList = advertSearchService.findPromoted();
+
+            LOGGER.debug("In findPromotedAdverts received GET find all advert successfully.");
+
+            return ResponseEntity.status(HttpStatus.OK).body(advertReadDtoList);
+
+        } catch (Exception ex) {
+
+            LOGGER.error("Error finding adverts which are promoted", ex);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
+
+        }
+    }
 
 }
 
