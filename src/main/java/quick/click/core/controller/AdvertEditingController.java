@@ -49,6 +49,18 @@ public class AdvertEditingController {
      * @param advertEditingDto The data transfer object containing the new advert details.
      * @param authenticatedUser The currently authenticated user attempting to update the advert.
      * @return A ResponseEntity containing the updated advert details or an error message.
+     *
+     *  PUT   http://localhost:8080/v1.0/adverts/3
+     *  {
+     *   "title": "Big dog",
+     *   "description": "description a toy Big dog",
+     *   "category": "TOYS",
+     *   "phone": "+380507778855",
+     *   "price": "100.00",
+     *   "firstPriceDisplayed": "true",
+     *   "currency": "EUR",
+     *   "address": "Dania"
+     *   }
      */
     @PutMapping("{id}")
     @Operation(summary = "Update an advert by id and a given request body")
@@ -66,16 +78,16 @@ public class AdvertEditingController {
 
         } catch (AuthorizationException exception) {
 
-            LOGGER.error("Unauthorized access attempt by user {}", authenticatedUser.getEmail(), exception);
+            LOGGER.error("Unauthorized access attempt by user: {}", authenticatedUser.getEmail(), exception);
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized access");
 
         } catch (ResourceNotFoundException exception) {
-            LOGGER.error("Advert not found with id : '{}'", advertId, exception);
+            LOGGER.error("Advert not found with id : {}", advertId, exception);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
 
         } catch (Exception exception) {
 
-            LOGGER.error("Unexpected error during editing the advert with id {}", advertId, exception);
+            LOGGER.error("Unexpected error during editing the advert with id: {}", advertId, exception);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
         }
     }
@@ -86,6 +98,8 @@ public class AdvertEditingController {
      * @param advertId The ID of the advert to archive.
      * @param authenticatedUser The currently authenticated user attempting to archive the advert.
      * @return A ResponseEntity containing the archived advert details or an error message.
+     *
+     * PUT   http://localhost:8080/v1.0/adverts/archive/3
      */
     @PutMapping("/archive/{id}")
     @Operation(summary = "Archive an advert by id")
@@ -98,7 +112,7 @@ public class AdvertEditingController {
         try {
 
             final AdvertReadDto advertReadDto = advertEditingService.archiveAdvert(advertId, authenticatedUser);
-            LOGGER.debug("In archiveAdvert received PUT advert has archived successfully with id {} ", advertId);
+            LOGGER.debug("In archiveAdvert received PUT advert has archived successfully with id: {} ", advertId);
             return ResponseEntity.status(HttpStatus.OK).body(advertReadDto);
 
         } catch (AuthorizationException exception) {
@@ -113,7 +127,7 @@ public class AdvertEditingController {
 
         } catch (Exception exception) {
 
-            LOGGER.error("Unexpected error during archiving the advert with id {}", advertId, exception);
+            LOGGER.error("Unexpected error during archiving the advert with id: {}", advertId, exception);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
 
         }
@@ -126,6 +140,8 @@ public class AdvertEditingController {
      * @param advertId The ID of the advert to delete.
      * @param authenticatedUser The currently authenticated user attempting to delete the advert.
      * @return A ResponseEntity containing a confirmation of deletion or an error message.
+     *
+     *  Delete  http://localhost:8080/v1.0/adverts/3
      */
     @DeleteMapping("{id}")
     @Operation(summary = "Delete an advert by id")
@@ -137,12 +153,12 @@ public class AdvertEditingController {
 
         try {
             advertEditingService.deleteAdvert(advertId, authenticatedUser);
-            LOGGER.debug("In editAdvert received DELETE advert delete successfully with id {} ", advertId);
+            LOGGER.debug("In editAdvert received DELETE advert delete successfully with id: {} ", advertId);
             return ResponseEntity.status(HttpStatus.OK).body("The Advert has deleted successfully");
 
         } catch (AuthorizationException exception) {
 
-            LOGGER.error("Unauthorized access attempt by user {}", authenticatedUser, exception);
+            LOGGER.error("Unauthorized access attempt by user: {}", authenticatedUser, exception);
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized access");
 
         } catch (ResourceNotFoundException exception) {
@@ -151,7 +167,7 @@ public class AdvertEditingController {
 
         } catch (Exception exception) {
 
-            LOGGER.error("Unexpected error during deleting the advert by id {}", advertId, exception);
+            LOGGER.error("Unexpected error during deleting the advert by id: {}", advertId, exception);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
 
         }
