@@ -168,15 +168,6 @@ public class ImageDataServiceImpl implements ImageDataService {
                 .getId();
     }
 
-    protected ImageData decompressImageData(final ImageData imageData) {
-        ImageData decompressedImageData = new ImageData();
-        imageData.setAdvert(imageData.getAdvert());
-        imageData.setUserId(imageData.getUserId());
-        imageData.setImageData(decompressImage(imageData.getImageData()));
-        imageData.setName(imageData.getName());
-
-        return decompressedImageData;
-    }
 
     private String uploadImageToFileSystem(MultipartFile file, ImageData imageData) throws IOException {
         final String filePath;
@@ -195,28 +186,38 @@ public class ImageDataServiceImpl implements ImageDataService {
 
     //====================================================================
 
-//    @Override
-//    public void deleteImageDataListToAdvert(Long advertId) {
-//        List<ImageData> listToDelete = imageRepository.findAllByAdvertId(advertId);
-//        if (!listToDelete.isEmpty()){
-//            for (int i=0; i < listToDelete.size(); i++) {
-//                imageRepository.deleteById(listToDelete.get(i).getId());
-//            }
-//        }
-//    }
-//
-//
+    /**
+     @Override
+     public void deleteImageDataListToAdvert(Long advertId) {
+     List<ImageData> listToDelete = imageRepository.findAllByAdvertId(advertId);
+     if (!listToDelete.isEmpty()){
+     for (int i=0; i < listToDelete.size(); i++) {
+     imageRepository.deleteById(listToDelete.get(i).getId());
+     }
+     }
+     }
 
-//    public byte[] downloadImageFromFileSystem(Long advertId) throws IOException  {
-//
-//        ImageData imageData = imageRepository.findAllByAdvertId(advertId).stream().findFirst().orElseThrow();
-//        final String filePath;
-//        if(System.getProperty("os.name").equals("WINDOWS")){
-//            filePath=System.getProperty("user.dir")+WINDOWS_PATH+imageData.getName();
-//        } else {
-//            filePath=System.getProperty("user.dir")+LINUX_PATH+imageData.getName();
-//        }
-//        return Files.readAllBytes(new File(filePath).toPath());
-//    }
+     public byte[] downloadImageFromFileSystem(Long advertId) throws IOException  {
+
+     ImageData imageData = imageRepository.findAllByAdvertId(advertId).stream().findFirst().orElseThrow();
+     final String filePath;
+     if(System.getProperty("os.name").equals("WINDOWS")){
+     filePath=System.getProperty("user.dir")+WINDOWS_PATH+imageData.getName();
+     } else {
+     filePath=System.getProperty("user.dir")+LINUX_PATH+imageData.getName();
+     }
+     return Files.readAllBytes(new File(filePath).toPath());
+     }
+
+     protected ImageData decompressImageData(final ImageData imageData) {
+     ImageData decompressedImageData = new ImageData();
+     imageData.setAdvert(imageData.getAdvert());
+     imageData.setUserId(imageData.getUserId());
+     imageData.setImageData(decompressImage(imageData.getImageData()));
+     imageData.setName(imageData.getName());
+
+     return decompressedImageData;
+     }
+     */
 
 }
