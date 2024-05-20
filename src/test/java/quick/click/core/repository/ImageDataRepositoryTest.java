@@ -35,14 +35,15 @@ class ImageDataRepositoryTest {
 
     @BeforeEach
     public void setUp() {
+        entityManager.clear();
         user = entityManager.merge(createUser());
         advert = entityManager.merge(createAdvertOne(user));
-        imageData = new ImageData();
-        imageData.setName("Test Image");
-        imageData.setType("image/png");
-        imageData.setImageData(new byte[] {1, 2, 3});
-        imageData.setAdvert(advert);
-        entityManager.persist(imageData);
+        ImageData newimageData = new ImageData();
+        newimageData.setName("Test Image");
+        newimageData.setType("image/jpeg");
+        newimageData.setImageData(new byte[] {1, 2, 3});
+        newimageData.setAdvert(advert);
+        imageData= entityManager.merge(newimageData);
         entityManager.flush();
     }
 
@@ -74,7 +75,7 @@ class ImageDataRepositoryTest {
 
             Optional<ImageData> foundImage = imageDataRepository.findByIdAndAdvertId(imageData.getId(), advert.getId());
             assertTrue(foundImage.isPresent());
-            assertThat(foundImage.get().getType()).isEqualTo("image/png");
+            assertThat(foundImage.get().getType()).isEqualTo("image/jpeg");
         }
 
         @Test

@@ -50,9 +50,21 @@ public class AdvertRegistrationController {
      * @throws AuthorizationException      If the authenticated user does not have permission to create an advert.
      * @throws RegistrationException If there are issues during the registration process.
      * @throws Exception                   For any other unexpected errors.
+     *
+     *  POST  http://localhost:8080/v1.0/adverts
+     *  {
+     *      "title": "Big dog",
+     *      "description": "description a toy Big dog",
+     *      "category": "TOYS",
+     *      "phone": "+380507778855",
+     *      "price": "100.00",
+     *      "firstPriceDisplayed": "true",
+     *      "currency": "EUR",
+     *      "address": "Dania"
+     *   }
      */
     @PostMapping()
-    @PreAuthorize("hasRole('USER')")
+   // @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Create an advert with a given request body")
     public ResponseEntity<?> registerAdvert(@RequestBody final AdvertCreateDto advertCreateDto,
                                             @AuthenticationPrincipal final AuthenticatedUser authenticatedUser) {
@@ -69,7 +81,7 @@ public class AdvertRegistrationController {
 
         } catch (AuthorizationException exception) {
 
-            LOGGER.error("Unauthorized access attempt by user {}", authenticatedUser.getEmail(), exception);
+            LOGGER.error("Unauthorized access attempt by user: {}", authenticatedUser.getEmail(), exception);
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized access");
 
         } catch (RegistrationException exception) {

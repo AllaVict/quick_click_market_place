@@ -55,7 +55,7 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
                 .map(typeConverterReadDto::convert)
                 .orElseThrow(() -> new ResourceNotFoundException("Advert", "id", advertId));
 
-        LOGGER.debug("In findAdvertById find the Advert with id {}", advertReadDto.getId());
+        LOGGER.debug("In findAdvertById find the Advert with id: {}", advertReadDto.getId());
 
         return advertReadDto;
     }

@@ -44,18 +44,14 @@ public class CommentController {
     }
 
     /**
-     * POST    http://localhost:8080/v1.0/comments/1
-     * {
-     * "message": "Das ist ein gutes Auto",
-     * }
-     */
-    /**
      * Registers a new comment under an advertisement.
      *
      * @param advertId the identifier of the advertisement to which the comment is to be attached
      * @param commentDTO the data transfer object containing the comment details
      * @param authenticatedUser the currently authenticated user attempting to create a comment
      * @return ResponseEntity containing the created comment or an error message
+     *
+     * POST    http://localhost:8080/v1.0/comments/1
      */
     @PostMapping("/{advertId}")
     @Operation(summary = "Create a comment with a given request body")
@@ -76,7 +72,7 @@ public class CommentController {
 
         } catch (AuthorizationException exception) {
 
-            LOGGER.error("Unauthorized access attempt by user {}", authenticatedUser.getEmail(), exception);
+            LOGGER.error("Unauthorized access attempt by user: {}", authenticatedUser.getEmail(), exception);
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized access");
 
         } catch (ResourceNotFoundException exception) {
@@ -102,6 +98,8 @@ public class CommentController {
      *
      * @param advertId the identifier of the advertisement
      * @return ResponseEntity containing a list of comments or an error message
+     *
+     * GET    http://localhost:8080/v1.0/comments/1
      */
     @GetMapping("/{advertId}")
     @Operation(summary = "Find all comments by authorized user")
@@ -126,13 +124,14 @@ public class CommentController {
         }
     }
 
-
     /**
      * Deletes a comment based on its identifier.
      *
      * @param commentId the identifier of the comment to delete
      * @param authenticatedUser the currently authenticated user attempting to delete the comment
      * @return ResponseEntity containing the status of the deletion
+     *
+     *    Delete    http://localhost:8080/v1.0/comments/1
      */
     @DeleteMapping("/{commentId}")
     @Operation(summary = "Delete a comment by id")
@@ -151,7 +150,7 @@ public class CommentController {
 
         } catch (AuthorizationException exception) {
 
-            LOGGER.error("Unauthorized access attempt by user {}", authenticatedUser.getEmail(), exception);
+            LOGGER.error("Unauthorized access attempt by user: {}", authenticatedUser.getEmail(), exception);
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized access");
 
         } catch (ResourceNotFoundException exception) {
@@ -161,7 +160,7 @@ public class CommentController {
 
         } catch (Exception exception) {
 
-            LOGGER.error("Unexpected error during deleting the comment with id {}", commentId, exception);
+            LOGGER.error("Unexpected error during deleting the comment with id: {}", commentId, exception);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
 
         }
