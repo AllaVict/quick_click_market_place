@@ -189,11 +189,10 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
 
     @Override
     public Set<AdvertReadDto> findViewed(User user) {
-        final Set<AdvertReadDto> advertReadDtoSet = user.getViewedAdverts()
+        return user.getViewedAdverts()
                 .stream()
                 .map(typeConverterReadDto::convert)
                 .collect(Collectors.toSet());
-        return advertReadDtoSet;
     }
 
     private User getUserByAuthenticatedUser(final AuthenticatedUser authenticatedUser) {
