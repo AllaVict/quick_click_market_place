@@ -5,6 +5,7 @@ import quick.click.core.domain.dto.UserReadDto;
 import quick.click.security.commons.model.AuthenticatedUser;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Service interface for searching users.
@@ -12,12 +13,12 @@ import java.util.List;
  * @author Elnur Kasimov
  */
 public interface UserSearchService {
-
-    UserReadDto findUserById(Long userId);
-
-    UserReadDto findUserByEmail(String userId);
-
-    List<AdvertReadDto> findViewedAdvertsByUserId(long userId);
+//
+//    UserReadDto findUserById(Long userId);
+//
+//    UserReadDto findUserByEmail(String userId);
+//
+//    List<AdvertReadDto> findViewedAdvertsByUserId(long userId);
 
 
 

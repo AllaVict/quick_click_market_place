@@ -20,6 +20,7 @@ import quick.click.core.service.UserSearchService;
 import quick.click.security.commons.model.AuthenticatedUser;
 
 import java.util.List;
+import java.util.Set;
 
 import static quick.click.commons.constants.ApiVersion.VERSION_1_0;
 import static quick.click.commons.constants.Constants.Endpoints.USERS_URL;
@@ -69,7 +70,7 @@ public class UserSearchController {
             User userFromDb = userRepository.findUserById(userId).orElseThrow(
                     () -> new ResourceNotFoundException("User", "userId", userId)
             );
-            List<AdvertReadDto> viewedAdverts = advertSearchService.findViewed(userFromDb);
+            Set<AdvertReadDto> viewedAdverts = advertSearchService.findViewed(userFromDb);
 
             LOGGER.debug("In findViewedAdvertByUserId received GET find the advert successfully with id {} ", userId);
 

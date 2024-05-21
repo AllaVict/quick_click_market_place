@@ -67,6 +67,10 @@ public class Advert extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "viewer_id")
+    private User viewer;
+
     @OneToMany(mappedBy = "advert", cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
@@ -207,6 +211,14 @@ public class Advert extends BaseEntity {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public User getViewer() {
+        return viewer;
+    }
+
+    public void setViewer(User viewer) {
+        this.viewer = viewer;
     }
 
     @Override

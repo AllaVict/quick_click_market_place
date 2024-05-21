@@ -45,6 +45,8 @@ public class AdvertReadDto {
 
     protected UserReadDto user;
 
+    protected UserReadDto viewer;
+
     public Long getId() {
         return id;
     }
@@ -174,6 +176,14 @@ public class AdvertReadDto {
 
     public void setUser(UserReadDto user) {
         this.user = user;
+    }
+
+    public UserReadDto getViewer() {
+        return viewer;
+    }
+
+    public void setViewer(UserReadDto viewer) {
+        this.viewer = viewer;
     }
 
     @Override

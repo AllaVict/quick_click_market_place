@@ -27,6 +27,7 @@ public class UserToUserReadDtoConverter implements TypeConverter<User, UserReadD
         userReadDto.setRole(user.getRole());
         userReadDto.setStatus(user.getStatus());
         userReadDto.setProvider(user.getProvider());
+        userReadDto.setViewedAdverts(user.getViewedAdverts());
 
         return userReadDto;
     }

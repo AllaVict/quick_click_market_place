@@ -16,6 +16,8 @@ import quick.click.core.service.AdvertSearchService;
 import quick.click.security.commons.model.AuthenticatedUser;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Service implementation for handling search operations related to adverts.
@@ -186,8 +188,12 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
     }
 
     @Override
-    public List<AdvertReadDto> findViewed(User user) {
-        return null;
+    public Set<AdvertReadDto> findViewed(User user) {
+        final Set<AdvertReadDto> advertReadDtoSet = user.getViewedAdverts()
+                .stream()
+                .map(typeConverterReadDto::convert)
+                .collect(Collectors.toSet());
+        return advertReadDtoSet;
     }
 
     private User getUserByAuthenticatedUser(final AuthenticatedUser authenticatedUser) {

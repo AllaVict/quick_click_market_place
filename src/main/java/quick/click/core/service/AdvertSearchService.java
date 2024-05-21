@@ -7,6 +7,7 @@ import quick.click.core.enums.Category;
 import quick.click.security.commons.model.AuthenticatedUser;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Service interface for searching adverts.
@@ -31,6 +32,6 @@ public interface AdvertSearchService {
 
     List<AdvertReadDto> findPromoted();
 
-    List<AdvertReadDto> findViewed(User user);
+    Set<AdvertReadDto> findViewed(User user);
 
 }
