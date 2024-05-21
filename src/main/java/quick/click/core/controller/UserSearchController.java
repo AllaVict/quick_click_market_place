@@ -42,15 +42,12 @@ public class UserSearchController {
 
     public static final String BASE_USER_URL = VERSION_1_0 + USERS_URL;
 
-    public final UserSearchService userSearchService;
-
     public final AdvertSearchService advertSearchService;
 
     private final UserRepository userRepository;
 
-    public UserSearchController(final UserSearchService userSearchService, final UserRepository userRepository,
+    public UserSearchController(final UserRepository userRepository,
                                 AdvertSearchService advertSearchService) {
-        this.userSearchService = userSearchService;
         this.userRepository = userRepository;
         this.advertSearchService = advertSearchService;
     }
