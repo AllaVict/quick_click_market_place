@@ -2,6 +2,7 @@ package quick.click.core.service;
 
 import quick.click.core.domain.dto.AdvertReadDto;
 import quick.click.core.domain.model.Advert;
+import quick.click.core.domain.model.User;
 import quick.click.core.enums.Category;
 import quick.click.security.commons.model.AuthenticatedUser;
 
@@ -29,5 +30,7 @@ public interface AdvertSearchService {
     List<AdvertReadDto> find10MaxViewed();
 
     List<AdvertReadDto> findPromoted();
+
+    List<AdvertReadDto> findViewed(User user);
 
 }

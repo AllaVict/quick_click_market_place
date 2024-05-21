@@ -7,94 +7,76 @@ import quick.click.commons.exeptions.AuthorizationException;
 import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.core.converter.TypeConverter;
 import quick.click.core.domain.dto.AdvertReadDto;
+import quick.click.core.domain.dto.UserReadDto;
 import quick.click.core.domain.model.Advert;
 import quick.click.core.domain.model.User;
 import quick.click.core.enums.Category;
 import quick.click.core.repository.AdvertRepository;
 import quick.click.core.repository.UserRepository;
 import quick.click.core.service.AdvertSearchService;
+import quick.click.core.service.UserSearchService;
 import quick.click.security.commons.model.AuthenticatedUser;
 
 import java.util.List;
 
 /**
- * Service implementation for handling search operations related to adverts.
+ * Service implementation for handling search operations related to users.
  *
- * @author Alla Borodina
+ * @author Elnur Kasimov
  */
 @Service
-public class AdvertSearchServiceImpl implements AdvertSearchService {
+public class UserSearchServiceImpl implements UserSearchService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AdvertSearchServiceImpl.class);
-
-    private final AdvertRepository advertRepository;
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserSearchServiceImpl.class);
 
     private final UserRepository userRepository;
 
-    private final TypeConverter<Advert, AdvertReadDto> typeConverterReadDto;
+    private final TypeConverter<User, UserReadDto> typeConverterReadDto;
 
-    public AdvertSearchServiceImpl(final AdvertRepository advertRepository,
-                                   final UserRepository userRepository,
-                                   final TypeConverter<Advert, AdvertReadDto> typeConverterReadDto) {
-        this.advertRepository = advertRepository;
+    public UserSearchServiceImpl(final UserRepository userRepository,
+                                 final TypeConverter<User, UserReadDto> typeConverterReadDto) {
         this.userRepository = userRepository;
         this.typeConverterReadDto = typeConverterReadDto;
     }
 
     /**
-     * Finds an advert by its ID.
+     * Finds a user by its ID.
      *
-     * @param advertId The ID of the advert to find.
-     * @return An AdvertReadDto containing the advert details if found.
-     * @throws ResourceNotFoundException If no advert is found with the given ID.
+     * @param userId The ID of the user to find.
+     * @return An UserReadDto containing the user details if found.
+     * @throws ResourceNotFoundException If no user is found with the given ID.
      */
     @Override
-    public AdvertReadDto findAdvertById(final Long advertId) {
+    public UserReadDto findUserById(final Long userId) {
 
-        final AdvertReadDto advertReadDto = advertRepository.findById(advertId)
+        final UserReadDto userReadDto = userRepository.findById(userId)
                 .map(typeConverterReadDto::convert)
-                .orElseThrow(() -> new ResourceNotFoundException("Advert", "id", advertId));
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
 
-        LOGGER.debug("In findAdvertById find the Advert with id {}", advertReadDto.getId());
+        LOGGER.debug("In findUserById find the User with id {}", userReadDto.getId());
 
-        return advertReadDto;
+        return userReadDto;
     }
 
     /**
-     * Retrieves all adverts.
+     * Finds a user by its email.
      *
-     * @return A list of AdvertReadDto containing details of all adverts.
+     * @param email The email of the user to find.
+     * @return An UserReadDto containing the user details if found.
+     * @throws ResourceNotFoundException If no user is found with the given email.
      */
     @Override
-    public List<AdvertReadDto> findAllAdverts() {
+    public UserReadDto findUserByEmail(final String email) {
 
-        final List<AdvertReadDto> advertReadDtoList = advertRepository.findAll()
-                .stream()
+        final UserReadDto userReadDto = userRepository.findUserByEmail(email)
                 .map(typeConverterReadDto::convert)
-                .toList();
+                .orElseThrow(() -> new ResourceNotFoundException("User", "email", email));
 
-        LOGGER.debug("In findAllAdverts find all adverts");
+        LOGGER.debug("In findUserByEmail find the User with email {}", userReadDto.getEmail());
 
-        return advertReadDtoList;
+        return userReadDto;
     }
 
-    /**
-     * Retrieves all adverts ordered by creation date in descending order.
-     *
-     * @return A list of AdvertReadDto containing details of all adverts sorted by creation date.
-     */
-    @Override
-    public List<AdvertReadDto> findAllByOrderByCreatedDateDesc() {
-
-        final List<AdvertReadDto> advertReadDtoList = advertRepository.findAllByOrderByCreatedDateDesc()
-                .stream()
-                .map(typeConverterReadDto::convert)
-                .toList();
-
-        LOGGER.debug("In findAllByOrderByCreatedDateDesc find all adverts sorted by createdDate desc");
-
-        return advertReadDtoList;
-    }
 
     /**
      * Finds all adverts created by a specific user.
@@ -183,11 +165,6 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
         LOGGER.debug("In findPromoted find all adverts which are promoted");
 
         return advertReadDtoList;
-    }
-
-    @Override
-    public List<AdvertReadDto> findViewed(User user) {
-        return null;
     }
 
     private User getUserByAuthenticatedUser(final AuthenticatedUser authenticatedUser) {
