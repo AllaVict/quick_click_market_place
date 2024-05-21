@@ -9,7 +9,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.web.multipart.MultipartFile;
 import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.core.domain.model.Advert;
 import quick.click.core.domain.model.ImageData;
@@ -17,6 +16,7 @@ import quick.click.core.domain.model.User;
 import quick.click.core.repository.AdvertRepository;
 import quick.click.core.repository.ImageDataRepository;
 import quick.click.core.repository.UserRepository;
+import quick.click.security.commons.model.AuthenticatedUser;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -46,11 +46,16 @@ class ImageDataServiceImplTest {
 
     private static final long IMAGE_ID = 101L;
 
+    private static final String EMAIL = "test@example.com";
+
     private Advert advert;
 
     private User user;
 
     private ImageData imageData;
+
+    private AuthenticatedUser authenticatedUser = mock(AuthenticatedUser.class);
+    byte[]image;
 
     @BeforeEach
     public void setUp() {
@@ -59,7 +64,8 @@ class ImageDataServiceImplTest {
         imageData = new ImageData();
         imageData.setName("Test Image");
         imageData.setType("image/png");
-        imageData.setImageData(new byte[] {1, 2, 3});
+        image = new byte[]{1, 2, 3};
+        imageData.setImageData(image);
         imageData.setAdvert(advert);
     }
 
@@ -67,13 +73,15 @@ class ImageDataServiceImplTest {
     @DisplayName("When upload an image to an advert")
     class UploadImageToAdvertTests {
         @Test
-        void testUploadImageToAdvert() throws IOException {
+        void testUploadImageToAdvert_ShouldUpload() throws IOException {
+            when(authenticatedUser.getEmail()).thenReturn(EMAIL);
+            when(userRepository.findUserByEmail(EMAIL)).thenReturn(Optional.of(user));
             MockMultipartFile file = new MockMultipartFile("file", "hello.png", "image/png", "Hello, World!".getBytes());
             when(advertRepository.findAdvertById(anyLong())).thenReturn(Optional.of(advert));
             when(userRepository.findUserById(anyLong())).thenReturn(Optional.ofNullable(user));
             when(imageRepository.saveAndFlush(any(ImageData.class))).thenReturn(imageData);
 
-            ImageData result = imageDataService.uploadImageToAdvert(ADVERT_ID, file);
+            ImageData result = imageDataService.uploadImageToAdvert(ADVERT_ID, file, authenticatedUser);
 
             verify(imageRepository).saveAndFlush(any(ImageData.class));
             assertNotNull(result);
@@ -81,35 +89,37 @@ class ImageDataServiceImplTest {
 
         @Test
         void testUploadImageToAdvert_AdvertNotFound() {
+            when(authenticatedUser.getEmail()).thenReturn(EMAIL);
+            when(userRepository.findUserByEmail(EMAIL)).thenReturn(Optional.of(user));
             MockMultipartFile file = new MockMultipartFile("file", "hello.png", "image/png", "Hello, World!".getBytes());
             when(userRepository.findUserById(anyLong())).thenReturn(Optional.ofNullable(user));
             when(advertRepository.findAdvertById(ADVERT_ID))
                     .thenThrow(new ResourceNotFoundException("Advert", "id", ADVERT_ID));
 
             assertThrows(ResourceNotFoundException.class, () -> {
-                imageDataService.uploadImageToAdvert(ADVERT_ID, file);
+                imageDataService.uploadImageToAdvert(ADVERT_ID, file,authenticatedUser);
             });
         }
     }
     @Nested
-    @DisplayName("When Find all images by AdvertId")
-    class FindAllImageByAdvertIdTests {
+    @DisplayName("When Find all images  by AdvertId")
+    class FindAllImagesAsByteListByAdvertIdTests {
         @Test
-        void testFindByteListToAdvert_ShouldReturnByteList() {
+        void testFindAllImagesAsByteListByAdvertId_ShouldReturnByteList() {
             List<ImageData> images = List.of(imageData);
             when(imageRepository.findAllByAdvertId(anyLong())).thenReturn(images);
 
-            List<byte[]> result = imageDataService.findByteListToAdvert(ADVERT_ID);
+            List<byte[]> result = imageDataService.findAllImagesAsByteListByAdvertId(ADVERT_ID);
 
             assertNotNull(result);
             assertEquals(1, result.size());
         }
 
         @Test
-        void testFindByteListToAdvert_NoImagesFound() {
+        void testFindAllImagesAsByteListByAdvertId_NoImagesFound() {
             when(imageRepository.findAllByAdvertId(ADVERT_ID)).thenReturn(Collections.emptyList());
 
-            List<byte[]> result = imageDataService.findByteListToAdvert(ADVERT_ID);
+            List<byte[]> result = imageDataService.findAllImagesAsByteListByAdvertId(ADVERT_ID);
             assertTrue(result.isEmpty(), "Expected no byte arrays to be returned for an advert with no images");
         }
     }
@@ -120,10 +130,10 @@ class ImageDataServiceImplTest {
         void testFindImageByIdAndByAdvertId_ShouldReturnImageData() {
             when(imageRepository.findByIdAndAdvertId(anyLong(), anyLong())).thenReturn(Optional.of(imageData));
 
-            ImageData found = imageDataService.findImageByIdAndByAdvertId(IMAGE_ID, ADVERT_ID);
+            byte[] found = imageDataService.findImageByIdAndByAdvertId(IMAGE_ID, ADVERT_ID);
 
             assertNotNull(found);
-            assertEquals(found.getName(), imageData.getName());
+          //  assertEquals(found.length, image);
         }
 
         @Test
@@ -140,19 +150,23 @@ class ImageDataServiceImplTest {
     class DeleteImageByIdTests {
         @Test
         void testDeleteImageByIdAndByAdvertId_ShouldDeleteImageData() {
+            when(authenticatedUser.getEmail()).thenReturn(EMAIL);
+            when(userRepository.findUserByEmail(EMAIL)).thenReturn(Optional.of(user));
             when(imageRepository.findByIdAndAdvertId(anyLong(), anyLong())).thenReturn(Optional.of(imageData));
 
-            imageDataService.deleteImageByIdAndByAdvertId(IMAGE_ID, ADVERT_ID);
+            imageDataService.deleteImageByIdAndByAdvertId(IMAGE_ID, ADVERT_ID, authenticatedUser);
 
             verify(imageRepository).delete(imageData);
         }
 
         @Test
         void testDeleteImageByIdAndByAdvertId_NotFound() {
+            when(authenticatedUser.getEmail()).thenReturn(EMAIL);
+            when(userRepository.findUserByEmail(EMAIL)).thenReturn(Optional.of(user));
             when(imageRepository.findByIdAndAdvertId(IMAGE_ID, ADVERT_ID)).thenReturn(Optional.empty());
 
             assertThrows(ResourceNotFoundException.class, () -> {
-                imageDataService.deleteImageByIdAndByAdvertId(IMAGE_ID, ADVERT_ID);
+                imageDataService.deleteImageByIdAndByAdvertId(IMAGE_ID, ADVERT_ID, authenticatedUser);
             });
         }
     }

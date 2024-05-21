@@ -56,6 +56,8 @@ public class AdvertSearchController {
      *
      * @param advertId The ID of the advert to find.
      * @return A ResponseEntity containing the found advert or an error message.
+     *
+     *  GET   http://localhost:8080/v1.0/adverts/1
      */
     @GetMapping("/{id}")
     @Operation(summary = "Find advert by id")
@@ -80,18 +82,18 @@ public class AdvertSearchController {
 
             final AdvertReadDto advertReadDto = advertSearchService.findAdvertById(advertId);
 
-            LOGGER.debug("In findAdvertById received GET find the advert successfully with id {} ", advertId);
+            LOGGER.debug("In findAdvertById received GET find the advert successfully with id: {} ", advertId);
 
             return ResponseEntity.status(HttpStatus.OK).body(advertReadDto);
 
         } catch (ResourceNotFoundException exception) {
 
-            LOGGER.error("Advert not found with id : '{}'", advertId, exception);
+            LOGGER.error("Advert not found with id : {}", advertId, exception);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
 
         } catch (Exception exception) {
 
-            LOGGER.error("Unexpected error during finding the advert with id {}", advertId, exception);
+            LOGGER.error("Unexpected error during finding the advert with id: {}", advertId, exception);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
 
         }
@@ -102,6 +104,8 @@ public class AdvertSearchController {
      * Retrieves all adverts and returns them.
      *
      * @return A ResponseEntity containing a list of all adverts or an error message.
+     *
+     *  GET   http://localhost:8080/v1.0/adverts
      */
     @GetMapping()
     @Operation(summary = "Find all adverts")
@@ -110,7 +114,7 @@ public class AdvertSearchController {
         try {
             final List<AdvertReadDto> advertReadDtoList = advertSearchService.findAllByOrderByCreatedDateDesc();
 
-            LOGGER.debug("In findAllAdvert received GET find all advert successfully ");
+            LOGGER.debug("In findAllAdvert received GET find all advert successfully");
 
             return ResponseEntity.status(HttpStatus.OK).body(advertReadDtoList);
 
@@ -126,7 +130,11 @@ public class AdvertSearchController {
      * Retrieves all adverts created by the currently authenticated user.
      *
      * @param authenticatedUser The currently authenticated user.
-     * @return A ResponseEntity containing a list of all adverts created by the authenticated user or an error message.
+     * @return A ResponseEntity containing a list of all adverts created by the authenticated user
+     * or an error message.
+     *
+     *  GET   http://localhost:8080/v1.0/adverts/user
+     *  Find all adverts by authorized user
      */
     @GetMapping("/user")
     @Operation(summary = "Find all adverts by authorized user")
@@ -144,12 +152,12 @@ public class AdvertSearchController {
 
         } catch (AuthorizationException exception) {
 
-            LOGGER.error("Unauthorized access attempt by user {}", authenticatedUser.getEmail(), exception);
+            LOGGER.error("Unauthorized access attempt by user: {}", authenticatedUser.getEmail(), exception);
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized access");
 
         } catch (Exception exception) {
 
-            LOGGER.error("Error finding adverts by user with name {}", authenticatedUser.getEmail(), exception);
+            LOGGER.error("Error finding adverts by user with name: {}", authenticatedUser.getEmail(), exception);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
 
         }
