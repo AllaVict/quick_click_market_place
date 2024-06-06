@@ -15,6 +15,7 @@ import quick.click.commons.exeptions.ResourceNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import quick.click.core.domain.dto.AdvertReadDto;
+import quick.click.core.domain.dto.AdvertReadWithoutAuthDto;
 import quick.click.core.domain.model.Advert;
 import quick.click.core.domain.model.User;
 import quick.click.core.repository.AdvertRepository;
@@ -172,11 +173,11 @@ public class AdvertSearchController {
     @Operation(summary = "Find all adverts with certain category")
     public ResponseEntity<?> findAdvertsByCategory(@RequestParam("category") String category) {
         try {
-            final List<AdvertReadDto> advertReadDtoList = advertSearchService.findByCategory(category);
+            final List<AdvertReadWithoutAuthDto> advertReadWithoutAuthDtoList = advertSearchService.findByCategory(category);
 
             LOGGER.debug("In findAdvertsByCategory received GET find all advert successfully.");
 
-            return ResponseEntity.status(HttpStatus.OK).body(advertReadDtoList);
+            return ResponseEntity.status(HttpStatus.OK).body(advertReadWithoutAuthDtoList);
 
         } catch (IllegalArgumentException ex) {
 
@@ -195,11 +196,11 @@ public class AdvertSearchController {
     @Operation(summary = "Find all adverts with discounted price")
     public ResponseEntity<?> findDiscountedAdverts() {
         try {
-            final List<AdvertReadDto> advertReadDtoList = advertSearchService.findDiscounted();
+            final List<AdvertReadWithoutAuthDto> advertReadWithoutAuthDtoList = advertSearchService.findDiscounted();
 
             LOGGER.debug("In findDiscountedAdverts received GET find all advert successfully.");
 
-            return ResponseEntity.status(HttpStatus.OK).body(advertReadDtoList);
+            return ResponseEntity.status(HttpStatus.OK).body(advertReadWithoutAuthDtoList);
 
         } catch (Exception ex) {
 
@@ -218,7 +219,7 @@ public class AdvertSearchController {
     @Operation(summary = "Find 10 adverts with max viewing quantity")
     public ResponseEntity<?> find10MaxViewedAdverts() {
         try {
-            final List<AdvertReadDto> advertReadDtoList = advertSearchService.find10MaxViewed();
+            final List<AdvertReadWithoutAuthDto> advertReadDtoList = advertSearchService.find10MaxViewed();
 
             LOGGER.debug("In find10MaxViewedAdverts received GET find all advert successfully.");
 
@@ -236,7 +237,7 @@ public class AdvertSearchController {
     @Operation(summary = "Find all adverts which are promoted")
     public ResponseEntity<?> findPromotedAdverts() {
         try {
-            final List<AdvertReadDto> advertReadDtoList = advertSearchService.findPromoted();
+            final List<AdvertReadWithoutAuthDto> advertReadDtoList = advertSearchService.findPromoted();
 
             LOGGER.debug("In findPromotedAdverts received GET find all advert successfully.");
 

@@ -1,6 +1,7 @@
 package quick.click.core.service;
 
 import quick.click.core.domain.dto.AdvertReadDto;
+import quick.click.core.domain.dto.AdvertReadWithoutAuthDto;
 import quick.click.core.domain.model.Advert;
 import quick.click.core.domain.model.User;
 import quick.click.core.enums.Category;
@@ -24,13 +25,13 @@ public interface AdvertSearchService {
 
     List<AdvertReadDto> findAllByOrderByCreatedDateDesc();
 
-    List<AdvertReadDto> findByCategory(String category);
+    List<AdvertReadWithoutAuthDto> findByCategory(String category);
 
-    List<AdvertReadDto> findDiscounted();
+    List<AdvertReadWithoutAuthDto> findDiscounted();
 
-    List<AdvertReadDto> find10MaxViewed();
+    List<AdvertReadWithoutAuthDto> find10MaxViewed();
 
-    List<AdvertReadDto> findPromoted();
+    List<AdvertReadWithoutAuthDto> findPromoted();
 
     Set<AdvertReadDto> findViewed(User user);
 

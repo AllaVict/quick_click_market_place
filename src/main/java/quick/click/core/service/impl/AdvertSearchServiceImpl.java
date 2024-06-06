@@ -1,12 +1,15 @@
 package quick.click.core.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import quick.click.commons.exeptions.AuthorizationException;
 import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.core.converter.TypeConverter;
 import quick.click.core.domain.dto.AdvertReadDto;
+import quick.click.core.domain.dto.AdvertReadWithoutAuthDto;
 import quick.click.core.domain.model.Advert;
 import quick.click.core.domain.model.User;
 import quick.click.core.enums.Category;
@@ -25,24 +28,41 @@ import java.util.stream.Collectors;
  * @author Alla Borodina
  */
 @Service
+@RequiredArgsConstructor
 public class AdvertSearchServiceImpl implements AdvertSearchService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdvertSearchServiceImpl.class);
 
+    @Autowired
     private final AdvertRepository advertRepository;
 
     private final UserRepository userRepository;
 
     private final TypeConverter<Advert, AdvertReadDto> typeConverterReadDto;
 
-    public AdvertSearchServiceImpl(final AdvertRepository advertRepository,
-                                   final UserRepository userRepository,
-                                   final TypeConverter<Advert, AdvertReadDto> typeConverterReadDto) {
-        this.advertRepository = advertRepository;
-        this.userRepository = userRepository;
-        this.typeConverterReadDto = typeConverterReadDto;
-    }
+    private final TypeConverter<Advert, AdvertReadWithoutAuthDto> typeConverterReadWithoutAuthDto;
 
+
+
+//    public AdvertSearchServiceImpl(final AdvertRepository advertRepository,
+//                                   final UserRepository userRepository,
+//                                   final TypeConverter<Advert, AdvertReadDto> typeConverterReadDto,
+//                                   final TypeConverter<Advert, AdvertReadWithoutAuthDto> typeConverterReadWithoutAuthDto) {
+//        this.advertRepository = advertRepository;
+//        this.userRepository = userRepository;
+//        this.typeConverterReadDto = typeConverterReadDto;
+//        this.typeConverterReadWithoutAuthDto = typeConverterReadWithoutAuthDto;
+//    }
+//
+//    public AdvertSearchServiceImpl(final AdvertRepository advertRepository,
+//                                   final UserRepository userRepository,
+//                                   final TypeConverter<Advert, AdvertReadDto> typeConverterReadDto) {
+//        this(advertRepository, userRepository, typeConverterReadDto, null);
+//    }
+//
+//    public AdvertSearchServiceImpl(){
+//        this(null, null, null, null);
+//    };
     /**
      * Finds an advert by its ID.
      *
@@ -128,15 +148,15 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
      * @throws IllegalArgumentException If the input category is out of the related enum range.
      */
     @Override
-    public List<AdvertReadDto> findByCategory(final String category) throws IllegalArgumentException {
+    public List<AdvertReadWithoutAuthDto> findByCategory(final String category) throws IllegalArgumentException {
         Category categoryToSearch = findCategoryByString(category);
-        final List<AdvertReadDto> advertReadDtoList = advertRepository.findByCategory(categoryToSearch)
+        final List<AdvertReadWithoutAuthDto> advertReadWithoutAuthDtoList = advertRepository.findByCategory(categoryToSearch)
                 .stream()
-                .map(typeConverterReadDto::convert)
+                .map(typeConverterReadWithoutAuthDto::convert)
                 .toList();
         LOGGER.debug("In findByCategory find all adverts with category {}", category);
 
-        return advertReadDtoList;
+        return advertReadWithoutAuthDtoList;
     }
 
     /**
@@ -145,14 +165,14 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
      * @return A list of AdvertReadDto containing details of all adverts with discounted price.
      */
     @Override
-    public List<AdvertReadDto> findDiscounted() {
-        final List<AdvertReadDto> advertReadDtoList = advertRepository.findDiscounted()
+    public List<AdvertReadWithoutAuthDto> findDiscounted() {
+        final List<AdvertReadWithoutAuthDto> advertReadWithoutAuthDtoList = advertRepository.findDiscounted()
                 .stream()
-                .map(typeConverterReadDto::convert)
+                .map(typeConverterReadWithoutAuthDto::convert)
                 .toList();
         LOGGER.debug("In findDiscounted find all adverts with discounted price");
 
-        return advertReadDtoList;
+        return advertReadWithoutAuthDtoList;
     }
 
     /**
@@ -161,14 +181,14 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
      * @return A list of AdvertReadDto containing details of 10 adverts with max viewing quantity.
      */
     @Override
-    public List<AdvertReadDto> find10MaxViewed() {
-        final List<AdvertReadDto> advertReadDtoList = advertRepository.find10MaxViewed()
+    public List<AdvertReadWithoutAuthDto> find10MaxViewed() {
+        final List<AdvertReadWithoutAuthDto> advertReadWithoutAuthDtoList = advertRepository.find10MaxViewed()
                 .stream()
-                .map(typeConverterReadDto::convert)
+                .map(typeConverterReadWithoutAuthDto::convert)
                 .toList();
         LOGGER.debug("In find10MaxViewed find 10 adverts with max viewing quantity");
 
-        return advertReadDtoList;
+        return advertReadWithoutAuthDtoList;
     }
 
     /**
@@ -177,14 +197,14 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
      * @return A list of AdvertReadDto containing details of all adverts which are promoted.
      */
     @Override
-    public List<AdvertReadDto> findPromoted() {
-        final List<AdvertReadDto> advertReadDtoList = advertRepository.findPromoted()
+    public List<AdvertReadWithoutAuthDto> findPromoted() {
+        final List<AdvertReadWithoutAuthDto> advertReadWithoutAuthDtoList = advertRepository.findPromoted()
                 .stream()
-                .map(typeConverterReadDto::convert)
+                .map(typeConverterReadWithoutAuthDto::convert)
                 .toList();
         LOGGER.debug("In findPromoted find all adverts which are promoted");
 
-        return advertReadDtoList;
+        return advertReadWithoutAuthDtoList;
     }
 
     @Override
