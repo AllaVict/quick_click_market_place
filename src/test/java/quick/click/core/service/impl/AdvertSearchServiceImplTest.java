@@ -13,6 +13,7 @@ import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.config.factory.AdvertFactory;
 import quick.click.core.converter.impl.AdvertToAdvertReadDtoConverter;
 import quick.click.core.domain.dto.AdvertReadDto;
+import quick.click.core.domain.dto.AdvertReadWithoutAuthDto;
 import quick.click.core.domain.model.Advert;
 import quick.click.core.domain.model.User;
 import quick.click.core.repository.AdvertRepository;
@@ -71,7 +72,7 @@ class AdvertSearchServiceImplTest {
         advertOne = AdvertFactory.createAdvertOne(user);
         advertTwo = AdvertFactory.createAdvertOne(user);
         advertReadDtoOne = createAdvertReadDto();
-        advertSearchService = new AdvertSearchServiceImpl(advertRepository, userRepository, advertToAdvertReadDtoConverter);
+        advertSearchService = new AdvertSearchServiceImpl(advertRepository, userRepository, advertToAdvertReadDtoConverter, null);
 
     }
 
@@ -83,7 +84,7 @@ class AdvertSearchServiceImplTest {
             when(advertRepository.findById(ADVERT_ID)).thenReturn(Optional.ofNullable(advertOne));
             when(advertToAdvertReadDtoConverter.convert(advertOne)).thenReturn(advertReadDtoOne);
 
-            AdvertReadDto result = advertSearchService.findAdvertById(advertOne.getId());
+            AdvertReadWithoutAuthDto result = advertSearchService.findAdvertById(advertOne.getId());
 
             verify(advertRepository).findById(any(Long.class));
             assertNotNull(result);
@@ -121,7 +122,7 @@ class AdvertSearchServiceImplTest {
             when(advertRepository.findAll()).thenReturn(advertList);
             when(advertToAdvertReadDtoConverter.convert(any(Advert.class))).thenReturn(advertReadDtoOne);
 
-            List<AdvertReadDto> result = advertSearchService.findAllAdverts();
+            List<AdvertReadWithoutAuthDto> result = advertSearchService.findAllAdverts();
 
             verify(advertRepository).findAll();
             assertNotNull(result);
@@ -149,7 +150,7 @@ class AdvertSearchServiceImplTest {
             advertReadDtoList = new ArrayList<>();
             when(advertRepository.findAll()).thenReturn(advertList);
 
-            List<AdvertReadDto> result = advertSearchService.findAllAdverts();
+            List<AdvertReadWithoutAuthDto> result = advertSearchService.findAllAdverts();
 
             verify(advertRepository).findAll();
             assertTrue(result.isEmpty());

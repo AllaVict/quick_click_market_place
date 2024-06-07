@@ -1,4 +1,4 @@
 UPDATE adverts
 SET promoted = true
-WHERE title IN ('Opel Zafira', 'Black cat', 'Крісло-кровать');
+WHERE title IN ('Opel Zefira', 'Black cat', 'Крісло-кровать');
 

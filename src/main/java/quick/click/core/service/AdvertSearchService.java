@@ -17,9 +17,9 @@ import java.util.Set;
  */
 public interface AdvertSearchService {
 
-    AdvertReadDto findAdvertById(Long storyId);
+    AdvertReadWithoutAuthDto findAdvertById(Long storyId);
 
-    List<AdvertReadDto> findAllAdverts();
+    List<AdvertReadWithoutAuthDto> findAllAdverts();
 
     List<AdvertReadDto> findAllAdvertsByUser(AuthenticatedUser authenticatedUser);
 

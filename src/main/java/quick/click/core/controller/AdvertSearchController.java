@@ -58,7 +58,7 @@ public class AdvertSearchController {
      * @param advertId The ID of the advert to find.
      * @return A ResponseEntity containing the found advert or an error message.
      *
-     *  GET   http://localhost:8080/v1.0/adverts/1
+     *  GET   http://localhost:8080/v1.0/adverts/{id}
      */
     @GetMapping("/{id}")
     @Operation(summary = "Find advert by id")
@@ -81,7 +81,7 @@ public class AdvertSearchController {
 //                userServiceImpl.save(user);
 //            }
 
-            final AdvertReadDto advertReadDto = advertSearchService.findAdvertById(advertId);
+            final AdvertReadWithoutAuthDto advertReadDto = advertSearchService.findAdvertById(advertId);
 
             LOGGER.debug("In findAdvertById received GET find the advert successfully with id: {} ", advertId);
 
@@ -113,7 +113,7 @@ public class AdvertSearchController {
     public ResponseEntity<?> findAllAdverts() {
 
         try {
-            final List<AdvertReadDto> advertReadDtoList = advertSearchService.findAllByOrderByCreatedDateDesc();
+            final List<AdvertReadWithoutAuthDto> advertReadDtoList = advertSearchService.findAllAdverts();
 
             LOGGER.debug("In findAllAdvert received GET find all advert successfully");
 

@@ -43,43 +43,23 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
     private final TypeConverter<Advert, AdvertReadWithoutAuthDto> typeConverterReadWithoutAuthDto;
 
 
-
-//    public AdvertSearchServiceImpl(final AdvertRepository advertRepository,
-//                                   final UserRepository userRepository,
-//                                   final TypeConverter<Advert, AdvertReadDto> typeConverterReadDto,
-//                                   final TypeConverter<Advert, AdvertReadWithoutAuthDto> typeConverterReadWithoutAuthDto) {
-//        this.advertRepository = advertRepository;
-//        this.userRepository = userRepository;
-//        this.typeConverterReadDto = typeConverterReadDto;
-//        this.typeConverterReadWithoutAuthDto = typeConverterReadWithoutAuthDto;
-//    }
-//
-//    public AdvertSearchServiceImpl(final AdvertRepository advertRepository,
-//                                   final UserRepository userRepository,
-//                                   final TypeConverter<Advert, AdvertReadDto> typeConverterReadDto) {
-//        this(advertRepository, userRepository, typeConverterReadDto, null);
-//    }
-//
-//    public AdvertSearchServiceImpl(){
-//        this(null, null, null, null);
-//    };
     /**
      * Finds an advert by its ID.
      *
      * @param advertId The ID of the advert to find.
-     * @return An AdvertReadDto containing the advert details if found.
+     * @return An AdvertReadWithoutAuthDto containing the advert details if found.
      * @throws ResourceNotFoundException If no advert is found with the given ID.
      */
     @Override
-    public AdvertReadDto findAdvertById(final Long advertId) {
+    public AdvertReadWithoutAuthDto findAdvertById(final Long advertId) {
 
-        final AdvertReadDto advertReadDto = advertRepository.findById(advertId)
-                .map(typeConverterReadDto::convert)
+        final AdvertReadWithoutAuthDto advertReadWithoutAuthDto = advertRepository.findById(advertId)
+                .map(typeConverterReadWithoutAuthDto::convert)
                 .orElseThrow(() -> new ResourceNotFoundException("Advert", "id", advertId));
 
-        LOGGER.debug("In findAdvertById find the Advert with id: {}", advertReadDto.getId());
+        LOGGER.debug("In findAdvertById find the Advert with id: {}", advertReadWithoutAuthDto.getId());
 
-        return advertReadDto;
+        return advertReadWithoutAuthDto;
     }
 
     /**
@@ -88,22 +68,22 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
      * @return A list of AdvertReadDto containing details of all adverts.
      */
     @Override
-    public List<AdvertReadDto> findAllAdverts() {
+    public List<AdvertReadWithoutAuthDto> findAllAdverts() {
 
-        final List<AdvertReadDto> advertReadDtoList = advertRepository.findAll()
+        final List<AdvertReadWithoutAuthDto> advertReadWithoutAuthDtoList = advertRepository.findAll()
                 .stream()
-                .map(typeConverterReadDto::convert)
+                .map(typeConverterReadWithoutAuthDto::convert)
                 .toList();
 
         LOGGER.debug("In findAllAdverts find all adverts");
 
-        return advertReadDtoList;
+        return advertReadWithoutAuthDtoList;
     }
 
     /**
      * Retrieves all adverts ordered by creation date in descending order.
      *
-     * @return A list of AdvertReadDto containing details of all adverts sorted by creation date.
+     * @return A list of AdvertReadWithoutAuthDto containing details of all adverts sorted by creation date.
      */
     @Override
     public List<AdvertReadDto> findAllByOrderByCreatedDateDesc() {
