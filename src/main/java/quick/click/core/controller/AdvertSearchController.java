@@ -2,8 +2,11 @@ package quick.click.core.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -12,17 +15,19 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import quick.click.commons.exeptions.AuthorizationException;
 import quick.click.commons.exeptions.ResourceNotFoundException;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import quick.click.core.domain.dto.AdvertReadDto;
-import quick.click.core.domain.dto.AdvertReadWithoutAuthDto;
+import quick.click.core.domain.dto.UserReadDto;
 import quick.click.core.domain.model.Advert;
 import quick.click.core.domain.model.User;
 import quick.click.core.repository.AdvertRepository;
+import quick.click.core.repository.UserRepository;
 import quick.click.core.service.AdvertSearchService;
+import quick.click.core.service.UserService;
 import quick.click.security.commons.model.AuthenticatedUser;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import static quick.click.commons.constants.ApiVersion.VERSION_1_0;
 import static quick.click.commons.constants.Constants.Endpoints.ADVERTS_URL;
@@ -47,9 +52,16 @@ public class AdvertSearchController {
 
     private final AdvertRepository advertRepository;
 
-    public AdvertSearchController(final AdvertSearchService advertSearchService, final AdvertRepository advertRepository) {
+    public final UserRepository userRepository;
+
+    @Autowired
+    private EntityManager entityManager;
+
+    public AdvertSearchController(final AdvertSearchService advertSearchService, final AdvertRepository advertRepository,
+                                  final UserRepository userRepository) {
         this.advertSearchService = advertSearchService;
         this.advertRepository = advertRepository;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -60,6 +72,7 @@ public class AdvertSearchController {
      *
      *  GET   http://localhost:8080/v1.0/adverts/{id}
      */
+    @Transactional
     @GetMapping("/{id}")
     @Operation(summary = "Find advert by id")
     public ResponseEntity<?> findAdvertById(@PathVariable("id") final Long advertId) {
@@ -71,15 +84,24 @@ public class AdvertSearchController {
             );
             fromDb.setViewingQuantity(fromDb.getViewingQuantity() + 1);
             advertRepository.save(fromDb);
-//            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//            String username = authentication.getName();
-//            if (username != null && !"anonymousUser".equals(username)) {
-//                User user = userServiceImpl.findUserByEmail(username);
-//                Set<Adverts> viewedAdverts = user.getViewedAdverts();
-//                viewedAdverts.add(fromDb);
-//                user.setVieweddAdverts(viewedAdverts);
-//                userServiceImpl.save(user);
-//            }
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String username = authentication.getName();
+
+            LOGGER.debug("Authentication username: {}", username);
+
+            if (username != null && !"anonymousUser".equals(username)) {
+                User user = userRepository.findUserByEmail(username)
+                        .orElseThrow(() -> new ResourceNotFoundException("User", "email", username));
+
+                LOGGER.debug("User found: {}", user);
+
+                Set<Advert> viewedAdverts = user.getViewedAdverts();
+                viewedAdverts.add(fromDb);
+                user.setViewedAdverts(viewedAdverts);
+//                entityManager.persist(user);
+                userRepository.save(user);
+                entityManager.flush();
+            }
 
             final AdvertReadDto advertReadDto = advertSearchService.findAdvertById(advertId);
 
@@ -95,7 +117,7 @@ public class AdvertSearchController {
         } catch (Exception exception) {
 
             LOGGER.error("Unexpected error during finding the advert with id: {}", advertId, exception);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred." + exception.getMessage());
 
         }
 

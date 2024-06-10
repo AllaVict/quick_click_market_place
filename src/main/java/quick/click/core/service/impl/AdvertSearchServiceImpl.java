@@ -48,7 +48,7 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
      * Finds an advert by its ID.
      *
      * @param advertId The ID of the advert to find.
-     * @return An AdvertReadWithoutAuthDto containing the advert details if found.
+     * @return An AdvertReadDto containing the advert details if found.
      * @throws ResourceNotFoundException If no advert is found with the given ID.
      */
     @Override

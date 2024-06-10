@@ -6,25 +6,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import quick.click.commons.exeptions.AuthorizationException;
 import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.core.domain.dto.AdvertReadDto;
-import quick.click.core.domain.model.Advert;
 import quick.click.core.domain.model.User;
-import quick.click.core.repository.AdvertRepository;
 import quick.click.core.repository.UserRepository;
 import quick.click.core.service.AdvertSearchService;
-import quick.click.core.service.UserSearchService;
-import quick.click.security.commons.model.AuthenticatedUser;
 
-import java.util.List;
 import java.util.Set;
 
 import static quick.click.commons.constants.ApiVersion.VERSION_1_0;
 import static quick.click.commons.constants.Constants.Endpoints.USERS_URL;
-import static quick.click.core.controller.AdvertSearchController.BASE_URL;
 import static quick.click.core.controller.UserSearchController.BASE_USER_URL;
 
 /**

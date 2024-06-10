@@ -1,5 +1,8 @@
 package quick.click.core.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import quick.click.core.domain.BaseEntity;
@@ -10,6 +13,9 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 @Entity
 @Table(name = "users")
 public class User extends BaseEntity {
@@ -56,6 +62,7 @@ public class User extends BaseEntity {
     @Column
     @Enumerated(EnumType.STRING)
     private AuthProvider provider;
+    @JsonManagedReference
     @OneToMany(mappedBy = "viewer", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<Advert> viewedAdverts = new HashSet<>();
 
