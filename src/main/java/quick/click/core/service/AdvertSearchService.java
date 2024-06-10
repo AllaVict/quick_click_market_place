@@ -17,21 +17,21 @@ import java.util.Set;
  */
 public interface AdvertSearchService {
 
-    AdvertReadWithoutAuthDto findAdvertById(Long storyId);
+    AdvertReadDto findAdvertById(Long storyId);
 
-    List<AdvertReadWithoutAuthDto> findAllAdverts();
+    List<AdvertReadDto> findAllAdverts();
 
     List<AdvertReadDto> findAllAdvertsByUser(AuthenticatedUser authenticatedUser);
 
     List<AdvertReadDto> findAllByOrderByCreatedDateDesc();
 
-    List<AdvertReadWithoutAuthDto> findByCategory(String category);
+    List<AdvertReadDto> findByCategory(String category);
 
-    List<AdvertReadWithoutAuthDto> findDiscounted();
+    List<AdvertReadDto> findDiscounted();
 
-    List<AdvertReadWithoutAuthDto> find10MaxViewed();
+    List<AdvertReadDto> find10MaxViewed();
 
-    List<AdvertReadWithoutAuthDto> findPromoted();
+    List<AdvertReadDto> findPromoted();
 
     Set<AdvertReadDto> findViewed(User user);
 

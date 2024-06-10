@@ -46,7 +46,11 @@ public class AdvertToAdvertReadDtoConverter implements TypeConverter<Advert, Adv
         advertReadDto.setViewingQuantity(advert.getViewingQuantity());
         advertReadDto.setPromoted(advert.isPromoted());
         advertReadDto.setUser(typeConverterUserReadDto.convert(advert.getUser()));
-        advertReadDto.setViewer(typeConverterUserReadDto.convert(advert.getViewer()));
+        if(advert.getViewer() != null) {
+            advertReadDto.setViewer(typeConverterUserReadDto.convert(advert.getViewer()));
+        } else {
+            advertReadDto.setViewer(null);
+        }
         return advertReadDto;
     }
 }

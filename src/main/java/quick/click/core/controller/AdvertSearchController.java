@@ -81,7 +81,7 @@ public class AdvertSearchController {
 //                userServiceImpl.save(user);
 //            }
 
-            final AdvertReadWithoutAuthDto advertReadDto = advertSearchService.findAdvertById(advertId);
+            final AdvertReadDto advertReadDto = advertSearchService.findAdvertById(advertId);
 
             LOGGER.debug("In findAdvertById received GET find the advert successfully with id: {} ", advertId);
 
@@ -113,7 +113,7 @@ public class AdvertSearchController {
     public ResponseEntity<?> findAllAdverts() {
 
         try {
-            final List<AdvertReadWithoutAuthDto> advertReadDtoList = advertSearchService.findAllAdverts();
+            final List<AdvertReadDto> advertReadDtoList = advertSearchService.findAllAdverts();
 
             LOGGER.debug("In findAllAdvert received GET find all advert successfully");
 
@@ -173,11 +173,11 @@ public class AdvertSearchController {
     @Operation(summary = "Find all adverts with certain category")
     public ResponseEntity<?> findAdvertsByCategory(@RequestParam("category") String category) {
         try {
-            final List<AdvertReadWithoutAuthDto> advertReadWithoutAuthDtoList = advertSearchService.findByCategory(category);
+            final List<AdvertReadDto> advertReadDtoList = advertSearchService.findByCategory(category);
 
             LOGGER.debug("In findAdvertsByCategory received GET find all advert successfully.");
 
-            return ResponseEntity.status(HttpStatus.OK).body(advertReadWithoutAuthDtoList);
+            return ResponseEntity.status(HttpStatus.OK).body(advertReadDtoList);
 
         } catch (IllegalArgumentException ex) {
 
@@ -196,11 +196,11 @@ public class AdvertSearchController {
     @Operation(summary = "Find all adverts with discounted price")
     public ResponseEntity<?> findDiscountedAdverts() {
         try {
-            final List<AdvertReadWithoutAuthDto> advertReadWithoutAuthDtoList = advertSearchService.findDiscounted();
+            final List<AdvertReadDto> advertReadDtoList = advertSearchService.findDiscounted();
 
             LOGGER.debug("In findDiscountedAdverts received GET find all advert successfully.");
 
-            return ResponseEntity.status(HttpStatus.OK).body(advertReadWithoutAuthDtoList);
+            return ResponseEntity.status(HttpStatus.OK).body(advertReadDtoList);
 
         } catch (Exception ex) {
 
@@ -219,7 +219,7 @@ public class AdvertSearchController {
     @Operation(summary = "Find 10 adverts with max viewing quantity")
     public ResponseEntity<?> find10MaxViewedAdverts() {
         try {
-            final List<AdvertReadWithoutAuthDto> advertReadDtoList = advertSearchService.find10MaxViewed();
+            final List<AdvertReadDto> advertReadDtoList = advertSearchService.find10MaxViewed();
 
             LOGGER.debug("In find10MaxViewedAdverts received GET find all advert successfully.");
 
@@ -237,7 +237,7 @@ public class AdvertSearchController {
     @Operation(summary = "Find all adverts which are promoted")
     public ResponseEntity<?> findPromotedAdverts() {
         try {
-            final List<AdvertReadWithoutAuthDto> advertReadDtoList = advertSearchService.findPromoted();
+            final List<AdvertReadDto> advertReadDtoList = advertSearchService.findPromoted();
 
             LOGGER.debug("In findPromotedAdverts received GET find all advert successfully.");
 

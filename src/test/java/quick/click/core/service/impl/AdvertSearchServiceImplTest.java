@@ -84,7 +84,7 @@ class AdvertSearchServiceImplTest {
             when(advertRepository.findById(ADVERT_ID)).thenReturn(Optional.ofNullable(advertOne));
             when(advertToAdvertReadDtoConverter.convert(advertOne)).thenReturn(advertReadDtoOne);
 
-            AdvertReadWithoutAuthDto result = advertSearchService.findAdvertById(advertOne.getId());
+            AdvertReadDto result = advertSearchService.findAdvertById(advertOne.getId());
 
             verify(advertRepository).findById(any(Long.class));
             assertNotNull(result);
@@ -122,7 +122,7 @@ class AdvertSearchServiceImplTest {
             when(advertRepository.findAll()).thenReturn(advertList);
             when(advertToAdvertReadDtoConverter.convert(any(Advert.class))).thenReturn(advertReadDtoOne);
 
-            List<AdvertReadWithoutAuthDto> result = advertSearchService.findAllAdverts();
+            List<AdvertReadDto> result = advertSearchService.findAllAdverts();
 
             verify(advertRepository).findAll();
             assertNotNull(result);
@@ -150,7 +150,7 @@ class AdvertSearchServiceImplTest {
             advertReadDtoList = new ArrayList<>();
             when(advertRepository.findAll()).thenReturn(advertList);
 
-            List<AdvertReadWithoutAuthDto> result = advertSearchService.findAllAdverts();
+            List<AdvertReadDto> result = advertSearchService.findAllAdverts();
 
             verify(advertRepository).findAll();
             assertTrue(result.isEmpty());

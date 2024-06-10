@@ -19,6 +19,7 @@ import quick.click.core.service.AdvertSearchService;
 import quick.click.security.commons.model.AuthenticatedUser;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -51,15 +52,15 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
      * @throws ResourceNotFoundException If no advert is found with the given ID.
      */
     @Override
-    public AdvertReadWithoutAuthDto findAdvertById(final Long advertId) {
+    public AdvertReadDto findAdvertById(final Long advertId) {
 
-        final AdvertReadWithoutAuthDto advertReadWithoutAuthDto = advertRepository.findById(advertId)
-                .map(typeConverterReadWithoutAuthDto::convert)
+        final AdvertReadDto advertReadDto = advertRepository.findById(advertId)
+                .map(typeConverterReadDto::convert)
                 .orElseThrow(() -> new ResourceNotFoundException("Advert", "id", advertId));
 
-        LOGGER.debug("In findAdvertById find the Advert with id: {}", advertReadWithoutAuthDto.getId());
+        LOGGER.debug("In findAdvertById find the Advert with id: {}", advertReadDto.getId());
 
-        return advertReadWithoutAuthDto;
+        return advertReadDto;
     }
 
     /**
@@ -68,11 +69,11 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
      * @return A list of AdvertReadDto containing details of all adverts.
      */
     @Override
-    public List<AdvertReadWithoutAuthDto> findAllAdverts() {
+    public List<AdvertReadDto> findAllAdverts() {
 
-        final List<AdvertReadWithoutAuthDto> advertReadWithoutAuthDtoList = advertRepository.findAll()
+        final List<AdvertReadDto> advertReadWithoutAuthDtoList = advertRepository.findAll()
                 .stream()
-                .map(typeConverterReadWithoutAuthDto::convert)
+                .map(typeConverterReadDto::convert)
                 .toList();
 
         LOGGER.debug("In findAllAdverts find all adverts");
@@ -83,7 +84,7 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
     /**
      * Retrieves all adverts ordered by creation date in descending order.
      *
-     * @return A list of AdvertReadWithoutAuthDto containing details of all adverts sorted by creation date.
+     * @return A list of AdvertReadDto containing details of all adverts sorted by creation date.
      */
     @Override
     public List<AdvertReadDto> findAllByOrderByCreatedDateDesc() {
@@ -112,6 +113,7 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
 
         final List<AdvertReadDto> advertReadDtoList = advertRepository.findAllByUserOrderByCreatedDateDesc(user)
                 .stream()
+                .filter(a -> Objects.equals(a.getUser().getId(), user.getId()))
                 .map(typeConverterReadDto::convert)
                 .toList();
 
@@ -128,15 +130,15 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
      * @throws IllegalArgumentException If the input category is out of the related enum range.
      */
     @Override
-    public List<AdvertReadWithoutAuthDto> findByCategory(final String category) throws IllegalArgumentException {
+    public List<AdvertReadDto> findByCategory(final String category) throws IllegalArgumentException {
         Category categoryToSearch = findCategoryByString(category);
-        final List<AdvertReadWithoutAuthDto> advertReadWithoutAuthDtoList = advertRepository.findByCategory(categoryToSearch)
+        final List<AdvertReadDto> advertReadDtoList = advertRepository.findByCategory(categoryToSearch)
                 .stream()
-                .map(typeConverterReadWithoutAuthDto::convert)
+                .map(typeConverterReadDto::convert)
                 .toList();
         LOGGER.debug("In findByCategory find all adverts with category {}", category);
 
-        return advertReadWithoutAuthDtoList;
+        return advertReadDtoList;
     }
 
     /**
@@ -145,14 +147,14 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
      * @return A list of AdvertReadDto containing details of all adverts with discounted price.
      */
     @Override
-    public List<AdvertReadWithoutAuthDto> findDiscounted() {
-        final List<AdvertReadWithoutAuthDto> advertReadWithoutAuthDtoList = advertRepository.findDiscounted()
+    public List<AdvertReadDto> findDiscounted() {
+        final List<AdvertReadDto> advertReadDtoList = advertRepository.findDiscounted()
                 .stream()
-                .map(typeConverterReadWithoutAuthDto::convert)
+                .map(typeConverterReadDto::convert)
                 .toList();
         LOGGER.debug("In findDiscounted find all adverts with discounted price");
 
-        return advertReadWithoutAuthDtoList;
+        return advertReadDtoList;
     }
 
     /**
@@ -161,14 +163,14 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
      * @return A list of AdvertReadDto containing details of 10 adverts with max viewing quantity.
      */
     @Override
-    public List<AdvertReadWithoutAuthDto> find10MaxViewed() {
-        final List<AdvertReadWithoutAuthDto> advertReadWithoutAuthDtoList = advertRepository.find10MaxViewed()
+    public List<AdvertReadDto> find10MaxViewed() {
+        final List<AdvertReadDto> advertReadDtoList = advertRepository.find10MaxViewed()
                 .stream()
-                .map(typeConverterReadWithoutAuthDto::convert)
+                .map(typeConverterReadDto::convert)
                 .toList();
         LOGGER.debug("In find10MaxViewed find 10 adverts with max viewing quantity");
 
-        return advertReadWithoutAuthDtoList;
+        return advertReadDtoList;
     }
 
     /**
@@ -177,14 +179,14 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
      * @return A list of AdvertReadDto containing details of all adverts which are promoted.
      */
     @Override
-    public List<AdvertReadWithoutAuthDto> findPromoted() {
-        final List<AdvertReadWithoutAuthDto> advertReadWithoutAuthDtoList = advertRepository.findPromoted()
+    public List<AdvertReadDto> findPromoted() {
+        final List<AdvertReadDto> advertReadDtoList = advertRepository.findPromoted()
                 .stream()
-                .map(typeConverterReadWithoutAuthDto::convert)
+                .map(typeConverterReadDto::convert)
                 .toList();
         LOGGER.debug("In findPromoted find all adverts which are promoted");
 
-        return advertReadWithoutAuthDtoList;
+        return advertReadDtoList;
     }
 
     @Override

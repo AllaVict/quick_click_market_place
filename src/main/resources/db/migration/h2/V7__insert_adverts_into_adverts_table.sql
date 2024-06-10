@@ -15,7 +15,7 @@ VALUES
     ('Квартира Поділ', 'дуже гарна та затишна Квартира Поділ', 'RENT',  'PUBLISHED',
      '+380503332244',257000.00, 307000.00, true, 'EUR',
      'Berlin', true,4, 1, '2024-01-01'),
-    ('Opel Zefira', 'description a clothes Blue jeans', 'CLOTHES',  'PUBLISHED',
+    ('Red skirt', 'description a clothes Red skirt', 'CLOTHES',  'PUBLISHED',
      '+380507778855',20.00, 10.00, true, 'USD',
      'Dania', true,5, 1, '2023-12-01'),
     ('Blue jeans', 'description a clothes Blue jeans', 'CLOTHES',  'PUBLISHED',
