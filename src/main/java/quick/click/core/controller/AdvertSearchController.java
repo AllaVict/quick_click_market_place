@@ -25,6 +25,7 @@ import quick.click.core.service.AdvertSearchService;
 import quick.click.core.service.UserService;
 import quick.click.security.commons.model.AuthenticatedUser;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -54,9 +55,6 @@ public class AdvertSearchController {
 
     public final UserRepository userRepository;
 
-    @Autowired
-    private EntityManager entityManager;
-
     public AdvertSearchController(final AdvertSearchService advertSearchService, final AdvertRepository advertRepository,
                                   final UserRepository userRepository) {
         this.advertSearchService = advertSearchService;
@@ -72,13 +70,11 @@ public class AdvertSearchController {
      *
      *  GET   http://localhost:8080/v1.0/adverts/{id}
      */
-    @Transactional
     @GetMapping("/{id}")
     @Operation(summary = "Find advert by id")
     public ResponseEntity<?> findAdvertById(@PathVariable("id") final Long advertId) {
 
         try {
-
             Advert fromDb = advertRepository.findAdvertById(advertId).orElseThrow(
                     () -> new ResourceNotFoundException("Advert", "advertId", advertId)
             );
@@ -86,21 +82,13 @@ public class AdvertSearchController {
             advertRepository.save(fromDb);
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName();
-
-            LOGGER.debug("Authentication username: {}", username);
-
             if (username != null && !"anonymousUser".equals(username)) {
                 User user = userRepository.findUserByEmail(username)
                         .orElseThrow(() -> new ResourceNotFoundException("User", "email", username));
-
-                LOGGER.debug("User found: {}", user);
-
                 Set<Advert> viewedAdverts = user.getViewedAdverts();
                 viewedAdverts.add(fromDb);
-                user.setViewedAdverts(viewedAdverts);
-//                entityManager.persist(user);
+                fromDb.setViewer(user);
                 userRepository.save(user);
-                entityManager.flush();
             }
 
             final AdvertReadDto advertReadDto = advertSearchService.findAdvertById(advertId);
