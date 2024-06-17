@@ -243,6 +243,11 @@ public class AdvertSearchController {
         }
     }
 
+    /**
+     * Retrieves all adverts that has 'true' in the field 'promoted' and returns them.
+     *
+     * @return A ResponseEntity containing a list of all adverts that has 'true' in the field 'promoted' or an error message.
+     */
     @GetMapping("/promotions")
     @Operation(summary = "Find all adverts which are promoted")
     public ResponseEntity<?> findPromotedAdverts() {
@@ -256,6 +261,33 @@ public class AdvertSearchController {
         } catch (Exception ex) {
 
             LOGGER.error("Error finding adverts which are promoted", ex);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
+
+        }
+    }
+
+    /**
+     * Finds adverts that contains in their title certain word part and returns them.
+     *
+     * @param title The title part (case-insensitive) in advert title to find.
+     * @return A ResponseEntity containing a list of all adverts that contains in their title word part or an error message.
+     *
+     *  GET   http://localhost:8080/v1.0/adverts/find
+     */
+    @GetMapping("/find")
+    @Operation(summary = "Find adverts that contains in their title certain word part")
+    public ResponseEntity<?> findAdvertsByTitle(@RequestParam("title") final String title) {
+
+        try {
+            final List<AdvertReadDto> advertReadDtoList = advertSearchService.findAdvertsByTitlePart(title.toLowerCase());
+
+            LOGGER.debug("In findAdvertsByWordPart received GET find advert successfully");
+
+            return ResponseEntity.status(HttpStatus.OK).body(advertReadDtoList);
+
+        } catch (Exception ex) {
+
+            LOGGER.error("Error finding adverts", ex);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
 
         }

@@ -2,6 +2,7 @@ package quick.click.core.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import quick.click.core.domain.model.Advert;
 import quick.click.core.domain.model.User;
@@ -36,5 +37,8 @@ public interface AdvertRepository extends JpaRepository<Advert, Long> {
 
     @Query("SELECT a FROM Advert a WHERE a.promoted = true")
     List<Advert> findPromoted();
+
+    @Query("SELECT a FROM Advert a WHERE LOWER(a.title) LIKE %:titlePart%")
+    public List<Advert> findAdvertsByTitlePart(@Param("titlePart") String titlePart);
 
 }

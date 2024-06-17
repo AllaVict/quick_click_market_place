@@ -71,14 +71,14 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
     @Override
     public List<AdvertReadDto> findAllAdverts() {
 
-        final List<AdvertReadDto> advertReadWithoutAuthDtoList = advertRepository.findAll()
+        final List<AdvertReadDto> advertReadDtoList = advertRepository.findAll()
                 .stream()
                 .map(typeConverterReadDto::convert)
                 .toList();
 
         LOGGER.debug("In findAllAdverts find all adverts");
 
-        return advertReadWithoutAuthDtoList;
+        return advertReadDtoList;
     }
 
     /**
@@ -189,6 +189,11 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
         return advertReadDtoList;
     }
 
+    /**
+     * Retrieves all adverts which are viewed by authorized user.
+     *
+     * @return A list of AdvertReadDto containing details of all adverts that are viewed by authorized user.
+     */
     @Override
     public Set<AdvertReadDto> findViewed(User user) {
         return user.getViewedAdverts()
@@ -196,6 +201,29 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
                 .map(typeConverterReadDto::convert)
                 .collect(Collectors.toSet());
     }
+
+
+
+    /**
+     * Retrieves adverts that contains in their title certain word part.
+     *
+     * @return A list of AdvertReadDto containing details of these adverts.
+     */
+    @Override
+    public List<AdvertReadDto> findAdvertsByTitlePart(String titlePart) {
+
+        final List<AdvertReadDto> advertReadDtoList = advertRepository.findAdvertsByTitlePart(titlePart)
+                .stream()
+                .map(typeConverterReadDto::convert)
+                .toList();
+
+        LOGGER.debug("In findAdvertsByTitlePart find adverts");
+
+        return advertReadDtoList;
+    }
+
+
+
 
     private User getUserByAuthenticatedUser(final AuthenticatedUser authenticatedUser) {
         String username = authenticatedUser.getEmail();

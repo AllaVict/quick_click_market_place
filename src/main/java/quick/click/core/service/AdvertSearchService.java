@@ -35,4 +35,6 @@ public interface AdvertSearchService {
 
     Set<AdvertReadDto> findViewed(User user);
 
+    List<AdvertReadDto> findAdvertsByTitlePart(String titlePart);
+
 }
