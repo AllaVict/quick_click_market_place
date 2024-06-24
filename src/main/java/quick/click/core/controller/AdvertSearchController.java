@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -64,6 +65,8 @@ public class AdvertSearchController {
 
     /**
      * Finds an advert by its ID and returns it.
+     * When advert is viewed view counter is incremented by 1 and
+     * the advert is added to list of viewed adverts by user who viewed it.
      *
      * @param advertId The ID of the advert to find.
      * @return A ResponseEntity containing the found advert or an error message.
@@ -125,7 +128,7 @@ public class AdvertSearchController {
         try {
             final List<AdvertReadDto> advertReadDtoList = advertSearchService.findAllAdverts();
 
-            LOGGER.debug("In findAllAdvert received GET find all advert successfully");
+            LOGGER.debug("In findAllAdvert received GET find all adverts successfully");
 
             return ResponseEntity.status(HttpStatus.OK).body(advertReadDtoList);
 
@@ -178,6 +181,8 @@ public class AdvertSearchController {
      * Retrieves all adverts with certain category and returns them.
      *
      * @return A ResponseEntity containing a list of all adverts with certain category or an error message.
+     *
+     * GET   http://localhost:8080/v1.0/adverts/find?category=furniture
      */
     @GetMapping("/")
     @Operation(summary = "Find all adverts with certain category")
@@ -185,7 +190,7 @@ public class AdvertSearchController {
         try {
             final List<AdvertReadDto> advertReadDtoList = advertSearchService.findByCategory(category);
 
-            LOGGER.debug("In findAdvertsByCategory received GET find all advert successfully.");
+            LOGGER.debug("In findAdvertsByCategory received GET certain category adverts successfully.");
 
             return ResponseEntity.status(HttpStatus.OK).body(advertReadDtoList);
 
@@ -201,6 +206,8 @@ public class AdvertSearchController {
      * Retrieves all adverts with discounted price and returns them.
      *
      * @return A ResponseEntity containing a list of all adverts with discounted price or an error message.
+     *
+     *GET   http://localhost:8080/v1.0/adverts/discounts
      */
     @GetMapping("/discounts")
     @Operation(summary = "Find all adverts with discounted price")
@@ -208,7 +215,7 @@ public class AdvertSearchController {
         try {
             final List<AdvertReadDto> advertReadDtoList = advertSearchService.findDiscounted();
 
-            LOGGER.debug("In findDiscountedAdverts received GET find all advert successfully.");
+            LOGGER.debug("In findDiscountedAdverts received GET find discounted adverts successfully.");
 
             return ResponseEntity.status(HttpStatus.OK).body(advertReadDtoList);
 
@@ -223,7 +230,9 @@ public class AdvertSearchController {
     /**
      * Retrieves 10 adverts with max viewing quantity.
      *
-     * @return A ResponseEntity containing a list of 10 (or less) adverts with max viewing quantity or an error message.
+     * @return A ResponseEntity containing a list of 10 (or less if the DB contains less than 10 adverts) adverts with max viewing quantity or an error message.
+     *
+     *GET   http://localhost:8080/v1.0/adverts/max_viewed
      */
     @GetMapping("/max_viewed")
     @Operation(summary = "Find 10 adverts with max viewing quantity")
@@ -231,7 +240,7 @@ public class AdvertSearchController {
         try {
             final List<AdvertReadDto> advertReadDtoList = advertSearchService.find10MaxViewed();
 
-            LOGGER.debug("In find10MaxViewedAdverts received GET find all advert successfully.");
+            LOGGER.debug("In find10MaxViewedAdverts received GET max viewed all adverts successfully.");
 
             return ResponseEntity.status(HttpStatus.OK).body(advertReadDtoList);
 
@@ -244,9 +253,11 @@ public class AdvertSearchController {
     }
 
     /**
-     * Retrieves all adverts that has 'true' in the field 'promoted' and returns them.
+     * Retrieves all adverts that have 'true' in the field 'promoted' and returns them.
      *
      * @return A ResponseEntity containing a list of all adverts that has 'true' in the field 'promoted' or an error message.
+     *
+     *GET   http://localhost:8080/v1.0/adverts/promotions
      */
     @GetMapping("/promotions")
     @Operation(summary = "Find all adverts which are promoted")
@@ -254,7 +265,7 @@ public class AdvertSearchController {
         try {
             final List<AdvertReadDto> advertReadDtoList = advertSearchService.findPromoted();
 
-            LOGGER.debug("In findPromotedAdverts received GET find all advert successfully.");
+            LOGGER.debug("In findPromotedAdverts received GET promoted adverts successfully.");
 
             return ResponseEntity.status(HttpStatus.OK).body(advertReadDtoList);
 
@@ -272,7 +283,7 @@ public class AdvertSearchController {
      * @param title The title part (case-insensitive) in advert title to find.
      * @return A ResponseEntity containing a list of all adverts that contains in their title word part or an error message.
      *
-     *  GET   http://localhost:8080/v1.0/adverts/find
+     *  GET   http://localhost:8080/v1.0/adverts/find?title=work
      */
     @GetMapping("/find")
     @Operation(summary = "Find adverts that contains in their title certain word part")
@@ -281,7 +292,7 @@ public class AdvertSearchController {
         try {
             final List<AdvertReadDto> advertReadDtoList = advertSearchService.findAdvertsByTitlePart(title.toLowerCase());
 
-            LOGGER.debug("In findAdvertsByWordPart received GET find advert successfully");
+            LOGGER.debug("In findAdvertsByWordPart received GET find adverts successfully");
 
             return ResponseEntity.status(HttpStatus.OK).body(advertReadDtoList);
 
@@ -293,6 +304,39 @@ public class AdvertSearchController {
         }
     }
 
+
+
+    /**
+     * Retrieves all adverts that are viewed by certain user and have 'true' in the field 'favorite' and returns them.
+     *
+     * @return A ResponseEntity containing a list of all adverts that has 'true' in the field 'promoted' or an error message.
+     */
+
+    @GetMapping("/favorite")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Find all adverts which are viewed by user and marked them as favorite")
+    public ResponseEntity<?> findFavoriteAdverts() {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+            String username = authentication.getName();
+
+            User user = userRepository.findUserByEmail(username)
+                        .orElseThrow(() -> new ResourceNotFoundException("User", "email", username));
+
+            final List<AdvertReadDto> advertReadDtoList = advertSearchService.findFavorite(user.getId());
+
+            LOGGER.debug("In findFavorite received GET favorite adverts successfully.");
+
+            return ResponseEntity.status(HttpStatus.OK).body(advertReadDtoList);
+
+        } catch (Exception ex) {
+
+            LOGGER.error("Error finding adverts which are favorite", ex);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
+
+        }
+    }
 }
 
 

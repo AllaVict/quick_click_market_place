@@ -41,4 +41,7 @@ public interface AdvertRepository extends JpaRepository<Advert, Long> {
     @Query("SELECT a FROM Advert a WHERE LOWER(a.title) LIKE %:titlePart%")
     public List<Advert> findAdvertsByTitlePart(@Param("titlePart") String titlePart);
 
+    @Query("SELECT a FROM Advert a WHERE a.viewer.id = viewerId AND a.favorite = true")
+    List<Advert> findFavorite(@Param("viewedId") long viewerId);
+
 }

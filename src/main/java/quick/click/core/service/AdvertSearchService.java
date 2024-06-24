@@ -37,4 +37,6 @@ public interface AdvertSearchService {
 
     List<AdvertReadDto> findAdvertsByTitlePart(String titlePart);
 
+    List<AdvertReadDto> findFavorite(long viewerId);
+
 }

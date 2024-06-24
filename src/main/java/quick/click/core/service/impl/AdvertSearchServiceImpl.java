@@ -220,8 +220,24 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
         LOGGER.debug("In findAdvertsByTitlePart find adverts");
 
         return advertReadDtoList;
+
     }
 
+    /**
+     * Retrieves all adverts which are favorite (i.e. viewer has viewed them and marked as favorite).
+     *
+     * @return A list of AdvertReadDto containing details of all adverts which are favorite.
+     */
+    @Override
+    public List<AdvertReadDto> findFavorite(long viewerId) {
+        final List<AdvertReadDto> advertReadDtoList = advertRepository.findFavorite(viewerId)
+                .stream()
+                .map(typeConverterReadDto::convert)
+                .toList();
+        LOGGER.debug("In findFavorite find all adverts which are favorite");
+
+        return advertReadDtoList;
+    }
 
 
 
