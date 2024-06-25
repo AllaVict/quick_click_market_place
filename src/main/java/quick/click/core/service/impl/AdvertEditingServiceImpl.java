@@ -141,8 +141,6 @@ public class AdvertEditingServiceImpl implements AdvertEditingService {
         advert.setFirstPriceDisplayed(advertEditingDto.isFirstPriceDisplayed());
         advert.setCurrency(advertEditingDto.getCurrency());
         advert.setAddress(advertEditingDto.getAddress());
-        advert.setFavorite(advertEditingDto.isFavorite());
-
         advert.setCreatedDate(advertEditingDto.getCreatedDate());
         advert.setUpdatedDate(LocalDateTime.now());
         return advert;
