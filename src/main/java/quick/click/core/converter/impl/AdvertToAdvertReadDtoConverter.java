@@ -8,6 +8,8 @@ import quick.click.core.domain.dto.UserReadDto;
 import quick.click.core.domain.model.Advert;
 import quick.click.core.domain.model.User;
 
+import java.util.stream.Collectors;
+
 @Component
 public class AdvertToAdvertReadDtoConverter implements TypeConverter<Advert, AdvertReadDto> {
 
@@ -46,11 +48,16 @@ public class AdvertToAdvertReadDtoConverter implements TypeConverter<Advert, Adv
         advertReadDto.setViewingQuantity(advert.getViewingQuantity());
         advertReadDto.setPromoted(advert.isPromoted());
         advertReadDto.setUser(typeConverterUserReadDto.convert(advert.getUser()));
-        if(advert.getViewer() != null) {
-            advertReadDto.setViewer(typeConverterUserReadDto.convert(advert.getViewer()));
-        } else {
-            advertReadDto.setViewer(null);
-        }
+        advertReadDto.setViewers(
+                advert.getViewers().stream()
+                        .map(typeConverterUserReadDto::convert)
+                        .collect(Collectors.toSet())
+        );
+//        if(advert.getViewers() != null) {
+//            advertReadDto.setViewer(typeConverterUserReadDto.convert(advert.getViewer()));
+//        } else {
+//            advertReadDto.setViewer(null);
+//        }
         return advertReadDto;
     }
 }

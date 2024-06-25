@@ -8,6 +8,7 @@ import quick.click.core.enums.Currency;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class AdvertReadDto {
 
@@ -45,7 +46,7 @@ public class AdvertReadDto {
 
     protected UserReadDto user;
 
-    protected UserReadDto viewer;
+    protected Set<UserReadDto> viewers;
 
     public Long getId() {
         return id;
@@ -178,12 +179,12 @@ public class AdvertReadDto {
         this.user = user;
     }
 
-    public UserReadDto getViewer() {
-        return viewer;
+    public Set<UserReadDto> getViewers() {
+        return viewers;
     }
 
-    public void setViewer(UserReadDto viewer) {
-        this.viewer = viewer;
+    public void setViewers(Set<UserReadDto> viewers) {
+        this.viewers = viewers;
     }
 
     @Override

@@ -90,8 +90,11 @@ public class AdvertSearchController {
                         .orElseThrow(() -> new ResourceNotFoundException("User", "email", username));
                 Set<Advert> viewedAdverts = user.getViewedAdverts();
                 viewedAdverts.add(fromDb);
-                fromDb.setViewer(user);   // TODO refactor to many-to-many
+                Set<User> viewers = fromDb.getViewers();
+                viewers.add(user);
+                fromDb.setViewers(viewers);
                 userRepository.save(user);
+                advertRepository.save(fromDb);
             }
 
             final AdvertReadDto advertReadDto = advertSearchService.findAdvertById(advertId);

@@ -10,9 +10,7 @@ import quick.click.core.enums.AdvertStatus;
 import quick.click.core.enums.Category;
 import quick.click.core.enums.Currency;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
@@ -73,9 +71,13 @@ public class Advert extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
     @JsonBackReference
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "viewer_id")
-    private User viewer;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "advert_viewers",
+            joinColumns = @JoinColumn(name = "advert_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> viewers = new HashSet<>();
 
     @OneToMany(mappedBy = "advert", cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
@@ -219,12 +221,12 @@ public class Advert extends BaseEntity {
         this.user = user;
     }
 
-    public User getViewer() {
-        return viewer;
+    public Set<User> getViewers() {
+        return viewers;
     }
 
-    public void setViewer(User viewer) {
-        this.viewer = viewer;
+    public void setViewers(Set<User> viewers) {
+        this.viewers = viewers;
     }
 
     @Override

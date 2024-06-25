@@ -26,7 +26,7 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
      * This method is called whenever an exception is thrown due to an unauthenticated user trying to access
      * a resource that requires authentication.
      *
-     * @param HttpServletRequest  the request that resulted in an AuthenticationException.
+     * @param httpServletRequest  the request that resulted in an AuthenticationException.
      * @param httpServletResponse the response that's populated with the authentication entry point response.
      * @param e                   the exception that is thrown when the user is unauthorized.
      * @throws IOException      if an input or output exception occurs.

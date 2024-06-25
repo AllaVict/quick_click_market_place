@@ -63,7 +63,7 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private AuthProvider provider;
     @JsonManagedReference
-    @OneToMany(mappedBy = "viewer", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @ManyToMany(mappedBy = "viewers")
     private Set<Advert> viewedAdverts = new HashSet<>();
 
 
