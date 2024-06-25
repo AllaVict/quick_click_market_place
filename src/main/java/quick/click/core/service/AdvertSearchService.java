@@ -1,10 +1,7 @@
 package quick.click.core.service;
 
 import quick.click.core.domain.dto.AdvertReadDto;
-import quick.click.core.domain.dto.AdvertReadWithoutAuthDto;
-import quick.click.core.domain.model.Advert;
 import quick.click.core.domain.model.User;
-import quick.click.core.enums.Category;
 import quick.click.security.commons.model.AuthenticatedUser;
 
 import java.util.List;

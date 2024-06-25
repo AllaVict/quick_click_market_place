@@ -65,7 +65,7 @@ public class AdvertSearchController {
 
     /**
      * Finds an advert by its ID and returns it.
-     * When advert is viewed view counter is incremented by 1 and
+     * When advert is viewed, view counter is incremented by 1 and
      * the advert is added to list of viewed adverts by user who viewed it.
      *
      * @param advertId The ID of the advert to find.
@@ -90,7 +90,7 @@ public class AdvertSearchController {
                         .orElseThrow(() -> new ResourceNotFoundException("User", "email", username));
                 Set<Advert> viewedAdverts = user.getViewedAdverts();
                 viewedAdverts.add(fromDb);
-                fromDb.setViewer(user);
+                fromDb.setViewer(user);   // TODO refactor to many-to-many
                 userRepository.save(user);
             }
 
@@ -337,6 +337,7 @@ public class AdvertSearchController {
 
         }
     }
+
 }
 
 

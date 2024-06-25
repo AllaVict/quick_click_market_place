@@ -9,7 +9,6 @@ import quick.click.commons.exeptions.AuthorizationException;
 import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.core.converter.TypeConverter;
 import quick.click.core.domain.dto.AdvertReadDto;
-import quick.click.core.domain.dto.AdvertReadWithoutAuthDto;
 import quick.click.core.domain.model.Advert;
 import quick.click.core.domain.model.User;
 import quick.click.core.enums.Category;
@@ -40,8 +39,6 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
     private final UserRepository userRepository;
 
     private final TypeConverter<Advert, AdvertReadDto> typeConverterReadDto;
-
-    private final TypeConverter<Advert, AdvertReadWithoutAuthDto> typeConverterReadWithoutAuthDto;
 
 
     /**

@@ -13,7 +13,6 @@ import quick.click.commons.exeptions.ResourceNotFoundException;
 import quick.click.config.factory.AdvertFactory;
 import quick.click.core.converter.impl.AdvertToAdvertReadDtoConverter;
 import quick.click.core.domain.dto.AdvertReadDto;
-import quick.click.core.domain.dto.AdvertReadWithoutAuthDto;
 import quick.click.core.domain.model.Advert;
 import quick.click.core.domain.model.User;
 import quick.click.core.repository.AdvertRepository;
@@ -72,7 +71,7 @@ class AdvertSearchServiceImplTest {
         advertOne = AdvertFactory.createAdvertOne(user);
         advertTwo = AdvertFactory.createAdvertOne(user);
         advertReadDtoOne = createAdvertReadDto();
-        advertSearchService = new AdvertSearchServiceImpl(advertRepository, userRepository, advertToAdvertReadDtoConverter, null);
+        advertSearchService = new AdvertSearchServiceImpl(advertRepository, userRepository, advertToAdvertReadDtoConverter);
 
     }
 
