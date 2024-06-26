@@ -315,31 +315,31 @@ public class AdvertSearchController {
      * @return A ResponseEntity containing a list of all adverts that has 'true' in the field 'promoted' or an error message.
      */
 
-//    @GetMapping("/favorite")
-//    @PreAuthorize("isAuthenticated()")
-//    @Operation(summary = "Find all adverts which are viewed by user and marked them as favorite")
-//    public ResponseEntity<?> findFavoriteAdverts() {
-//        try {
-//            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//
-//            String username = authentication.getName();
-//
-//            User user = userRepository.findUserByEmail(username)
-//                        .orElseThrow(() -> new ResourceNotFoundException("User", "email", username));
-//
-//            final List<AdvertReadDto> advertReadDtoList = advertSearchService.findFavorite(user.getId());
-//
-//            LOGGER.debug("In findFavorite received GET favorite adverts successfully.");
-//
-//            return ResponseEntity.status(HttpStatus.OK).body(advertReadDtoList);
-//
-//        } catch (Exception ex) {
-//
-//            LOGGER.error("Error finding adverts which are favorite", ex);
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
-//
-//        }
-//    }
+    @GetMapping("/favorite")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Find all adverts which are viewed by user and marked them as favorite")
+    public ResponseEntity<?> findFavoriteAdverts() {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+            String username = authentication.getName();
+
+            User user = userRepository.findUserByEmail(username)
+                        .orElseThrow(() -> new ResourceNotFoundException("User", "email", username));
+
+            final List<AdvertReadDto> advertReadDtoList = advertSearchService.findFavorite(user.getId());
+
+            LOGGER.debug("In findFavorite received GET favorite adverts successfully.");
+
+            return ResponseEntity.status(HttpStatus.OK).body(advertReadDtoList);
+
+        } catch (Exception ex) {
+
+            LOGGER.error("Error finding adverts which are favorite", ex);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
+
+        }
+    }
 
 }
 
