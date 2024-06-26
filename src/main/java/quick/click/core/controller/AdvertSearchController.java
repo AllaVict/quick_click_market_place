@@ -323,7 +323,7 @@ public class AdvertSearchController {
 
     @GetMapping("/favorite")
     @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "Find all adverts which are viewed by user and marked them as favorite")
+    @Operation(summary = "Find all adverts which are viewed by authenticated user and marked them as favorite")
     public ResponseEntity<?> findFavoriteAdverts() {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

@@ -17,4 +17,5 @@ public interface AdvertEditingService {
 
     void deleteAdvert(Long advertId, AuthenticatedUser authenticatedUser);
 
+    AdvertReadDto markAdvertAsFavorite(Long advertId);
 }

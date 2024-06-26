@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import quick.click.commons.exeptions.AuthorizationException;
@@ -168,6 +169,39 @@ public class AdvertEditingController {
         } catch (Exception exception) {
 
             LOGGER.error("Unexpected error during deleting the advert by id: {}", advertId, exception);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
+
+        }
+    }
+
+
+    /**
+     * Handles the request to mark an existing advert as favorite. Validates if the user is authenticated applying the changes.
+     *
+     * @param advertId The ID of the advert to update.
+     * @return A ResponseEntity containing the updated advert details or an error message.
+     *
+     * PUT   http://localhost:8080/v1.0/adverts/3/favorite
+     *
+     */
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/{id}/favorite")
+    @Operation(summary = "Mark an advert as favorite")
+    public ResponseEntity<?> markAdvertAsFavorite(@PathVariable("id") final Long advertId) {
+        try {
+
+            final AdvertReadDto advertReadDto = advertEditingService.markAdvertAsFavorite(advertId);
+            LOGGER.debug("In markAdvertAsFavorite received PUT advert has archived successfully with id: {} ", advertId);
+            return ResponseEntity.status(HttpStatus.OK).body(advertReadDto);
+
+       } catch (ResourceNotFoundException exception) {
+
+            LOGGER.error("Advert not found with id : '{}'", advertId, exception);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+
+        } catch (Exception exception) {
+
+            LOGGER.error("Unexpected error during archiving the advert with id: {}", advertId, exception);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
 
         }
