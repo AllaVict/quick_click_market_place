@@ -312,7 +312,13 @@ public class AdvertSearchController {
     /**
      * Retrieves all adverts that are viewed by certain user and have 'true' in the field 'favorite' and returns them.
      *
-     * @return A ResponseEntity containing a list of all adverts that has 'true' in the field 'promoted' or an error message.
+     * @return
+     *   1 - a ResponseEntity containing a list of all adverts that has 'true' in the field 'promoted' and user is authenticated,
+     *   2 - an error message when INTERNAL_SERVER_ERROR is occurred,
+     *   3 - 401 status code when user is not authenticated
+     *
+     *   GET   http://localhost:8080/v1.0/adverts/favorite
+     *
      */
 
     @GetMapping("/favorite")

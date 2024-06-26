@@ -189,6 +189,7 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
     /**
      * Retrieves all adverts which are viewed by authorized user.
      *
+     * @param user The user whose viewed adverts should be found.
      * @return A list of AdvertReadDto containing details of all adverts that are viewed by authorized user.
      */
     @Override
@@ -204,7 +205,8 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
     /**
      * Retrieves adverts that contains in their title certain word part.
      *
-     * @return A list of AdvertReadDto containing details of these adverts.
+     * @param titlePart The title (or part of it) of the adverts which should be found.
+     * @return A list of AdvertReadDto that contain in title titlePart and containing details of these adverts.
      */
     @Override
     public List<AdvertReadDto> findAdvertsByTitlePart(String titlePart) {
@@ -223,6 +225,7 @@ public class AdvertSearchServiceImpl implements AdvertSearchService {
     /**
      * Retrieves all adverts which are favorite (i.e. viewer has viewed them and marked as favorite).
      *
+     * @param viewerId The user's id who viewed the advert and mark it as favorite.
      * @return A list of AdvertReadDto containing details of all adverts which are favorite.
      */
     @Override
