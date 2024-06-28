@@ -16,7 +16,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     /**
      * Retrieves a user by their email.
      *
-     * @param email the email of the user to be retrieved.
+     * @param username the email of the user to be retrieved.
      * @return an Optional containing the user if found, or an empty Optional otherwise.
      */
     Optional<User> findUserByEmail(String username);
@@ -36,5 +36,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @return an Optional containing the user if found, or an empty Optional otherwise.
      */
     Optional<User> findUserById(Long id);
+
 
 }

@@ -1,10 +1,12 @@
 package quick.click.core.domain.dto;
 
+import quick.click.core.domain.model.Advert;
 import quick.click.core.enums.AuthProvider;
 import quick.click.core.enums.Role;
 import quick.click.core.enums.UserStatus;
 
 import java.util.Objects;
+import java.util.Set;
 
 public class UserReadDto {
 
@@ -19,6 +21,8 @@ public class UserReadDto {
     private UserStatus status;
 
     private AuthProvider provider;
+
+    private Set<Advert> viewedAdverts;
 
 
     public Long getId() {
@@ -67,6 +71,14 @@ public class UserReadDto {
 
     public void setProvider(AuthProvider provider) {
         this.provider = provider;
+    }
+
+    public Set<Advert> getViewedAdverts() {
+        return viewedAdverts;
+    }
+
+    public void setViewedAdverts(Set<Advert> viewedAdverts) {
+        this.viewedAdverts = viewedAdverts;
     }
 
     @Override

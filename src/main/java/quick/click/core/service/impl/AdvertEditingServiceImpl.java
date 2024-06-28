@@ -131,6 +131,23 @@ public class AdvertEditingServiceImpl implements AdvertEditingService {
 
     }
 
+    /**
+     * Changes field 'favorite' of advert to true and save updated advert.
+     *
+     * @param advertId The ID of the advert to mark as favorite.
+     * @return An AdvertReadDto containing the advert details.
+     * @throws ResourceNotFoundException If the advert to be archived is not found.
+     *
+     */
+    @Override
+    public AdvertReadDto markAdvertAsFavorite(Long advertId) {
+        Advert advertForMarkAsFavorite = advertRepository.findAdvertById(advertId)
+                .orElseThrow(() -> new ResourceNotFoundException("Advert", "id", advertId));
+        advertForMarkAsFavorite.setFavorite(true);
+        Advert markedAsFavorite = advertRepository.save(advertForMarkAsFavorite);
+        return typeConverterReadDto.convert(markedAsFavorite);
+    }
+
     protected Advert updateAdvertData(final Advert advert, final AdvertEditingDto advertEditingDto) {
         advert.setTitle(advertEditingDto.getTitle());
         advert.setDescription(advertEditingDto.getDescription());

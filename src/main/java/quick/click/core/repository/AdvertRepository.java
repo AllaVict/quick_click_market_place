@@ -1,9 +1,12 @@
 package quick.click.core.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import quick.click.core.domain.model.Advert;
 import quick.click.core.domain.model.User;
+import quick.click.core.enums.Category;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,5 +26,28 @@ public interface AdvertRepository extends JpaRepository<Advert, Long> {
     List<Advert> findAllByUserOrderByCreatedDateDesc(User user);
 
     List<Advert> findAllByOrderByCreatedDateDesc();
+
+    List<Advert> findByCategory(Category category);
+
+    @Query("SELECT a FROM Advert a WHERE a.price < a.firstPrice")
+    List<Advert> findDiscounted();
+
+    @Query(value = "SELECT * FROM adverts ORDER BY viewing_quantity DESC LIMIT 10", nativeQuery = true)
+    List<Advert> find10MaxViewed();
+
+    @Query("SELECT a FROM Advert a WHERE a.promoted = true")
+    List<Advert> findPromoted();
+
+    @Query("SELECT a FROM Advert a WHERE LOWER(a.title) LIKE %:titlePart%")
+    public List<Advert> findAdvertsByTitlePart(@Param("titlePart") String titlePart);
+
+//    @Query("SELECT a FROM Advert a JOIN a.viewers v WHERE v.id = :viewerId AND a.favorite = true")
+    @Query(value = """
+            SELECT a.*
+            FROM adverts a
+            JOIN advert_viewers av ON a.id = av.advert_id
+            JOIN users u ON av.user_id = u.id
+            WHERE u.id = :viewerId AND a.favorite = true;""", nativeQuery = true)
+    List<Advert> findFavorite(@Param("viewerId") long viewerId);
 
 }

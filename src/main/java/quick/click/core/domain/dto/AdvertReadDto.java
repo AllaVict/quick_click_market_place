@@ -1,5 +1,6 @@
 package quick.click.core.domain.dto;
 
+import jakarta.persistence.Column;
 import quick.click.core.enums.AdvertStatus;
 import quick.click.core.enums.Category;
 import quick.click.core.enums.Currency;
@@ -7,6 +8,7 @@ import quick.click.core.enums.Currency;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class AdvertReadDto {
 
@@ -34,11 +36,17 @@ public class AdvertReadDto {
 
     private boolean favorite;
 
+    private int viewingQuantity;
+
+    private boolean promoted;
+
     protected List<CommentReadDto> comments = new ArrayList<>();
 
     protected  List<byte[]> images = new ArrayList<>();
 
     protected UserReadDto user;
+
+    protected Set<UserReadDto> viewers;
 
     public Long getId() {
         return id;
@@ -136,6 +144,17 @@ public class AdvertReadDto {
         this.favorite = favorite;
     }
 
+    public int getViewingQuantity() {return viewingQuantity;}
+
+    public void setViewingQuantity(int viewingQuantity) {this.viewingQuantity = viewingQuantity;}
+
+    public boolean isPromoted() {
+        return promoted;
+    }
+
+    public void setPromoted(boolean promoted) {
+        this.promoted = promoted;
+    }
     public List<CommentReadDto> getComments() {
         return comments;
     }
@@ -158,6 +177,14 @@ public class AdvertReadDto {
 
     public void setUser(UserReadDto user) {
         this.user = user;
+    }
+
+    public Set<UserReadDto> getViewers() {
+        return viewers;
+    }
+
+    public void setViewers(Set<UserReadDto> viewers) {
+        this.viewers = viewers;
     }
 
     @Override

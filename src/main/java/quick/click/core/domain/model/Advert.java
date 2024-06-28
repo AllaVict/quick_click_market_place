@@ -1,5 +1,8 @@
 package quick.click.core.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import quick.click.core.domain.BaseEntity;
@@ -7,10 +10,11 @@ import quick.click.core.enums.AdvertStatus;
 import quick.click.core.enums.Category;
 import quick.click.core.enums.Currency;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 @Entity
 @Table(name = "adverts")
 public class Advert extends BaseEntity {
@@ -57,9 +61,23 @@ public class Advert extends BaseEntity {
     @Column(name = "favorite")
     private boolean favorite;
 
+    @Column(name = "viewing_quantity")
+    private int viewingQuantity;
+
+    @Column(name = "promoted")
+    private boolean promoted;
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
+    @JsonBackReference
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "advert_viewers",
+            joinColumns = @JoinColumn(name = "advert_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> viewers = new HashSet<>();
 
     @OneToMany(mappedBy = "advert", cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
@@ -70,7 +88,6 @@ public class Advert extends BaseEntity {
     public Advert() {
        //Empty
     }
-
 
     public Long getId() {
         return id;
@@ -168,6 +185,18 @@ public class Advert extends BaseEntity {
         this.favorite = favorite;
     }
 
+    public int getViewingQuantity() {return viewingQuantity;}
+
+    public void setViewingQuantity(int viewingQuantity) {this.viewingQuantity = viewingQuantity;}
+
+    public boolean isPromoted() {
+        return promoted;
+    }
+
+    public void setPromoted(boolean promoted) {
+        this.promoted = promoted;
+    }
+
     public List<Comment> getComments() {
         return comments;
     }
@@ -190,6 +219,14 @@ public class Advert extends BaseEntity {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Set<User> getViewers() {
+        return viewers;
+    }
+
+    public void setViewers(Set<User> viewers) {
+        this.viewers = viewers;
     }
 
     @Override

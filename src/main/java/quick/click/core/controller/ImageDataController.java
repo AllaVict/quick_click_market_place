@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import quick.click.commons.exeptions.AuthorizationException;
 import quick.click.commons.exeptions.ResourceNotFoundException;
-import quick.click.core.domain.model.ImageData;
 import quick.click.core.service.ImageDataService;
 import quick.click.security.commons.model.AuthenticatedUser;
 

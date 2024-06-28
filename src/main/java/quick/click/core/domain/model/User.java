@@ -1,13 +1,21 @@
 package quick.click.core.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import quick.click.core.domain.BaseEntity;
 import quick.click.core.enums.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 @Entity
 @Table(name = "users")
 public class User extends BaseEntity {
@@ -54,6 +62,10 @@ public class User extends BaseEntity {
     @Column
     @Enumerated(EnumType.STRING)
     private AuthProvider provider;
+    @JsonManagedReference
+    @ManyToMany(mappedBy = "viewers")
+    private Set<Advert> viewedAdverts = new HashSet<>();
+
 
     public User() {
 
@@ -81,7 +93,8 @@ public class User extends BaseEntity {
             final String lastName,
             final Sex sex,
             final String email,
-            final String password
+            final String password,
+            Set<Advert> viewedAdverts
     ) {
         this.id = id;
         this.firstName = firstName;
@@ -89,6 +102,7 @@ public class User extends BaseEntity {
         this.sex = sex;
         this.email = email;
         this.password = password;
+        this.viewedAdverts = viewedAdverts;
     }
 
     public Long getId() {
@@ -212,6 +226,13 @@ public class User extends BaseEntity {
         this.provider = provider;
     }
 
+    public Set<Advert> getViewedAdverts() {
+        return viewedAdverts;
+    }
+
+    public void setViewedAdverts(Set<Advert> viewedAdverts) {
+        this.viewedAdverts = viewedAdverts;
+    }
     @Override
     public int hashCode() {
         return Objects.hash(id, firstName, lastName, password, email);

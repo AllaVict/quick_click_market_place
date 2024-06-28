@@ -95,6 +95,7 @@ public class SecurityConfiguration {
                                 matcher.pattern("/v1.0/auth/signup"),
                                 matcher.pattern("/v1.0/adverts"),
                                 matcher.pattern("/v1.0/adverts/*"),
+//                                matcher.pattern("/v1.0/users/*"),
                                 matcher.pattern("/v1.0/images"),
                                 matcher.pattern("/v1.0/images/**"),
                                 matcher.pattern("/oauth2/*"),

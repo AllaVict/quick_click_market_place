@@ -1,0 +1,3 @@
+ALTER TABLE adverts DROP CONSTRAINT viewers_fk;
+
+ALTER TABLE adverts DROP COLUMN viewer_id;
